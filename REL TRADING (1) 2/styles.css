@@ -1,0 +1,225 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Manrope', sans-serif;
+  }
+  header {
+    background-image: url('images/header.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    color: white;
+    text-align: center;
+    position: relative;
+  }
+
+
+nav {
+    margin: 0;
+  }
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  li {
+    float: left;
+    margin-inline: 2%;
+  }
+  
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  li a:hover {
+    background-color: #623E2A;
+  }
+  .header-content {
+    max-width: 600px; /* Adjust the width as needed */
+    margin: 0 auto ; /* Center the content horizontally */
+  }
+  
+  .header-content p {
+    font-size: 40px; /* Adjust the font size as needed */
+    padding-bottom: 15px;
+    padding-top: 15px;
+    margin-top: 20%;
+  }
+  .header-content h1 {
+    font-size: 80px; /* Adjust the font size as needed */
+    font-family: 'Baskervville', serif;
+    font-weight: 100;
+    margin-bottom: -20%;
+  }
+  
+  .buttons-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8%;
+  }
+  
+  .button {
+    padding: 10px 50px;
+    margin: 5%;
+    margin-bottom: 15%;
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background-color:  #623E2A;
+  }
+  .text-and-image-section {
+    display: flex;
+    margin: 0 auto; /* Adjust the margin as needed */
+    background-color: #EFEBE5;
+  }
+  .text-and-image-section h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5em;
+    margin: 30% 0 0 17%;
+    color: #623E2A;
+    font-weight:400;
+  }
+  .text-and-image-section p {
+    margin: 10% 0 0 17%;
+    line-height: 1.5;
+    font-size: 1.15em;
+    color: #623E2A;
+  }
+  .text-container {
+    flex: 1;
+    padding: 20px;
+    font-family: 'Baskervville', serif;
+    font-weight: 100;
+  }
+  
+  .image-container {
+    flex: 1;
+    text-align: right;
+    margin: 8%;
+  }
+  
+  .image-container img {
+    max-width: 100%;
+    height: auto;
+  }
+  .three-columns-section {
+    display: flex;
+    flex-direction: column; /* Change the flex direction to column */
+    align-items: center;
+    margin: 0 auto; /* Adjust the margin as needed */
+    background-color: #EFEBE5;
+    background-image: url('images/review.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    padding: 20px;
+  }
+  
+  .three-columns-section h2 {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 2.5em;
+    margin: 5%;
+    color: #EFEBE5;
+  }
+  
+  .columns-container {
+    display: flex;
+    justify-content: space-around; /* Adjust as needed for spacing between columns */
+    width: 100%;
+    margin: 5%;
+  }
+  
+  .column {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    margin-top: -3%;
+  }
+  
+  .column h3 {
+    font-family: 'IM Fell French Canon', serif;
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: #EFEBE5;
+  }
+  
+  .column p {
+    margin: 0;
+    color: #EFEBE5;
+  }
+  .image-columns-section {
+    text-align: center;
+    margin: 0 auto ; /* Adjust the margin as needed */
+    background-color: #EFEBE5;
+    padding: 20px;
+  }
+  
+  .image-columns-section h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5em;
+    color: #623E2A;
+    margin: 3%;
+  }
+  
+  .columns-container1 {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: 20%;
+    margin-left: 20%;
+  }
+  
+  .image-column {
+    flex: 1;
+    margin: 0 auto 10%; 
+    position: relative;
+  }
+  
+  .column img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd; /* Add a border to the image */
+    border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+  }
+  
+  .text-box {
+    position: absolute;
+    bottom: -120px;
+    left: 50px; /* Adjust the left position as needed */
+    right: 50px; /* Adjust the right position as needed */
+    background-color: transparent;
+    padding: 10px;
+    border: 1px solid #623E2A; /* Border at the top of the text box */
+  }
+  
+  
+  .text-box h3 {
+    margin: 3%;
+    color: #623E2A;
+  }
+  
+  .text-box p {
+    margin: 3% ;
+    font-size: small;
+    color: #623E2A;
+  }
+  .text-box li{
+    font-size: small;
+    color: #623E2A;
+  }
+  
+  
