@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REL Trading</title>
+
+    <!-- Link to your CSS file (if you have one) -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=IM+Fell+French+Canon&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <!-- Include any additional meta tags, stylesheets, or scripts here -->
+</head>
+<body style="background-color: #EFEBE5;">
+    <!-- Your HTML content goes here -->
+    <header>
+        <div class="header2-container">
+            <nav>
+                 <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="catalogue.html">Catalogue</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="login.html">Log In</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="product-container" id="myForm">
+        <div class="small-images-container">
+            <img class="small-image" src="images/redwine.jpeg" alt="Thumbnail 1" onclick="showImage(0)">
+            <img class="small-image" src="images/champagne.jpeg" alt="Thumbnail 2" onclick="showImage(1)">
+            <img class="small-image" src="images/cocktail.jpeg" alt="Thumbnail 3" onclick="showImage(2)">
+            <!-- Add more small images as needed -->
+        </div>
+        <div class="big-image-container">
+            <img class="big-image" src="images/redwine.jpeg" alt="Big Image">
+        </div>
+        
+        <div class="product-info">
+            <h2 style="margin-bottom: 2%;">Wine Glasses</h2>
+            <p style="margin-bottom: 2%;">Description of the product goes here. Provide details about the product and its features.</p>
+            <div class="option-selector">
+                <label for="options">Select Option:</label>
+                <select id="options" name="options">
+                    <option value="option1">Red Wine Glass</option>
+                    <option value="option2">Champagne Glass</option>
+                    <option value="option3">Cocktail Glass</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="quantity-selector">
+                <label for="quantity">Quantity:</label>
+                <select id="quantity" name="quantity">
+                    <option value="1">12</option>
+                    <option value="2">24</option>
+                    <option value="3">36</option>
+                    <option value="1">48</option>
+                    <option value="2">60</option>
+                    <option value="3">72</option>
+                    <option value="3">100</option>
+                    <option value="3">Other (Please specify amount in comment section)</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="comment-form">
+                <form action="#" method="post">
+                    <label for="comment">Your Comment:</label>
+                    <textarea id="comment" name="comment" rows="4" required></textarea>
+                    
+                </form>
+            </div>
+            <div class="date-time-inputs">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+    
+                <label for="time">Time:</label>
+                <input type="time" id="time" name="time" required>
+            </div>
+    
+            <a href="#" class="reserve-button">Reserve Now</a>
+            <a href="catalogue.html" class="reserve-button" onclick="closeForm()">Close</a>
+        </div>
+    </div>
+    <script>
+         function showImage(index) {
+        var bigImage = document.querySelector('.big-image');
+        var smallImages = document.querySelectorAll('.small-image');
+
+        // Change the source of the big image
+        bigImage.src = smallImages[index].src;
+
+        // Highlight the selected small image
+        smallImages.forEach(function (image, i) {
+            image.style.opacity = i === index ? 1 : 0.7;
+        });
+    }
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+    </script>
+</body>
+</html>
