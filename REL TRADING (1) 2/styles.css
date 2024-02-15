@@ -465,3 +465,72 @@ background-color: #717171;
   }
 }
 */
+
+
+
+.reserve {
+ 
+ height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 400px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-image: url('images/review.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.reserve-form h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+
+}
+.form-input{
+  color: #4E2F1D;
+}
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="time"] {
+  height: 5rem;
+  width: 30%;
+  padding: 10px;
+  margin-right: 4%;
+  color: white;
+  background-color: #4E2F1D;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group input[type="text"]:last-child,
+.form-group input[type="email"]:last-child,
+.form-group input[type="number"]:last-child,
+.form-group input[type="time"]:last-child {
+  margin-right: 0;
+}
+
+button {
+  width: 20%;
+  padding: 10px;
+  margin-left: 40%;
+  background: brown;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: darkred;
+}
