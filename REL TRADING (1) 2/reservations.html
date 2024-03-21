@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REL Trading</title>
+
+    <!-- Link to your CSS file (if you have one) -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=IM+Fell+French+Canon&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <!-- Include any additional meta tags, stylesheets, or scripts here -->
+</head>
+<body>
+    <div class="reserve">
+        <h1>Reservations</h1>
+    <form action="/submit-your-reservation" method="post">
+        <div class="form-group">
+            <input type="text" id="first-name" name="first_name" placeholder="First Name" required>
+            <input type="text" id="last-name" name="last_name" placeholder="Last Name" required>
+        </div>
+        <div class="form-group">
+            <input type="tel" id="contact-number" name="contact_number" placeholder="Contact No." required>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="item" name="item" placeholder="Item">
+            <input type="number" id="quantity" name="quantity" placeholder="Quantity" min="1">
+        </div>
+        <div class="form-group">
+            <input type="date" id="date" name="date" placeholder="Date" required>
+            <input type="time" id="time" name="time" placeholder="Time" required>
+        </div>
+        <button type="submit">RESERVE</button>
+    </form>
+    </div>
+    </body>
+    </html>
