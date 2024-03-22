@@ -1,0 +1,125 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Manrope', sans-serif;
+    background-image: url('aboutus.jpg');
+}
+
+header {
+    background-size: 100% 100% cover;
+    background-repeat: no-repeat;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    position: relative;
+}
+
+nav {
+    margin: 0;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-end;
+}
+
+li {
+    float: left;
+    margin-inline: 2%;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #623E2A;
+}
+
+.header-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.header-content p {
+    font-size: 40px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    margin-top: 20%;
+}
+
+.header-content h1 {
+    font-size: 80px;
+    font-family: 'Baskerville', serif;
+    font-weight: 100;
+    margin-bottom: -20%;
+}
+
+.text-and-image-section,
+.text-and-image-section2,
+.three-columns-section {
+    display: flex;
+    margin: 0 auto;
+    background-color: #EFEBE5;
+}
+
+.text-and-image-section h2,
+.three-columns-section h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5em;
+    color: #623E2A;
+}
+
+.text-and-image-section p,
+.text-and-image-section2 p,
+.three-columns-section p {
+    line-height: 1.5;
+    font-size: 1.15em;
+    color: #623E2A;
+}
+
+.text-container,
+.columns-container,
+.column {
+    flex: 1;
+    padding: 20px;
+}
+
+.image-container {
+    flex: 1;
+    text-align: right;
+    margin: 8%;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+}
+
+.three-columns {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.three-columns p {
+    flex-basis: 30%;
+    margin-right: 5%;
+}
+
+.three-columns h2 {
+    width: 100%;
+}
+
+/* Adjustments for smaller screens */
+@media screen and (max-width: 768px) {
+    .text-and-image-section .text-container p {
+        flex: 1 1 calc(50% - 20px);
+    }
+}
