@@ -874,7 +874,7 @@ margin-bottom: 20px; /* Add margin for spacing */
   color: white;
 }
 
-button {
+.reserve button {
   width: 20%;
   padding: 10px;
   margin-left: 40%;
@@ -889,6 +889,6 @@ button {
   height: 3rem;
 }
 
-button:hover {
+.reserve button:hover {
   background: #995d3a;
 }
