@@ -52,6 +52,25 @@ app.post('/signup', (req, res) => {
     });
 });
 
+app.post('/login', (req, res) => {
+    const { loginId, password } = req.body;
+
+    const query = 'SELECT * FROM customer WHERE customerID = ? AND pword = ?';
+    
+    db.query(query, [loginId, password], (err, results) => {
+        if (err) {
+            console.error('Error fetching user', err);
+            res.status(500).send('An error occurred');
+        } else if (results.length > 0) {
+            // Login successful, redirect to userDashboard.html
+            res.redirect('/userDashboard.html');
+        } else {
+            // No user found with the provided credentials
+            res.status(401).send('Login failed');
+        }
+    });
+});
+
 
 // Start server
 const PORT = process.env.PORT || 3000;
