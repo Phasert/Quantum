@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wine Glasses</title>
+    <title>Stands</title>
 
     <!-- Link to your CSS file (if you have one) -->
     <link rel="stylesheet" href="styles.css">
@@ -42,46 +42,44 @@
             </nav>
         </div>
     </header>
-</div>
-<!-- Display added to cart message -->
+    <!-- Display added to cart message -->
 <div id="addedToCartMessage" style="display: none; color: #623E2A; margin: 10px 0 0 80%; ">
-   Item added to cart!
-</div>
+    Item added to cart!
+ </div>
     <div class="product-container" id="myForm">
         <div class="small-images-container">
-            <img class="small-image" src="images/redwine.jpeg" alt="Thumbnail 1" onclick="selectOption(0)">
-            <img class="small-image" src="images/champagne.jpeg" alt="Thumbnail 2" onclick="selectOption(1)">
-            <img class="small-image" src="images/cocktail.jpeg" alt="Thumbnail 3" onclick="selectOption(2)">
-            <img class="small-image" src="images/martini.jpeg" alt="Thumbnail 4" onclick="selectOption(3)">
+            <img class="small-image" src="images/cakestand.jpeg" alt="Thumbnail 1" onclick="selectOption(0)">
+            <img class="small-image" src="images/doublestand.jpeg" alt="Thumbnail 2" onclick="selectOption(1)">
+            <img class="small-image" src="images/2tierstand.jpeg" alt="Thumbnail 3" onclick="selectOption(2)">
+            <img class="small-image" src="images/3layercupcakestand.JPG" alt="Thumbnail 4" onclick="selectOption(3)">
             <!-- Add more small images as needed -->
         </div>
         <div class="big-image-container">
-            <img class="big-image" src="images/redwine.jpeg" alt="Big Image" id="selectedImage">
+            <img class="big-image" src="images/cakestand.jpeg" alt="Big Image" id="selectedImage">
         </div>
         
         <div class="product-info">
-            <h2 id="selectedOptionName">Wine Glasses</h2>
-            <p style="margin-bottom: 2%;" id="productDescription">We provide a wide variety of wine, champagne, cocktail and martini glasses.</p>
+            <h2 id="selectedOptionName">Stands</h2>
+            <p style="margin-bottom: 2%;" id="productDescription">Description of the product goes here. Provide details about the product and its features.</p>
             <div class="option-selector">
                 <label for="options">Select Option:</label>
                 <select id="options" name="options">
-                    <option value="Red Wine Glass">Red Wine Glass</option>
-                    <option value="Champagne Glass">Champagne Glass</option>
-                    <option value="Cocktail Glass">Cocktail Glass</option>
-                    <option value="Martini Glass">Martini Glass</option>
+                    <option value="Basic Cake Stand">Basic Cake Stand</option>
+                    <option value="Double Cake Stand">Double Cake Stand</option>
+                    <option value="2 Tier Cupcake Stand">2 Tier Cupcake Stand</option>
+                    <option value="Triple Deck Cupcake Stand">Triple Deck Cupcake Stand</option>
                     <!-- Add more options as needed -->
                 </select>
             </div>
             <div class="quantity-selector">
                 <label for="quantity">Quantity:</label>
                 <select id="quantity" name="quantity" onchange="updateCostEstimate()">
-                    <option value="12">12</option>
-                    <option value="24">24</option>
-                    <option value="36">36</option>
-                    <option value="48">48</option>
-                    <option value="60">60</option>
-                    <option value="72">72</option>
-                    <option value="100">100</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
                     <option value="0">Other (Please specify amount in comment section)</option>
                     <!-- Add more options as needed -->
                 </select>
@@ -121,11 +119,11 @@
                 </div>
                 </div>
             </div>
-            <a href="checkout.html" class="reserve-button" >Reserve Now</a>
-            <button class="reserve-button" onclick="addToCart()" >Add To Cart</button>
+            <a href="checkout.html" class="reserve-button">Reserve Now</a>
+            <button class="reserve-button" onclick="addToCart()">Add To Cart</button>
             <a href="catalogue.html" class="reserve-button" onclick="closeForm()">Close</a>
+        </div>
     </div>
-   
     <script>
         function selectOption(index) {
             var smallImages = document.querySelectorAll('.small-image');
@@ -162,110 +160,77 @@
                 // Add more cases as needed
             }
         }
-        
+
         function closeForm() {
             document.getElementById("myForm").style.display = "none";
         }
         function updateCostEstimate() {
-        var quantitySelector = document.getElementById('quantity');
-        var costEstimateSpan = document.getElementById('costEstimate');
-        var selectedOption = document.getElementById('options').value;
+            var quantitySelector = document.getElementById('quantity');
+            var costEstimateSpan = document.getElementById('costEstimate');
+            var selectedOption = document.getElementById('options').value;
 
-        var selectedQuantity = parseInt(quantitySelector.value);
-        var optionCosts = {
-            'Red Wine Glass': 120,  // Red Wine Glass cost per dozen
-            'Champagne Glass': 60,    // Champagne Glass cost per dozen
-            'Cocktail Glass': 72,  // Cocktail Glass cost per dozen
-            'Martini Glass': 96,    // Martini Glass cost per dozen
-        };
-        var costPerDozen = optionCosts[selectedOption] || 0;  // Default to 0 if option is not found
-        var estimatedCost = (selectedQuantity / 12) * costPerDozen;
+            var selectedQuantity = parseInt(quantitySelector.value);
+            var optionCosts = {
+                'Basic Cake Stand': 25,
+                'Double Cake Stand': 30,
+                '2 Tier Cupcake Stand': 25,
+                'Triple Deck Cupcake Stand': 35,
+            };
 
-        costEstimateSpan.textContent = '$' + estimatedCost.toFixed(2);
-    }
+            var cost = optionCosts[selectedOption] || 0;
+            var estimatedCost = selectedQuantity * cost;
+
+            costEstimateSpan.textContent = '$' + estimatedCost.toFixed(2);
+        }
     var cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-        function addToCart() {
-            var selectedOption = document.getElementById('options').value;
-            var selectedQuantity = parseInt(document.getElementById('quantity').value);
-            var rentDate = document.getElementById('rentDate').value;
-            var rentTime = document.getElementById('rentTime').value;
-            var returnDate = document.getElementById('returnDate').value;
-            var returnTime = document.getElementById('returnTime').value;
-            var comment = document.getElementById('comment').value;
+    function addToCart() {
+    var selectedOption = document.getElementById('options').value;
+    var selectedQuantity = parseInt(document.getElementById('quantity').value);
+    var rentDate = document.getElementById('rentDate').value;
+    var rentTime = document.getElementById('rentTime').value;
+    var returnDate = document.getElementById('returnDate').value;
+    var returnTime = document.getElementById('returnTime').value;
+    var comment = document.getElementById('comment').value;
 
-            var optionCosts = {
-                'Red Wine Glass': 120,  // Red Wine Glass cost per dozen
-                'Champagne Glass': 60,   // Champagne Glass cost per dozen
-                'Cocktail Glass': 72,   // Cocktail Glass cost per dozen
-                'Martini Glass': 96,    // Martini Glass cost per dozen
-            };
+    var optionCosts = {
+        'Basic Cake Stand': 25,
+        'Double Cake Stand': 30,
+        '2 Tier Cupcake Stand': 25,
+        'Triple Deck Cupcake Stand': 35,
+    };
 
-            var costPerDozen = optionCosts[selectedOption] || 0;
-            var estimatedCost = (selectedQuantity / 12) * costPerDozen;
+    var cost = optionCosts[selectedOption] || 0;
+    var estimatedCost = selectedQuantity * cost;
 
-            // Create a new cart item
-            var newItem = {
-                option: selectedOption,
-                quantity: selectedQuantity,
-                costEstimate: estimatedCost,
-                comment: comment,
-                rentDate: rentDate,
-                rentTime: rentTime,
-                returnDate: returnDate,
-                returnTime: returnTime
-            };
+    var newItem = {
+        option: selectedOption,
+        quantity: selectedQuantity,
+        costEstimate: estimatedCost,
+        comment: comment,
+        rentDate: rentDate,
+        rentTime: rentTime,
+        returnDate: returnDate,
+        returnTime: returnTime,
+    };
 
-            // Add the new item to the cart
-            cart.push(newItem);
+    cart.push(newItem);
 
-            // Display added to cart message
-            var addedToCartMessage = document.getElementById('addedToCartMessage');
-            addedToCartMessage.style.display = 'block';
+    var addedToCartMessage = document.getElementById('addedToCartMessage');
+    addedToCartMessage.style.display = 'block';
 
-            // Hide the message after 2 seconds (adjust as needed)
-            setTimeout(function () {
-                addedToCartMessage.style.display = 'none';
-            }, 2000);
+    setTimeout(function () {
+        addedToCartMessage.style.display = 'none';
+    }, 2000);
 
+    sessionStorage.setItem('cart', JSON.stringify(cart));
 
-            // Save the updated cart to sessionStorage
-            sessionStorage.setItem('cart', JSON.stringify(cart));
-        // Pass the container IDs to the displayCart function
-        displayCart('cartContent', 'cartTotal');
-        }
-
-          function displayCart(cartContentId, cartTotalId) {
-        var cartContent = document.getElementById(cartContentId);
-        var cartTotal = document.getElementById(cartTotalId);
-        var totalCost = 0;
-
-        cartContent.innerHTML = '';
-
-        var table = document.createElement('table');
-        table.innerHTML = '<tr><th>Item</th><th>Quantity</th><th>Cost Estimate</th><th>Rent Date</th><th>Rent Time</th><th>Return Date</th><th>Return Time</th></tr>';
-
-        for (var i = 0; i < cart.length; i++) {
-            var item = cart[i];
-            var row = table.insertRow();
-
-            row.insertCell(0).textContent = item.option;
-            row.insertCell(1).textContent = item.quantity;
-            row.insertCell(2).textContent = '$' + item.costEstimate.toFixed(2);
-            row.insertCell(3).textContent = item.rentDate;
-            row.insertCell(4).textContent = item.rentTime;
-            row.insertCell(5).textContent = item.returnDate;
-            row.insertCell(6).textContent = item.returnTime;
-
-            totalCost += item.costEstimate;
-        }
-
-        cartContent.appendChild(table);
-        cartTotal.innerHTML = '<p>Cart Total: $' + totalCost.toFixed(2) + '</p>';
-    }
-    
-    // Display the initial cart on page load
+    // Display the updated cart information
     displayCart('cartContent', 'cartTotal');
+}
+
+
+  
     </script>
 </body>
 </html>

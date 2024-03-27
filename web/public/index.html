@@ -36,7 +36,7 @@
                  <ul>
                   <li><a href="index.html">Home</a></li>
                   <li><a href="catalogue.html">Catalogue</a></li>
-                  <li><a href="about.html">About</a></li>
+                  <li><a href="aboutUs.html">About</a></li>
                   <li><a href="cartPage.html">Cart</a></li>
                   <li><a href="login.html">Log In</a></li>
                 </ul>
@@ -59,32 +59,33 @@
           <div class="container" id="container">
               <!-- Copy the content of your existing popup here -->
               <div class="form-container sign-up-container">
-                  <form action="#">
-                      <h1>Become A Member</h1>
-                      <input type="text" placeholder="First Name" />
-                      <input type="text" placeholder="Last Name" />
-                      <input type="email" placeholder="Email" />
-                      <input type="tel" placeholder="Phone Number" />
-                      <input type="password" placeholder="Password" />
-                      <input type="password" placeholder="Confirm Password" />
-                      <button>Sign Up</button>
-                  </form>
+                <form action="/signup" method="post">
+                  <h1>Sign Up</h1>
+                  <input type="text" name="firstName" placeholder="First Name" />
+                  <input type="text" name="lastName" placeholder="Last Name" />
+                  <input type="email" name="email" placeholder="example@example.com" />
+                  <input type="tel" name="phone" placeholder="(868)-123-4567 " />
+                  <input type="password" id="password" name="password" placeholder="Password" required>
+                  <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                  <button type="submit">Sign Up</button>
+                </form>
+                
               </div>
               <div class="form-container sign-in-container">
-                  <form action="#">
-                      <h1>Sign in</h1>
-                      <input type="number" placeholder="Login ID" />
-                      <input type="password" placeholder="Password" />
-                      <a href="#">Forgot your password?</a>
-                      <button>Sign In</button>
-                  </form>
+                <form action="/login" method="post">
+                  <h1>Sign in</h1>
+                  <input type="text" name="loginId" placeholder="Login ID" required />
+                  <input type="password" name="password" placeholder="Password" required />
+                  <a href="#">Forgot your password?</a>
+                  <button type="submit">Log In</button>
+              </form>
               </div>
               <div class="overlay-container">
                   <div class="overlay">
                       <div class="overlay-panel overlay-left">
                           <h1>Welcome Back!</h1>
                           <p>To keep connected with us please login with your personal info</p>
-                          <button class="ghost" id="signIn">Sign In</button>
+                          <button class="ghost" id="signIn">Log In</button>
                       </div>
                       <div class="overlay-panel overlay-right">
                           <h1>Hello, Friend!</h1>
@@ -197,51 +198,7 @@
       
    
     <!-- Link to your JavaScript file (if you have one) -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-        const container = document.getElementById('container');
-        const popupContainer = document.getElementById('popupContainer');
-       
-
-        // Function to open the popup
-        function openPopup() {
-            container.classList.add("right-panel-active");
-            popupContainer.style.display = 'flex';
-        }
-
-        // Open the popup when the page loads
-        openPopup();
-
-        // Close the popup if the user clicks outside the form
-        popupContainer.addEventListener('click', (event) => {
-            if (event.target === popupContainer) {
-                container.classList.remove("right-panel-active");
-                popupContainer.style.display = 'none';
-            }
-        });
-    });
-
-    // Function to close the popup
-    function closePopup() {
-        const container = document.getElementById('container');
-        const popupContainer = document.getElementById('popupContainer');
-        container.classList.remove("right-panel-active");
-        popupContainer.style.display = 'none';
-    }
-    const signUpButton = document.getElementById('signUp');
-    const signInButton = document.getElementById('signIn');
-    const container = document.getElementById('container');
-
-    signUpButton.addEventListener('click', () => {
-	container.classList.add("right-panel-active");
-    });
-
-    signInButton.addEventListener('click', () => {
-	container.classList.remove("right-panel-active");
-    });
-    
-  
-  </script>
+    <script src="app.js"></script>
 
 </body>
 </html>

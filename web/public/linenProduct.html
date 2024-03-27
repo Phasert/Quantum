@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wine Glasses</title>
+    <title>Table Linens</title>
 
     <!-- Link to your CSS file (if you have one) -->
     <link rel="stylesheet" href="styles.css">
@@ -42,49 +42,98 @@
             </nav>
         </div>
     </header>
-</div>
-<!-- Display added to cart message -->
+     <!-- Display added to cart message -->
 <div id="addedToCartMessage" style="display: none; color: #623E2A; margin: 10px 0 0 80%; ">
-   Item added to cart!
-</div>
+    Item added to cart!
+ </div>
     <div class="product-container" id="myForm">
         <div class="small-images-container">
-            <img class="small-image" src="images/redwine.jpeg" alt="Thumbnail 1" onclick="selectOption(0)">
-            <img class="small-image" src="images/champagne.jpeg" alt="Thumbnail 2" onclick="selectOption(1)">
-            <img class="small-image" src="images/cocktail.jpeg" alt="Thumbnail 3" onclick="selectOption(2)">
-            <img class="small-image" src="images/martini.jpeg" alt="Thumbnail 4" onclick="selectOption(3)">
+            <img class="small-image" src="images/cocktailcloth.jpeg" alt="Thumbnail 1" onclick="selectOption(0)">
+            <img class="small-image" src="images/roundtablecloth.jpeg" alt="Thumbnail 2" onclick="selectOption(1)">
+            <img class="small-image" src="images/72roundtable.jpeg" alt="Thumbnail 3" onclick="selectOption(2)">
+            <img class="small-image" src="images/recttablecloth.jpeg" alt="Thumbnail 4" onclick="selectOption(3)">
+            <img class="small-image" src="images/rectspandextablecloth.jpeg" alt="Thumbnail 5" onclick="selectOption(4)">
+            <img class="small-image" src="images/roundspandextablecloth.jpeg" alt="Thumbnail 6" onclick="selectOption(5)">
+            <img class="small-image" src="images/colours.png" alt="Thumbnail 7" onclick="selectOption(6)">
             <!-- Add more small images as needed -->
         </div>
         <div class="big-image-container">
-            <img class="big-image" src="images/redwine.jpeg" alt="Big Image" id="selectedImage">
+            <img class="big-image" src="images/roundtablecloth.jpeg" alt="Big Image" id="selectedImage">
         </div>
         
         <div class="product-info">
-            <h2 id="selectedOptionName">Wine Glasses</h2>
-            <p style="margin-bottom: 2%;" id="productDescription">We provide a wide variety of wine, champagne, cocktail and martini glasses.</p>
+            <h2 id="selectedOptionName">Linens</h2>
+            <p style="margin-bottom: 2%;" id="productDescription">Description of the product goes here. Provide details about the product and its features.</p>
             <div class="option-selector">
-                <label for="options">Select Option:</label>
+                <label for="options">Table Dimension:</label>
                 <select id="options" name="options">
-                    <option value="Red Wine Glass">Red Wine Glass</option>
-                    <option value="Champagne Glass">Champagne Glass</option>
-                    <option value="Cocktail Glass">Cocktail Glass</option>
-                    <option value="Martini Glass">Martini Glass</option>
+                    <option value="48 Inch Round Table">48" Round Table</option>
+                    <option value="60 Inch Round Table">60" Round Table</option>
+                    <option value="72 Inch Round Table">72" Round Table</option>
+                    <option value="6 Foot Rectangular Table">6' Rectangular Table</option>
+                    <option value="8 Foot Rectangular Table">8' Rectangular Table</option>
+                    <option value="option6"></option>
+                    <option value="option7"></option>
                     <!-- Add more options as needed -->
                 </select>
             </div>
             <div class="quantity-selector">
                 <label for="quantity">Quantity:</label>
                 <select id="quantity" name="quantity" onchange="updateCostEstimate()">
+                    <option value="6">6</option>
                     <option value="12">12</option>
+                    <option value="18">18</option>
                     <option value="24">24</option>
-                    <option value="36">36</option>
-                    <option value="48">48</option>
-                    <option value="60">60</option>
-                    <option value="72">72</option>
-                    <option value="100">100</option>
+                    <option value="30">30</option>
+                    <option value="36">72</option>
+                    <option value="50">50</option>
                     <option value="0">Other (Please specify amount in comment section)</option>
                     <!-- Add more options as needed -->
                 </select>
+            </div>
+            <div class="date-time-inputs" >
+            <div class="quantity-selector" style="margin-top: -2%; margin-right: -5%;">
+                <label for="colour">Colour:</label>
+                <select id="colour" name="colour">
+                    <option value="12">White</option>
+                    <option value="24">Black</option>
+                    <option value="36">Navy Blue</option>
+                    <option value="48">Ivory</option>
+                    <option value="60">Forest Green</option>
+                    <option value="72">Red</option>
+                    <option value="100">Blush</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="quantity-selector" style="margin-top: -2%; margin-right: -5%;">
+                <label for="dimension">Fabric:</label>
+                <select id="dimension" name="dimension">
+                    <option value="12">Satin</option>
+                    <option value="24">Spandex</option>
+                    <option value="36">Cotton</option>
+                    <option value="48">Linen</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+
+            <div class="quantity-selector" style="margin-top: -2%;">
+                <label for="length">Length:</label>
+                <select id="length" name="length">
+                    <option value="12">9"</option>
+                    <option value="24">15"</option>
+                    <option value="36">18"</option>
+                    <option value="48">21"</option>
+                    <option value="60">24"</option>
+                    <option value="72">Floor</option>
+                    <option value="100">Puddle</option>
+                    <option value="100">Exact</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            </div>
+            <div class="Description-Info" style="padding-bottom: 2%;">
+                <label for="descInfo" style="font-size: 12px; font-weight:900;">Note:</label>
+                <span id="descInfo" style="font-size: 12px; font-weight:900;">The "Exact" option listed above are for spandex coverings.</span>
             </div>
             <div class="cost-estimate">
                 <label for="costEstimate">Estimated Cost:</label>
@@ -121,11 +170,11 @@
                 </div>
                 </div>
             </div>
-            <a href="checkout.html" class="reserve-button" >Reserve Now</a>
-            <button class="reserve-button" onclick="addToCart()" >Add To Cart</button>
+            <a href="checkout.html" class="reserve-button">Reserve Now</a>
+            <button class="reserve-button" onclick="addToCart()">Add To Cart</button>
             <a href="catalogue.html" class="reserve-button" onclick="closeForm()">Close</a>
+        </div>
     </div>
-   
     <script>
         function selectOption(index) {
             var smallImages = document.querySelectorAll('.small-image');
@@ -159,10 +208,19 @@
                 case 3:
                     productDescription.innerText = "These glasses has an inverted cone shape with a wide and shallow bowl with a stem.";
                     break;
+                case 4:
+                    productDescription.innerText = "These glasses has a broad bowl with a tapered top, allowing ample aeration for the wine to breathe.";
+                    break;
+                case 5:
+                    productDescription.innerText = "These glasses has an elongated shape, that helps preserve the bubbles and enhances the effervescence of the champagne.";
+                    break;
+                case 6:
+                    productDescription.innerText = "These glasses has a wide and shallow bowl with a stem, allowing for easy swirling and appreciating the drink's aromas.";
+                    break;
                 // Add more cases as needed
             }
         }
-        
+
         function closeForm() {
             document.getElementById("myForm").style.display = "none";
         }
@@ -173,99 +231,65 @@
 
         var selectedQuantity = parseInt(quantitySelector.value);
         var optionCosts = {
-            'Red Wine Glass': 120,  // Red Wine Glass cost per dozen
-            'Champagne Glass': 60,    // Champagne Glass cost per dozen
-            'Cocktail Glass': 72,  // Cocktail Glass cost per dozen
-            'Martini Glass': 96,    // Martini Glass cost per dozen
+            '48 Inch Round Table': 30,  // 48" Round Cocktail table cloth cost per half dozen
+            '60 Inch Round Table': 48,    // 60" round table cloth cost per half dozen
+            '72 Inch Round Table': 60,  // 72" round table cloth cost per half dozen
+            '6 Foot Rectangular Table': 48,    // 6' Rectangular Table cost per half dozen
+            '8 Foot Rectangular Table': 60,    // 8' Rectangular Table cost per half dozen
         };
         var costPerDozen = optionCosts[selectedOption] || 0;  // Default to 0 if option is not found
-        var estimatedCost = (selectedQuantity / 12) * costPerDozen;
+        var estimatedCost = (selectedQuantity / 6) * costPerDozen;
 
         costEstimateSpan.textContent = '$' + estimatedCost.toFixed(2);
     }
     var cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-        function addToCart() {
-            var selectedOption = document.getElementById('options').value;
-            var selectedQuantity = parseInt(document.getElementById('quantity').value);
-            var rentDate = document.getElementById('rentDate').value;
-            var rentTime = document.getElementById('rentTime').value;
-            var returnDate = document.getElementById('returnDate').value;
-            var returnTime = document.getElementById('returnTime').value;
-            var comment = document.getElementById('comment').value;
+    function addToCart() {
+    var selectedOption = document.getElementById('options').value;
+    var selectedQuantity = parseInt(document.getElementById('quantity').value);
+    var rentDate = document.getElementById('rentDate').value;
+    var rentTime = document.getElementById('rentTime').value;
+    var returnDate = document.getElementById('returnDate').value;
+    var returnTime = document.getElementById('returnTime').value;
+    var comment = document.getElementById('comment').value;
 
-            var optionCosts = {
-                'Red Wine Glass': 120,  // Red Wine Glass cost per dozen
-                'Champagne Glass': 60,   // Champagne Glass cost per dozen
-                'Cocktail Glass': 72,   // Cocktail Glass cost per dozen
-                'Martini Glass': 96,    // Martini Glass cost per dozen
-            };
+    var optionCosts = {
+        '48 Inch Round Table': 30,  // 48" Round Cocktail table cloth cost per half dozen
+        '60 Inch Round Table': 48,    // 60" round table cloth cost per half dozen
+        '72 Inch Round Table': 60,  // 72" round table cloth cost per half dozen
+        '6 Foot Rectangular Table': 48,    // 6' Rectangular Table cost per half dozen
+        '8 Foot Rectangular Table': 60,    // 8' Rectangular Table cost per half dozen
+    };
 
-            var costPerDozen = optionCosts[selectedOption] || 0;
-            var estimatedCost = (selectedQuantity / 12) * costPerDozen;
+    var cost = optionCosts[selectedOption] || 0;
+    var estimatedCost = selectedQuantity * cost;
 
-            // Create a new cart item
-            var newItem = {
-                option: selectedOption,
-                quantity: selectedQuantity,
-                costEstimate: estimatedCost,
-                comment: comment,
-                rentDate: rentDate,
-                rentTime: rentTime,
-                returnDate: returnDate,
-                returnTime: returnTime
-            };
+    var newItem = {
+        option: selectedOption,
+        quantity: selectedQuantity,
+        costEstimate: estimatedCost,
+        comment: comment,
+        rentDate: rentDate,
+        rentTime: rentTime,
+        returnDate: returnDate,
+        returnTime: returnTime,
+    };
 
-            // Add the new item to the cart
-            cart.push(newItem);
+    cart.push(newItem);
 
-            // Display added to cart message
-            var addedToCartMessage = document.getElementById('addedToCartMessage');
-            addedToCartMessage.style.display = 'block';
+    var addedToCartMessage = document.getElementById('addedToCartMessage');
+    addedToCartMessage.style.display = 'block';
 
-            // Hide the message after 2 seconds (adjust as needed)
-            setTimeout(function () {
-                addedToCartMessage.style.display = 'none';
-            }, 2000);
+    setTimeout(function () {
+        addedToCartMessage.style.display = 'none';
+    }, 2000);
 
+    sessionStorage.setItem('cart', JSON.stringify(cart));
 
-            // Save the updated cart to sessionStorage
-            sessionStorage.setItem('cart', JSON.stringify(cart));
-        // Pass the container IDs to the displayCart function
-        displayCart('cartContent', 'cartTotal');
-        }
-
-          function displayCart(cartContentId, cartTotalId) {
-        var cartContent = document.getElementById(cartContentId);
-        var cartTotal = document.getElementById(cartTotalId);
-        var totalCost = 0;
-
-        cartContent.innerHTML = '';
-
-        var table = document.createElement('table');
-        table.innerHTML = '<tr><th>Item</th><th>Quantity</th><th>Cost Estimate</th><th>Rent Date</th><th>Rent Time</th><th>Return Date</th><th>Return Time</th></tr>';
-
-        for (var i = 0; i < cart.length; i++) {
-            var item = cart[i];
-            var row = table.insertRow();
-
-            row.insertCell(0).textContent = item.option;
-            row.insertCell(1).textContent = item.quantity;
-            row.insertCell(2).textContent = '$' + item.costEstimate.toFixed(2);
-            row.insertCell(3).textContent = item.rentDate;
-            row.insertCell(4).textContent = item.rentTime;
-            row.insertCell(5).textContent = item.returnDate;
-            row.insertCell(6).textContent = item.returnTime;
-
-            totalCost += item.costEstimate;
-        }
-
-        cartContent.appendChild(table);
-        cartTotal.innerHTML = '<p>Cart Total: $' + totalCost.toFixed(2) + '</p>';
-    }
-    
-    // Display the initial cart on page load
+    // Display the updated cart information
     displayCart('cartContent', 'cartTotal');
+}
+
     </script>
 </body>
 </html>
