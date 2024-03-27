@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const signUpForm = document.querySelector('.sign-up-container form'); 
     const loginLink = document.getElementById('loginLink');
     const closeButton = document.getElementById('closeButton');
+    // fetchUserFirstNameAndUpdateGreeting();
+    
 
     loginLink.addEventListener('click', function(e) {
         e.preventDefault(); // Prevent the default action
@@ -200,4 +202,5 @@ function addToCart() {
     .catch((error) => {
         console.error('Error:', error);
     });
+    
 }

@@ -31,11 +31,12 @@
 </div>
 
 <div class="main-content">
-    <!-- User Information -->
+  
     <div class="user-info">
-        <h2>Welcome Back, User</h2>
-        <p>Get your summary of your monthly transaction here</p>
-    </div>
+    <h2 id="welcomeMessage">Welcome Back, User</h2>
+    <p>Get your summary of your monthly transaction here</p>
+</div>
+
 
     <!-- Dashboard Widgets -->
     <div class="dashboard-widget">
@@ -61,6 +62,28 @@
    </div>
 </div>
 </div>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchUserFirstNameAndUpdateGreeting();
+    });
+    
+    function fetchUserFirstNameAndUpdateGreeting() {
+        fetch('/get-user-data')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.firstName) {
+                    document.getElementById('welcomeMessage').textContent = `Welcome Back, ${data.firstName}`;
+                }
+            })
+            .catch(error => console.error('Error fetching user data:', error));
+    }
+    </script>
+    
+    
 </body>
 </html>
