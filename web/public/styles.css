@@ -495,6 +495,7 @@ li a:hover::after {
 
 .footer-column p {
   margin: 0;
+  flex-wrap: wrap;
 }
 .material-symbols-outlined {
   font-variation-settings:
@@ -891,4 +892,13 @@ margin-bottom: 20px; /* Add margin for spacing */
 
 .reserve button:hover {
   background: #995d3a;
+}
+
+.email-link {
+  color: inherit;
+  text-decoration: none;
+}
+.footer-column h1{
+  font-family:'Segoe UI', Tahoma, Verdana, sans-serif;
+  font-size: 14pt;
 }
