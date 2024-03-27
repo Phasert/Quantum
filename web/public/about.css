@@ -86,3 +86,53 @@ li a:hover {
     width: 100%;
 }
 
+.email-link {
+    color: inherit;
+    text-decoration: none;
+}
+.footer-column h1{
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+    font-size: 16pt;
+}
+  
+.social-icons{
+    display: flex;
+}
+  
+.social-icons a{
+    margin-right: 30px;
+}
+ 
+.social-icons a i{
+    color: #FFFFFF;
+    margin-right: 10px;
+    margin-left: 5px;
+}
+.footer-section {
+    background-color:#623E2A; /* Set background color for the footer */
+    color: white;
+    padding: 20px;
+}
+  
+.footer-section h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 2em;
+    margin: 3% auto 5% 0;
+}
+  
+.footer-columns {
+    display: flex;
+    justify-content: space-around; /* Adjust as needed for spacing between columns */
+}
+  
+.footer-column {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid white; /* White border for each column */
+    margin: 0 5px; /* Adjust margin for spacing between columns */
+}
+  
+.footer-column p {
+    margin: 0;
+    flex-wrap: wrap;
+}
