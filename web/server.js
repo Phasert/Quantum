@@ -64,7 +64,6 @@ app.post('/signup', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { loginId, password } = req.body;
-
     const query = 'SELECT * FROM customer WHERE customerID = ? AND pword = ?';
     
     db.query(query, [loginId, password], (err, results) => {
@@ -74,6 +73,7 @@ app.post('/login', (req, res) => {
         } else if (results.length > 0) {
             // Login successful, set user session
             req.session.userId = results[0].customerID; // Store user ID in session
+            req.session.firstName = results[0].firstName; // Store firstName in session
             res.redirect('/userDashboard.html');
         } else {
             // No user found with the provided credentials
@@ -81,6 +81,16 @@ app.post('/login', (req, res) => {
         }
     });
 });
+// Server-side: Ensure this route is defined in your Express application
+app.get('/get-user-data', (req, res) => {
+    if (req.session.userId) {
+        res.json({ firstName: req.session.firstName });
+    } else {
+        res.status(401).send('Not logged in');
+    }
+});
+
+
 
 // Route to add an item to the cart
 app.post('/add-to-cart', (req, res) => {
