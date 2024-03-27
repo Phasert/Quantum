@@ -899,6 +899,20 @@ margin-bottom: 20px; /* Add margin for spacing */
   text-decoration: none;
 }
 .footer-column h1{
-  font-family:'Segoe UI', Tahoma, Verdana, sans-serif;
-  font-size: 14pt;
+  font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+  font-size: 16pt;
+}
+
+.social-icons{
+  display: flex;
+}
+
+.social-icons a{
+  margin-right: 30px;
+}
+
+.social-icons a i{
+  color: #FFFFFF;
+  margin-right: 10px;
+  margin-left: 5px;
 }
