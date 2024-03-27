@@ -2,10 +2,19 @@
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 
 
 // Create Express app
 const app = express();
+
+// Session middleware configuration
+app.use(session({
+    secret: '1b074e877995c3cbf7cb24fbe7c711f7', 
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: !true } // Set to true if using https
+  }));
 
 // Parse JSON and urlencoded data
 app.use(bodyParser.json());
@@ -63,7 +72,8 @@ app.post('/login', (req, res) => {
             console.error('Error fetching user', err);
             res.status(500).send('An error occurred');
         } else if (results.length > 0) {
-            // Login successful, redirect to userDashboard.html
+            // Login successful, set user session
+            req.session.userId = results[0].customerID; // Store user ID in session
             res.redirect('/userDashboard.html');
         } else {
             // No user found with the provided credentials
@@ -71,6 +81,39 @@ app.post('/login', (req, res) => {
         }
     });
 });
+
+// Route to add an item to the cart
+app.post('/add-to-cart', (req, res) => {
+    console.log('Attempting to add item to cart:', req.body); // Log the incoming cart item
+
+    // Check if the user is logged in
+    if (!req.session.userId) {
+        console.log('User not logged in, session:', req.session);
+        return res.status(401).send('User not logged in');
+    }
+    
+    // Capture the cart item from the request body
+    const cartItem = {
+        ...req.body,
+        customerID: req.session.userId // Add the user ID from the session
+    };
+
+    console.log('Prepared cart item:', cartItem); // Log the prepared cart item
+
+    // Insert the cart item into the database
+    const query = 'INSERT INTO ShoppingCart SET ?';
+    db.query(query, cartItem, (err, result) => {
+        if (err) {
+            console.error('Error saving cart item', err);
+            return res.status(500).send('Error saving cart item');
+        }
+        console.log('Cart item saved:', result); // Log the result of the insert
+        res.json({ message: 'Cart item saved', cartItemId: result.insertId });
+    });
+});
+
+
+
 
 
 // Start server
