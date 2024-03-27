@@ -4,28 +4,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');
     const signUpForm = document.querySelector('.sign-up-container form'); 
-    
-    // Open the popup when the page loads
+
     function openPopup() {
         container.classList.add("right-panel-active");
         popupContainer.style.display = 'flex';
     }
     openPopup();
 
-    // Close the popup
     function closePopup() {
         container.classList.remove("right-panel-active");
         popupContainer.style.display = 'none';
     }
 
-    // Close the popup if the user clicks outside the form
     popupContainer.addEventListener('click', (event) => {
         if (event.target === popupContainer) {
             closePopup();
         }
     });
 
-    // Toggle between sign in and sign up
     signUpButton.addEventListener('click', () => {
         container.classList.add("right-panel-active");
     });
@@ -34,14 +30,37 @@ document.addEventListener('DOMContentLoaded', function() {
         container.classList.remove("right-panel-active");
     });
 
-    // Validate password and confirm password on form submit
+    // Modified to handle asynchronous form submission
     signUpForm.addEventListener('submit', function(event) {
-        const password = document.getElementById('password').value; // Ensure your password input has id="password"
-        const confirmPassword = document.getElementById('confirmPassword').value; // Ensure your confirm password input has id="confirmPassword"
+        event.preventDefault(); // Prevent form from submitting the traditional way
+
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
 
         if (password !== confirmPassword) {
-            event.preventDefault(); // Prevent form from submitting
             alert('Passwords do not match. Please try again.');
+            return; // Stop here if passwords do not match
         }
+
+        // Use FormData to capture form data
+        const formData = new FormData(this);
+
+        fetch('/signup', {
+            method: 'POST',
+            body: new URLSearchParams(formData) // Convert FormData into URLSearchParams
+        })
+        .then(response => response.json()) // Parse the JSON response from the server
+        .then(data => {
+            if(data.customerId) {
+                alert(`Signup successful. Your customer ID is ${data.customerId}`);
+                closePopup(); // Optionally close the popup on success
+            } else {
+                alert('Signup failed. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during signup.');
+        });
     });
 });

@@ -38,7 +38,6 @@ app.get('/', (req, res) => {
 // Route to handle POST request
 app.post('/signup', (req, res) => {
     const { firstName, lastName, email, phone, password } = req.body;
-    // Add code here to handle the confirm password logic if necessary
     
     const query = `INSERT INTO customer (firstName, lastName, email, phone, pword) VALUES (?, ?, ?, ?, ?)`;
     
@@ -47,10 +46,12 @@ app.post('/signup', (req, res) => {
             console.error(err);
             res.status(500).send('Error saving customer');
         } else {
-            res.status(200).send('Customer saved');
+            // Send back the customer ID in the response
+            res.json({ message: 'Customer saved', customerId: results.insertId });
         }
     });
 });
+
 
 app.post('/login', (req, res) => {
     const { loginId, password } = req.body;
