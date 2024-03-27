@@ -67,4 +67,51 @@ body {
    
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+.invoice-box {
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+    border: 1px solid #eee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    line-height: 24px;
+    background: #fff;
+}
+
+h1 {
+    text-align: center;
+
+}
+
+.info {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    line-height: inherit;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+th {
+    background: #eee;
+    color: #333;
+}
+
+th, td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.total td {
+    text-align: right;
+    font-weight: bold;
+}
+
+.total tr {
+    background: #f0f0f0;
+}
+
 /* Add additional styling as needed */
