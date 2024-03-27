@@ -3,6 +3,8 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 // Create Express app
@@ -25,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'ilMeesha', // Change this to your MySQL password
+    password: 'Clement@71', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -45,42 +47,63 @@ app.get('/', (req, res) => {
 
 
 // Route to handle POST request
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
     const { firstName, lastName, email, phone, password } = req.body;
     
-    const query = `INSERT INTO customer (firstName, lastName, email, phone, pword) VALUES (?, ?, ?, ?, ?)`;
-    
-    db.query(query, [firstName, lastName, email, phone, password], (err, results) => {
+    // Hash the password before saving to the database
+    bcrypt.hash(password, saltRounds, function(err, hash) {
         if (err) {
-            console.error(err);
-            res.status(500).send('Error saving customer');
-        } else {
-            // Send back the customer ID in the response
-            res.json({ message: 'Customer saved', customerId: results.insertId });
+            console.error('Error hashing password', err);
+            return res.status(500).send('Error processing your request');
         }
+
+        // Use the hashed password in your database query
+        const query = `INSERT INTO customer (firstName, lastName, email, phone, pword) VALUES (?, ?, ?, ?, ?)`;
+
+        db.query(query, [firstName, lastName, email, phone, hash], (err, results) => {
+            if (err) {
+                console.error(err);
+                res.status(500).send('Error saving customer');
+            } else {
+                // Send back the customer ID in the response
+                res.json({ message: 'Customer saved', customerId: results.insertId });
+            }
+        });
     });
 });
 
 
 app.post('/login', (req, res) => {
     const { loginId, password } = req.body;
-    const query = 'SELECT * FROM customer WHERE customerID = ? AND pword = ?';
     
-    db.query(query, [loginId, password], (err, results) => {
+    // First, get the user's hashed password from the database
+    const query = 'SELECT * FROM customer WHERE customerID = ?';
+    
+    db.query(query, [loginId], (err, results) => {
         if (err) {
             console.error('Error fetching user', err);
-            res.status(500).send('An error occurred');
-        } else if (results.length > 0) {
-            // Login successful, set user session
-            req.session.userId = results[0].customerID; // Store user ID in session
-            req.session.firstName = results[0].firstName; // Store firstName in session
-            res.redirect('/userDashboard.html');
+            return res.status(500).send('An error occurred');
+        }
+        if (results.length > 0) {
+            // Now, compare the submitted password with the hashed password
+            bcrypt.compare(password, results[0].pword, function(err, result) {
+                if (result) {
+                    // Passwords match, login successful
+                    req.session.userId = results[0].customerID;
+                    req.session.firstName = results[0].firstName;
+                    res.redirect('/userDashboard.html');
+                } else {
+                    // Passwords do not match, login failed
+                    res.status(401).send('Login failed');
+                }
+            });
         } else {
-            // No user found with the provided credentials
+            // No user found with the provided ID
             res.status(401).send('Login failed');
         }
     });
 });
+
 // Server-side: Ensure this route is defined in your Express application
 app.get('/get-user-data', (req, res) => {
     if (req.session.userId) {

@@ -50,8 +50,17 @@ li a {
     text-decoration: none;
 }
 
-li a:hover {
-    background-color: #623E2A;
+li a::after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 0;
+  background-color: #623E2A;
+  transition: width 0.3s;
+}
+
+li a:hover::after {
+  width: 100%;
 }
 
 
