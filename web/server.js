@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Clement@71', // Change this to your MySQL password
+    password: 'ilMeesha', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -123,6 +123,64 @@ app.post('/add-to-cart', (req, res) => {
 });
 
 
+app.post('/update-customer-info', (req, res) => {
+    const userId = req.session.userId;
+    if (!userId) {
+        console.log('User not logged in');
+        return res.status(401).send('User not logged in');
+    }
+
+    const { email, phone, pword } = req.body;
+    let updateFields = [];
+    let queryParams = [];
+
+    if (email) {
+        updateFields.push(`email = ?`);
+        queryParams.push(email);
+    }
+    if (phone) {
+        updateFields.push(`phone = ?`);
+        queryParams.push(phone);
+    }
+    if (pword) {
+        updateFields.push(`pword = ?`);
+        queryParams.push(pword);
+    }
+
+    if (updateFields.length === 0) {
+        return res.status(400).send('No valid fields to update');
+    }
+
+    queryParams.push(userId);
+    const query = `UPDATE customer SET ${updateFields.join(', ')} WHERE customerID = ?`;
+
+    db.query(query, queryParams, (err, result) => {
+        if (err) {
+            console.error('SQL Error:', err);
+            return res.status(500).send('Error updating customer info');
+        }
+        if (result.affectedRows === 0) {
+            // No rows affected, likely no customer with this ID
+            return res.status(404).send('Customer not found');
+        }
+        res.json({ success: true, message: 'Info updated successfully' });
+    });
+});
+
+
+app.get('/logout', function(req, res) {
+    // Destroy the session
+    req.session.destroy(function(err) {
+        if (err) {
+            console.error('Logout failed', err);
+            return res.status(500).send('Logout failed');
+        }
+        res.clearCookie('connect.sid'); // If you are using 'express-session', clear the session cookie
+        res.redirect('/index.html'); // Redirect to the home page, which should serve index.html
+    });
+});
+
+
 
 
 
@@ -130,4 +188,13 @@ app.post('/add-to-cart', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+});
+
+// Place this in your server-side JavaScript file
+
+// Static files configuration
+app.use(express.static('public'));
+// Serve index.html for the root route
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
