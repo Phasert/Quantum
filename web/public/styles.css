@@ -59,18 +59,18 @@ li a:hover::after {
   width: 100%;
 }
 .header-content {
-  max-width: 600px; /* Adjust the width as needed */
-  margin: 0 auto ; /* Center the content horizontally */
+  max-width: 600px; 
+  margin: 0 auto ;
 }
 
 .header-content p {
-  font-size: 40px; /* Adjust the font size as needed */
+  font-size: 40px; 
   padding-bottom: 15px;
   padding-top: 15px;
   margin-top: 20%;
 }
 .header-content h1 {
-  font-size: 80px; /* Adjust the font size as needed */
+  font-size: 80px;
   font-family: 'Baskervville', serif;
   font-weight: 100;
   margin-bottom: -20%;
@@ -220,7 +220,7 @@ li a:hover::after {
 }
 
 .popup-container .overlay {
-  background: #623E2A; /* Solid color fallback */
+  background: #623E2A;
     background: -webkit-linear-gradient(to right, #623E2A, #8B5F3D);
     background: linear-gradient(to right, #623E2A, #8B5F3D);
   background-repeat: no-repeat;
@@ -292,7 +292,7 @@ li a:hover::after {
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
-            max-width: 800px; /* Increase the max-width */
+            max-width: 800px;
             width: 100%;
             text-align: center;
             position: relative;
@@ -330,7 +330,7 @@ li a:hover::after {
 }
 .text-and-image-section {
   display: flex;
-  margin: 0 auto; /* Adjust the margin as needed */
+  margin: 0 auto;
   background-color: #EFEBE5;
 }
 .text-and-image-section h2 {
@@ -365,9 +365,9 @@ li a:hover::after {
 }
 .three-columns-section {
   display: flex;
-  flex-direction: column; /* Change the flex direction to column */
+  flex-direction: column;
   align-items: center;
-  margin: 0 auto; /* Adjust the margin as needed */
+  margin: 0 auto; 
   background-color: #EFEBE5;
   background-image: url('images/review.png');
   background-size: cover;
@@ -386,7 +386,7 @@ li a:hover::after {
 
 .columns-container {
   display: flex;
-  justify-content: space-around; /* Adjust as needed for spacing between columns */
+  justify-content: space-around;
   width: 100%;
   margin: 5%;
 }
@@ -411,7 +411,7 @@ li a:hover::after {
 }
 .image-columns-section {
   text-align: center;
-  margin: 0 auto ; /* Adjust the margin as needed */
+  margin: 0 auto ;
   background-color: #EFEBE5;
   padding: 20px;
 }
@@ -439,18 +439,18 @@ li a:hover::after {
 .column img {
   width: 100%;
   height: auto;
-  border: 1px solid #ddd; /* Add a border to the image */
-  border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+  border: 1px solid #ddd;
+  border-radius: 5px; 
 }
 
 .text-box {
   position: absolute;
   bottom: -120px;
-  left: 50px; /* Adjust the left position as needed */
-  right: 50px; /* Adjust the right position as needed */
+  left: 50px; 
+  right: 50px; 
   background-color: transparent;
   padding: 10px;
-  border: 1px solid #623E2A; /* Border at the top of the text box */
+  border: 1px solid #623E2A;
 }
 
 
@@ -470,7 +470,7 @@ li a:hover::after {
   text-align: left;
 }
 .footer-section {
-  background-color:#623E2A; /* Set background color for the footer */
+  background-color:#623E2A; 
   color: white;
   padding: 20px;
 }
@@ -483,14 +483,14 @@ li a:hover::after {
 
 .footer-columns {
   display: flex;
-  justify-content: space-around; /* Adjust as needed for spacing between columns */
+  justify-content: space-around; 
 }
 
 .footer-column {
   flex: 1;
   padding: 10px;
-  border: 1px solid white; /* White border for each column */
-  margin: 0 5px; /* Adjust margin for spacing between columns */
+  border: 1px solid white; 
+  margin: 0 5px; 
 }
 
 .footer-column p {
@@ -525,7 +525,7 @@ li a:hover::after {
 .image-catalogue {
   flex: 1;
   margin: 0 15px;
-  margin-bottom: 30px; /* Add margin for space between columns */
+  margin-bottom: 30px; 
   position: relative;
 }
 
@@ -640,7 +640,7 @@ gap: 25px;
 .input-group {
 display: flex;
 flex-direction: column;
-max-width: 250px; /* Adjust the width as needed */
+max-width: 250px;
 }
 
 .input-group label {
@@ -699,13 +699,13 @@ background-color: grey;
 }
 /* Cart Page*/
 #cartContent {
-margin: 20px; /* Add margin for better spacing */
+margin: 20px;
 }
 
 table {
 width: 100%;
 border-collapse: collapse;
-margin-top: 20px; /* Add margin between the table and other content */
+margin-top: 20px;
 }
 
 th, td {
@@ -715,14 +715,14 @@ text-align: left;
 }
 
 th {
-background-color: #623E2A; /* Header background color */
-color: #fff; /* Header text color */
+background-color: #623E2A; 
+color: #fff; 
 }
 
 #cartTotal {
-margin-top: 20px; /* Add margin between the table and total cost */
-font-size: 18px; /* Adjust the font size for total cost */
-color: #333; /* Total cost text color */
+margin-top: 20px; 
+font-size: 18px; 
+color: #333; 
 margin-left: 2%;
 }
 
@@ -736,11 +736,11 @@ margin:2% 0 0 2%;
 margin:2% 0 0 2%;
 }
 .shoppingCart-info {
-text-align: left; /* Center-align the content */
+text-align: left;
 }
 
 .shoppingCart-Btn{
-clear: both; /* Clear any floated elements above */
+clear: both; 
 margin-left: 2%;
 }
 .remove-button {
@@ -768,10 +768,10 @@ border-radius: 5px;
 cursor: pointer;
 font-size: 16px;
 margin-top: 20px;
-text-decoration: none; /* Remove underline */
+text-decoration: none; 
 }
 
-/* Add hover effect */
+/*hover effect*/
 .checkout-button:hover {
 background-color: #451F0F;
 }
@@ -782,10 +782,10 @@ background-color: #451F0F;
 max-width: 70%;
 height: auto;
 }
-/* Add this style to align products side by side */
+
 .you-may-also-like-container {
 display: flex;
-justify-content: space-between; /* Adjust as needed */
+justify-content: space-between; 
 max-width: 1500px;
 margin: 0 2% 2% 8%;
 }
@@ -796,8 +796,8 @@ margin:2% 0 2% 40%;
 }
 
 .you-may-also-like  {
-width: 30%; /* Adjust the width as needed */
-margin-bottom: 20px; /* Add margin for spacing */
+width: 30%; 
+margin-bottom: 20px; 
 }
 /* Adjust the following styles for responsiveness 
 @media (max-width: 768px) {
