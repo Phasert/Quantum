@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Clement@71', // Change this to your MySQL password
+    password: 'ilMeesha', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -106,12 +106,28 @@ app.post('/login', (req, res) => {
 
 // Server-side: Ensure this route is defined in your Express application
 app.get('/get-user-data', (req, res) => {
-    if (req.session.userId) {
-        res.json({ firstName: req.session.firstName });
-    } else {
-        res.status(401).send('Not logged in');
+    const userId = req.session.userId;
+    if (!userId) {
+        return res.status(401).send('Not logged in');
     }
+
+    // Query the database for the user's email and phone using their ID
+    const query = 'SELECT email, phone FROM customer WHERE customerID = ?';
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('SQL Error:', err);
+            return res.status(500).send('Error fetching user data');
+        }
+        if (results.length > 0) {
+            const user = results[0];
+            res.json({ email: user.email, phone: user.phone });
+        } else {
+            res.status(404).send('User not found');
+        }
+    });
 });
+
 
 
 

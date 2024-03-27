@@ -478,7 +478,7 @@ li a:hover::after {
 .footer-section h2 {
   font-family: 'Cinzel', serif;
   font-size: 2em;
-  margin: 3% auto 5% 0;
+  margin: 1rem auto 2rem 0;
 }
 
 .footer-columns {
