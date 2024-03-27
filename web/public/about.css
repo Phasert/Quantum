@@ -112,27 +112,27 @@ li a:hover {
     background-color:#623E2A; /* Set background color for the footer */
     color: white;
     padding: 20px;
-}
+  }
   
-.footer-section h2 {
+  .footer-section h2 {
     font-family: 'Cinzel', serif;
     font-size: 2em;
     margin: 3% auto 5% 0;
-}
+  }
   
-.footer-columns {
+  .footer-columns {
     display: flex;
     justify-content: space-around; /* Adjust as needed for spacing between columns */
-}
+  }
   
-.footer-column {
+  .footer-column {
     flex: 1;
     padding: 10px;
     border: 1px solid white; /* White border for each column */
     margin: 0 5px; /* Adjust margin for spacing between columns */
-}
+  }
   
-.footer-column p {
+  .footer-column p {
     margin: 0;
     flex-wrap: wrap;
-}
+  }

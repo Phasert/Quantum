@@ -306,8 +306,8 @@ li a:hover::after {
         }
 /* reservation and catalogue buttons styling */
 .buttons-container {
-  display: flex;
-  justify-content: space-between;
+
+  
   margin-top: 8%;
 }
 
