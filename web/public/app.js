@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');
     const signUpForm = document.querySelector('.sign-up-container form'); 
+    const loginLink = document.getElementById('loginLink');
+    const closeButton = document.getElementById('closeButton');
+
+    loginLink.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent the default action
+        openPopup(); // Call the function to open the popup
+        container.classList.remove("right-panel-active"); // Ensure the sign-in form is shown
+    });
 
     function openPopup() {
         container.classList.add("right-panel-active");
@@ -21,7 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
             closePopup();
         }
     });
-
+    closeButton.addEventListener('click', function() {
+        closePopup(); // Call the function to close the popup
+    });
     signUpButton.addEventListener('click', () => {
         container.classList.add("right-panel-active");
     });
