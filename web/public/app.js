@@ -6,34 +6,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const signUpForm = document.querySelector('.sign-up-container form'); 
     const loginLink = document.getElementById('loginLink');
     const closeButton = document.getElementById('closeButton');
-    // fetchUserFirstNameAndUpdateGreeting();
-    
-
-    loginLink.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent the default action
-        openPopup(); // Call the function to open the popup
-        container.classList.remove("right-panel-active"); // Ensure the sign-in form is shown
-    });
-
     function openPopup() {
         container.classList.add("right-panel-active");
         popupContainer.style.display = 'flex';
     }
-    openPopup();
 
     function closePopup() {
         container.classList.remove("right-panel-active");
         popupContainer.style.display = 'none';
     }
 
-    popupContainer.addEventListener('click', (event) => {
-        if (event.target === popupContainer) {
-            closePopup();
-        }
-    });
     closeButton.addEventListener('click', function() {
-        closePopup(); // Call the function to close the popup
+        closePopup();
     });
+
     signUpButton.addEventListener('click', () => {
         container.classList.add("right-panel-active");
     });
@@ -42,30 +28,34 @@ document.addEventListener('DOMContentLoaded', function() {
         container.classList.remove("right-panel-active");
     });
 
-    // Modified to handle asynchronous form submission
+    loginLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        fetch('/get-user-data')
+        .then(response => {
+            if(response.ok) {
+                window.location.href = "/userDashboard.html";
+            } else {
+                openPopup();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            openPopup();
+        });
+    });
+
     signUpForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent form from submitting the traditional way
-
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-
-        if (password !== confirmPassword) {
-            alert('Passwords do not match. Please try again.');
-            return; // Stop here if passwords do not match
-        }
-
-        // Use FormData to capture form data
+        event.preventDefault();
         const formData = new FormData(this);
-
         fetch('/signup', {
             method: 'POST',
-            body: new URLSearchParams(formData) // Convert FormData into URLSearchParams
+            body: new URLSearchParams(formData)
         })
-        .then(response => response.json()) // Parse the JSON response from the server
+        .then(response => response.json())
         .then(data => {
             if(data.customerId) {
                 alert(`Signup successful. Your customer ID is ${data.customerId}`);
-                closePopup(); // Optionally close the popup on success
+                closePopup();
             } else {
                 alert('Signup failed. Please try again.');
             }
@@ -75,8 +65,18 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('An error occurred during signup.');
         });
     });
-});
 
+    // Check if user is already logged in
+    fetch('/get-user-data')
+    .then(response => response.json())
+    .then(data => {
+        if (data.firstName) {
+            loginLink.outerHTML = '<a href="userDashboard.html" id="dashboardLink"><i class="fas fa-user" style="color: #ffffff;"></i></a>';
+        }
+    })
+    .catch(error => {
+        console.log('Error checking login status:', error);
+    });
 // image functions
 function selectOption(index) {
     var smallImages = document.querySelectorAll('.small-image');
@@ -204,3 +204,6 @@ function addToCart() {
     });
     
 }
+
+
+});
