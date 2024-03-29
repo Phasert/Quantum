@@ -47,16 +47,27 @@ document.addEventListener('DOMContentLoaded', function() {
     signUpForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(this);
+        const password = formData.get('password');
+        const confirmPassword = formData.get('confirmPassword');
+        
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            alert('The passwords do not match. Please try again.');
+            return; // Stop the form submission
+        }
+    
         fetch('/signup', {
             method: 'POST',
             body: new URLSearchParams(formData)
         })
         .then(response => response.json())
         .then(data => {
-            if(data.customerId) {
+            console.log('Data received:', data);
+            if (data.customerId) {
                 alert(`Signup successful. Your customer ID is ${data.customerId}`);
                 closePopup();
             } else {
+                // This else block might be redundant if you're always expecting a customerId on success
                 alert('Signup failed. Please try again.');
             }
         })
@@ -65,6 +76,9 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('An error occurred during signup.');
         });
     });
+    
+    
+    
 
     // Check if user is already logged in
     fetch('/get-user-data')
