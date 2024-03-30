@@ -237,3 +237,97 @@ app.use(express.static('public'));
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+app.post('/reset', (req, res) => {
+    const userEmail = req.body.email;
+    // Function to send email
+    sendPasswordResetEmail(userEmail)
+      .then(() => res.send('Password reset email sent.'))
+      .catch(err => res.status(500).send('Failed to send email.'));
+      
+  });
+
+  const nodemailer = require('nodemailer');
+
+async function sendPasswordResetEmail(userEmail) {
+  let transporter = nodemailer.createTransport({
+    service: 'gmail', // For example, use Gmail. You can use other services.
+    auth: {
+      user: 'kyleplayfortnite@gmail.com', // Your email
+      pass: 'bycocufvfxaxxixr', // Your email password
+    },
+  });
+
+  let mailOptions = {
+    from: 'kyleplayfortnite@gmail.com',
+    to: userEmail,
+    subject: 'Password Reset',
+    text: 'Here is your password reset link http://localhost:3000/settings.html?token=secure_unique_token', // You can also use HTML content
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully');
+  } catch (error) {
+    console.error('Failed to send email:', error);
+    throw error; // Rethrow the error to be caught by the route handler
+  }
+}
+app.get('/settings.html', (req, res) => {
+    const { token } = req.query;
+  
+    // Lookup the token in the database
+    const query = 'SELECT * FROM tokens WHERE token = ?';
+    
+    db.query(query, [token], (err, results) => {
+      if (err) {
+        return res.status(500).send('An error occurred');
+      }
+      if (results.length > 0) {
+        const userTokenInfo = results[0];
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        
+        // Check if token has expired
+        if (currentTimestamp > userTokenInfo.expiry) {
+          return res.status(400).send('Token has expired');
+        }
+        
+        // Token is valid, so authenticate the user
+        req.session.userId = userTokenInfo.userId;
+        // Invalidate the token so it can't be reused
+        invalidateToken(token);
+        
+        // Now redirect to the actual settings page or serve it directly
+        res.redirect('/actualSettingsPage.html'); // This is the page that checks for req.session.userId
+      } else {
+        res.status(400).send('Invalid token');
+      }
+    });
+  });
+  // Function to call the reset endpoint
+function resetPassword(userEmail) {
+    fetch('/reset', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: userEmail }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            window.location.href = '/index.html'; // Redirect after closing the alert
+        } else {
+            alert('Failed to reset password.');
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+// Example usage
+// resetPassword('user@example.com');
+
+  
+
