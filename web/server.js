@@ -325,7 +325,48 @@ function resetPassword(userEmail) {
         console.error('Error:', error);
     });
 }
-
+app.post('/cart', (req, res) => {
+    const data = req.body; // Assuming you send the data as JSON
+    // Calculate estimated cost
+    const calculateCost = async () => {
+        // Placeholder value for cost; this will be calculated based on the query result
+        let cost = 0;
+        // Adjust the query to match your database schema
+        // This query looks for a product cost by matching the pName with the submitted item name
+        const query = 'SELECT cost FROM Products WHERE pName = ?';
+        // Using data.Item assuming your form's item name is passed as 'Item'
+        const values = [data.Item]; 
+      
+        return new Promise((resolve, reject) => {
+          connection.query(query, values, (error, results) => {
+            if (error) return reject(error);
+            if (results.length > 0) {
+              const productCost = results[0].cost;
+              const days = (new Date(data.returnDate) - new Date(data.rentDate)) / (1000 * 3600 * 24);
+              cost = productCost * data.quantity * days;
+            }
+            resolve(cost);
+          });
+        });
+      };
+      
+  
+    calculateCost().then(cost => {
+      const insertQuery = 'INSERT INTO cart (cartID, Item, Quantity, CostEstimate, Comment, RentDate, RentTime, ReturnDate, ReturnTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      const insertValues = [data.cartID, data.item, data.quantity, cost, data.comment, data.rentDate, data.rentTime, data.returnDate, data.returnTime];
+      
+      connection.query(insertQuery, insertValues, (error, results) => {
+        if (error) {
+          res.status(500).send('Error inserting data');
+          throw error;
+        }
+        res.status(200).send('Data inserted successfully');
+      });
+    }).catch(error => {
+      console.log(error);
+      res.status(500).send('Error calculating cost');
+    });
+  });
 // Example usage
 // resetPassword('user@example.com');
 
