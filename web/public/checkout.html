@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REL Trading</title>
+
+    <!-- Link to your CSS file (if you have one) -->
+    <link rel="stylesheet" href="checkout.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=IM+Fell+French+Canon&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <!-- Include any additional meta tags, stylesheets, or scripts here -->
+</head>
+<body style="background-color: #EFEBE5;">
+    <!-- Your HTML content goes here -->
+
+        <header>
+            <div class="header2-container">
+                <nav>
+                     <ul>
+                      <li><a href="index.html">Home</a></li>
+                      <li><a href="catalogue.html">Catalogue</a></li>
+                      <li><a href="about.html">About</a></li>
+                      <li><a href="cartPage.html">Cart</a></li>
+                      <li><a href="#" id="loginLink">Log In</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+    <div class="container">
+        <h1>Checkout</h1>
+        <form action="#">
+            <div>
+                <h2>Order Summary</h2>
+                <div class="order-summary">
+                    
+                </div>
+                </div>
+            <h2>Shipping Information</h2>
+            <div class="checkout-display">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" required></textarea>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            </div>
+            <h2>Payment Information</h2>
+            <div class="checkout-display">
+            <label for="card">Credit Card Number:</label>
+            <input type="text" id="card" name="card" required>
+
+            <label for="expiry">Expiry Date:</label>
+            <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+
+            <label for="cvv">CVV:</label>
+            <input type="text" id="cvv" name="cvv" required>
+            </div>
+            <button type="submit">Place Order</button>
+            <button type="button" onclick="goToIndex()">Cancel</button>
+
+        </form>
+    </div>
+
+    <script>
+        function goToIndex() {
+    // Redirect to the index.html page
+    window.location.href = "index.html";
+}
+
+    </script>
+</body>
+</html>

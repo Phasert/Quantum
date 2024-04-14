@@ -98,7 +98,7 @@
     </section>
     <div class="shoppingCart-Btn">
          <!-- Added "Proceed to Checkout" button with styling -->
-         <button id="proceedToCheckout" onclick="proceedToCheckout" class="checkout-button">Proceed to Checkout</button>
+         <button id="proceedToCheckout" onclick="proceedToCheckout()" class="checkout-button">Proceed to Checkout</button>
          <a href="index.html" class="checkout-button" onclick="closeForm()">Close</a>
     </div>
   
@@ -185,6 +185,7 @@
        function proceedToCheckout() {
             // Add your checkout logic here
             alert('Proceeding to Checkout. Add your logic here.');
+            window.location.href = "checkout.html";
         }
     
         // Call the displayCart function when the page loads to show the initial cart content
