@@ -77,18 +77,20 @@ header {
     font-weight: 100;
     margin-bottom: -20%;
   }
-  
+
 .container {
-    max-width: 1200px;
-    margin: 50px auto;
+    max-width: 900px;
+    margin: 30px auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: calc(45% - 10px); /* Adjust width as needed */
 }
 
 h1, h2 {
     margin-top: 0;
+    color: #623E2A;
 }
 
 h1{
@@ -132,16 +134,17 @@ button:hover {
     background-color: #451F0F;
 }
 
-.checkout-display{
-  display: flex;
+.flex-container {
+    display: flex;
+    justify-content: space-between; /* Adjust alignment as needed */
 }
 
-.order-summary {
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 4px;
+
+
+.order-summary-container {
+    margin-right: 10px; /* Adjust margin as needed */
 }
 
-.order-summary p {
-    margin: 5px 0;
+.checkout-container {
+    margin-left: 10px; /* Adjust margin as needed */
 }

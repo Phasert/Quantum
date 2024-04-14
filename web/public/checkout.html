@@ -43,20 +43,26 @@
                 </nav>
             </div>
         </header>
-
-    <div class="container">
+       
         <h1>Checkout</h1>
-        <form action="#">
-            <div>
-                <h2>Order Summary</h2>
-                <div class="order-summary">
-                    
+        <div class="flex-container">
+            <div class="container order-summary-container">
+                <div>
+                    <h2>Order Summary</h2>
+                    <div class="order-summary">
+                        <!-- Your order summary content here -->
+                    </div>
                 </div>
-                </div>
+            </div>
+            <div class="container checkout-container">
+            <form action="#">
             <h2>Shipping Information</h2>
             <div class="checkout-display">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+            <label for="name"> First Name:</label>
+            <input type="text" id="fname" name="fname" required>
+
+            <label for="name"> Last Name:</label>
+            <input type="text" id="lname" name="lname" required>
 
             <label for="address">Address:</label>
             <textarea id="address" name="address" required></textarea>
