@@ -7,6 +7,7 @@
 
     <!-- Link to your CSS file (if you have one) -->
     <link rel="stylesheet" href="checkout.css">
+    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +51,7 @@
                 <div>
                     <h2>Order Summary</h2>
                     <div class="order-summary">
-                        <!-- Your order summary content here -->
+                        <h3><i class="fa fa-shopping-cart cart-icon" aria-hidden="true"></i> Item(s) in cart</h3>
                     </div>
                 </div>
             </div>
@@ -69,7 +70,7 @@
            
             <input type="text" id="lname" name="lname" placeholder="* Last Name" required>
 
-            <input type="text" id="lname" name="lname" placeholder="Company" >
+            <input type="text" id="lname" name="lname" placeholder="Company(Optional)" >
 
            
             <select id="country" name="country" required>
@@ -84,6 +85,8 @@
    
             <textarea id="Optaddress" name="Optaddress" placeholder="* Apt/Suite/Floor(Optional)" ></textarea>
 
+            <textarea id="city" name="city" placeholder="* City" required></textarea>
+
             <input type="email" id="email" name="email" placeholder="* Email" required>
 
             </div>
@@ -93,7 +96,7 @@
 
         </form>
     </div>
-
+    <script src="app.js"></script>
     <script>
         function goToIndex() {
     // Redirect to the index.html page
