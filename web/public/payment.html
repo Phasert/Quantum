@@ -43,70 +43,40 @@
                 </nav>
             </div>
         </header>
-       
-        <h1>Checkout</h1>
-        <div class="flex-container">
-            <div class="container order-summary-container">
-                <div>
-                    <h2>Order Summary</h2>
-                    <div class="order-summary">
-                        <!-- Your order summary content here -->
-                    </div>
-                </div>
-            </div>
-            <div class="container checkout-container">
-            <form action="#">
-            <h2>Delivery Information</h2>
-            <div class="checkout-display">
-                <label>
-                    <input type="radio" name="delivery_method" value="delivery" checked>
-                    Delivery
-                    <input type="radio" name="delivery_method" value="pickup">
-                    Pick Up
-                </label>
-    
-            <input type="text" id="fname" name="fname" placeholder="* First Name" required>
-           
-            <input type="text" id="lname" name="lname" placeholder="* Last Name" required>
 
-            <input type="text" id="lname" name="lname" placeholder="Company" >
+<h2>Payment Information</h2>
+<div class="checkout-display">
+<label for="card">Credit Card Number:</label>
+<input type="text" id="card" name="card" required>
 
-           
-            <select id="country" name="country" required>
-                <option value="">Select Country</option>
-                <option value="TRI">Trinidad</option>
-                <option value="TOB">Tobago</option>
-            </select>
+<label for="expiry">Expiry Date:</label>
+<input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
 
-            
-            <textarea id="Staddress" name="Staddress" placeholder="* Street Address" required></textarea>
+<label for="cvv">CVV:</label>
+<input type="text" id="cvv" name="cvv" required>
+</div>
+<button type="submit"  onclick="goToPlaceOrder()">Next</button>
+<button type="submit"  onclick="goToCheckout()">Back</button>
+<button type="button" onclick="goToIndex()">Cancel</button>
 
-   
-            <textarea id="Optaddress" name="Optaddress" placeholder="* Apt/Suite/Floor(Optional)" ></textarea>
 
-            <input type="email" id="email" name="email" placeholder="* Email" required>
-
-            </div>
-            <button type="submit"  onclick="goToPayment()">Next</button>
-            <button type="submit"  onclick="goToCart()">Back</button>
-            <button type="button" onclick="goToIndex()">Cancel</button>
-
-        </form>
-    </div>
-
-    <script>
-        function goToIndex() {
-    // Redirect to the index.html page
-    window.location.href = "index.html";
+<script>
+    function goToIndex() {
+// Redirect to the index.html page
+window.location.href = "index.html";
 }
 
-function goToPayment() {
-window.location.href = "payment.html";
+function goToPlaceOrder() {
+
+window.location.href = "placeOrder.html";
 }
 
-function goToCart() {
-window.location.href = "cartPage.html";
+function goToCheckout() {
+
+window.location.href = "checkout.html";
 }
-    </script>
+
+
+</script>
 </body>
 </html>
