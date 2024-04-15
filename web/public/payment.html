@@ -49,14 +49,46 @@
                 <form action="#">
                     <h2>Payment Information</h2>
                         <div class="checkout-display">
+
+                        <label for="nameOnCard">Name On Card:</label>
+                        <input type="text" id="card" name="card" required>
+
                         <label for="card">Credit Card Number:</label>
                         <input type="text" id="card" name="card" required>
 
-                        <label for="expiry">Expiry Date:</label>
-                        <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                        <div class="name-container">
+                            <div class="input-group">
+                                <label for="expiry">Expiry Date:</label>
+                                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="cvv">CVV:</label>
+                                <input type="text" id="cvv" name="cvv"  placeholder="XXX"required>
+                            </div>
+                        </div>
+                        <label>
+                            <input type="checkbox" id="saveInfoCheckbox" name="saveInfo" value="saveInfo">
+                            Save card information for next time.
+                        </label>   
+                        
+                        <h2>Billing Address</h2>
+                            <div id="billingReceipt" class="receipt">
+                                <div class="checkout-display">
+                                <p><strong>Email:</strong> <span id="billingEmailSpan"></span></p>
+                                <p><strong>Name:</strong> <span id="billingNameSpan"></span></p>
+                                <p><strong>Company:</strong> <span id="billingCompanySpan"></span></p>
+                                <p><strong>Country:</strong> <span id="billingCountrySpan"></span></p>
+                                <p><strong>Street Address:</strong> <span id="billingStAddressSpan"></span></p>
+                                <p><strong>Optional Address:</strong> <span id="billingOptAddressSpan"></span></p>
+                                <p><strong>City:</strong> <span id="billingCitySpan"></span></p>
+                                </div>
+                                <button onclick="toggleEditBilling()">Edit</button>
+                            </div>
 
-                        <label for="cvv">CVV:</label>
-                        <input type="text" id="cvv" name="cvv" required>
+<div id="billingEdit" class="checkout-display hidden">
+    <!-- Include input fields for editing -->
+</div>
+                        
                         </div>
                         <button type="submit"  onclick="goToPlaceOrder()">Next</button>
                         <button type="submit"  onclick="goToCheckout()">Back</button>
@@ -68,6 +100,32 @@
         </div>
 <script src="app.js"></script>
 <script>
+
+// Get the checkbox element
+var saveInfoCheckbox = document.getElementById("saveInfoCheckbox");
+
+// Add an event listener to toggle the checkbox state when the label is clicked
+saveInfoCheckbox.addEventListener("click", function() {
+    // Toggle the checked state of the checkbox
+    this.checked = !this.checked;
+});
+
+function toggleEditBilling() {
+    var receipt = document.getElementById("billingReceipt");
+    var edit = document.getElementById("billingEdit");
+
+    // Toggle visibility
+    receipt.classList.toggle("hidden");
+    edit.classList.toggle("hidden");
+
+    if (!edit.classList.contains("hidden")) {
+        // Populate input fields with current values
+        document.getElementById("billingEmailInput").value = document.getElementById("billingEmailSpan").innerText;
+        // Populate other input fields similarly
+    }
+}
+
+
     function goToIndex() {
 // Redirect to the index.html page
 window.location.href = "index.html";

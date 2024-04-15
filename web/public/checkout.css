@@ -104,12 +104,12 @@ form {
 }
 
 label {
-    display: block;
+    display: flex;
     margin-bottom: 5px;
 }
 
 input[type="text"], input[type="email"], textarea, select{
-    width: 100%;
+    width: 97%;
     padding: 8px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
@@ -159,6 +159,29 @@ button:hover {
     margin-left: 10px; /* Adjust margin as needed */
 }
 
+.name-container {
+    display: flex;
+
+}
+
+.name-container input {
+    width: calc(50% - 5px); /* Adjust the width as needed */
+}
+
+.name-container input:first-child {
+    margin-right: 10px; /* Add space between the inputs */
+}
+
 .cart-icon {
     color: #623E2A; /* Change to your desired color */
+}
+
+.receipt {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.hidden {
+    display: none;
 }
