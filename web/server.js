@@ -111,8 +111,8 @@ app.get('/get-user-data', (req, res) => {
         return res.status(401).send('Not logged in');
     }
 
-    // Query the database for the user's email and phone using their ID
-    const query = 'SELECT email, phone FROM customer WHERE customerID = ?';
+    // Query the database for the user's first name, email, and phone using their ID
+    const query = 'SELECT firstName, email, phone FROM customer WHERE customerID = ?';
 
     db.query(query, [userId], (err, results) => {
         if (err) {
@@ -121,12 +121,13 @@ app.get('/get-user-data', (req, res) => {
         }
         if (results.length > 0) {
             const user = results[0];
-            res.json({ email: user.email, phone: user.phone });
+            res.json({ firstName: user.firstName, email: user.email, phone: user.phone });
         } else {
             res.status(404).send('User not found');
         }
     });
 });
+
 
 
 
