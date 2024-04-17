@@ -190,6 +190,37 @@
     
         // Call the displayCart function when the page loads to show the initial cart content
         displayCart();
+        // Function to fetch cart items from the server and populate the cart section
+// function fetchAndDisplayCart() {
+//     var xhr = new XMLHttpRequest();
+//     xhr.open('GET', '/cart');
+//     xhr.onload = function () {
+//         if (xhr.status === 200) {
+//             var cartItems = JSON.parse(xhr.responseText);
+//             // Update the cart content with the retrieved data
+//             displayCart(cartItems);
+//         } else {
+//             console.error('Error fetching cart items:', xhr.statusText);
+//         }
+//     };
+//     xhr.onerror = function () {
+//         console.error('Request failed');
+//     };
+//     xhr.send();
+// }
+
+// // Function to display cart items
+// function displayCart(cartItems) {
+//     // Populate the shopping cart section with the retrieved data
+//     // You can use similar logic as in your existing displayCart function
+//     // to dynamically create HTML elements and populate them with cart item data
+// }
+
+// // Call the fetchAndDisplayCart function when the shopping cart page loads
+// window.onload = function() {
+//     fetchAndDisplayCart();
+// };
+
     </script>
     <script src="app.js"></script>
     <script src="https://kit.fontawesome.com/ece7d978a6.js" crossorigin="anonymous"></script>

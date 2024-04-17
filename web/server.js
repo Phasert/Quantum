@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Clement@71', // Change this to your MySQL password
+    password: 'ilMeesha', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -132,35 +132,35 @@ app.get('/get-user-data', (req, res) => {
 
 
 
-// Route to add an item to the cart
-app.post('/add-to-cart', (req, res) => {
-    console.log('Attempting to add item to cart:', req.body); // Log the incoming cart item
+// // Route to add an item to the cart
+// app.post('/add-to-cart', (req, res) => {
+//     console.log('Attempting to add item to cart:', req.body); // Log the incoming cart item
 
-    // Check if the user is logged in
-    if (!req.session.userId) {
-        console.log('User not logged in, session:', req.session);
-        return res.status(401).send('User not logged in');
-    }
+//     // Check if the user is logged in
+//     if (!req.session.userId) {
+//         console.log('User not logged in, session:', req.session);
+//         return res.status(401).send('User not logged in');
+//     }
     
-    // Capture the cart item from the request body
-    const cartItem = {
-        ...req.body,
-        customerID: req.session.userId // Add the user ID from the session
-    };
+//     // Capture the cart item from the request body
+//     const cartItem = {
+//         ...req.body,
+//         customerID: req.session.userId // Add the user ID from the session
+//     };
 
-    console.log('Prepared cart item:', cartItem); // Log the prepared cart item
+//     console.log('Prepared cart item:', cartItem); // Log the prepared cart item
 
-    // Insert the cart item into the database
-    const query = 'INSERT INTO ShoppingCart SET ?';
-    db.query(query, cartItem, (err, result) => {
-        if (err) {
-            console.error('Error saving cart item', err);
-            return res.status(500).send('Error saving cart item');
-        }
-        console.log('Cart item saved:', result); // Log the result of the insert
-        res.json({ message: 'Cart item saved', cartItemId: result.insertId });
-    });
-});
+//     // Insert the cart item into the database
+//     const query = 'INSERT INTO ShoppingCart SET ?';
+//     db.query(query, cartItem, (err, result) => {
+//         if (err) {
+//             console.error('Error saving cart item', err);
+//             return res.status(500).send('Error saving cart item');
+//         }
+//         console.log('Cart item saved:', result); // Log the result of the insert
+//         res.json({ message: 'Cart item saved', cartItemId: result.insertId });
+//     });
+// });
 
 
 app.post('/update-customer-info', (req, res) => {
@@ -326,50 +326,125 @@ function resetPassword(userEmail) {
         console.error('Error:', error);
     });
 }
-app.post('/cart', (req, res) => {
-    const data = req.body; // Assuming you send the data as JSON
-    // Calculate estimated cost
-    const calculateCost = async () => {
-        // Placeholder value for cost; this will be calculated based on the query result
-        let cost = 0;
-        // Adjust the query to match your database schema
-        // This query looks for a product cost by matching the pName with the submitted item name
-        const query = 'SELECT cost FROM Products WHERE pName = ?';
-        // Using data.Item assuming your form's item name is passed as 'Item'
-        const values = [data.Item]; 
+// app.post('/cart', (req, res) => {
+//     const data = req.body; // Assuming you send the data as JSON
+//     // Calculate estimated cost
+//     const calculateCost = async () => {
+//         // Placeholder value for cost; this will be calculated based on the query result
+//         let cost = 0;
+//         // Adjust the query to match your database schema
+//         // This query looks for a product cost by matching the pName with the submitted item name
+//         const query = 'SELECT cost FROM Products WHERE pName = ?';
+//         // Using data.Item assuming your form's item name is passed as 'Item'
+//         const values = [data.Item]; 
       
-        return new Promise((resolve, reject) => {
-          connection.query(query, values, (error, results) => {
-            if (error) return reject(error);
-            if (results.length > 0) {
-              const productCost = results[0].cost;
-              const days = (new Date(data.returnDate) - new Date(data.rentDate)) / (1000 * 3600 * 24);
-              cost = productCost * data.quantity * days;
-            }
-            resolve(cost);
-          });
-        });
-      };
+//         return new Promise((resolve, reject) => {
+//           connection.query(query, values, (error, results) => {
+//             if (error) return reject(error);
+//             if (results.length > 0) {
+//               const productCost = results[0].cost;
+//               const days = (new Date(data.returnDate) - new Date(data.rentDate)) / (1000 * 3600 * 24);
+//               cost = productCost * data.quantity * days;
+//             }
+//             resolve(cost);
+//           });
+//         });
+//       };
       
   
-    calculateCost().then(cost => {
-      const insertQuery = 'INSERT INTO cart (cartID, Item, Quantity, CostEstimate, Comment, RentDate, RentTime, ReturnDate, ReturnTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-      const insertValues = [data.cartID, data.item, data.quantity, cost, data.comment, data.rentDate, data.rentTime, data.returnDate, data.returnTime];
+//     calculateCost().then(cost => {
+//       const insertQuery = 'INSERT INTO cart (cartID, Item, Quantity, CostEstimate, Comment, RentDate, RentTime, ReturnDate, ReturnTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+//       const insertValues = [data.cartID, data.item, data.quantity, cost, data.comment, data.rentDate, data.rentTime, data.returnDate, data.returnTime];
       
-      connection.query(insertQuery, insertValues, (error, results) => {
-        if (error) {
-          res.status(500).send('Error inserting data');
-          throw error;
+//       connection.query(insertQuery, insertValues, (error, results) => {
+//         if (error) {
+//           res.status(500).send('Error inserting data');
+//           throw error;
+//         }
+//         res.status(200).send('Data inserted successfully');
+//       });
+//     }).catch(error => {
+//       console.log(error);
+//       res.status(500).send('Error calculating cost');
+//     });
+//   });
+// // Example usage
+// // resetPassword('user@example.com');
+app.post('/cart', async (req, res) => {
+    const userId = req.session.userId;
+
+    const { options, quantity, comment, rentDate, rentTime, returnDate, returnTime } = req.body;
+
+    // Query to fetch ProductID and Cost based on the selected option
+    const query = 'SELECT ProductID, Cost FROM product WHERE pName = ?';
+    db.query(query, [options], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching product details');
+        } else {
+            if (results.length === 0) {
+                res.status(404).send('Product not found');
+            } else {
+                const { ProductID, Cost } = results[0];
+                
+                // Calculate rental duration in days
+                const rentalDuration = Math.ceil((new Date(returnDate) - new Date(rentDate)) / (1000 * 60 * 60 * 24));
+                
+                // Calculate Cost_Est based on Cost, quantity, and rental duration
+                const Cost_Est = Cost * quantity * rentalDuration;
+
+                // Insert into shoppingcart table
+                const insertQuery = 'INSERT INTO shoppingcart (CustomerID, ProductID, Quantity, Cost_Est, custComment, rentDate, rentTime, returnDate, returnTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                db.query(insertQuery, [userId, ProductID, quantity, Cost_Est, comment, rentDate, rentTime, returnDate, returnTime], (err, insertResult) => {
+                    if (err) {
+                        console.error(err);
+                        res.status(500).send('Error saving to cart');
+                    } else {
+                        // Send back the customer ID in the response
+                        res.json({ message: 'Saved to cart' });
+                    }
+                });
+            }
         }
-        res.status(200).send('Data inserted successfully');
-      });
-    }).catch(error => {
-      console.log(error);
-      res.status(500).send('Error calculating cost');
     });
-  });
-// Example usage
-// resetPassword('user@example.com');
+});
+app.get('/cart', async (req, res) => {
+    const userId = req.session.userId;
+
+    // Query to fetch cart items for the current user
+    const query = 'SELECT * FROM shoppingcart WHERE CustomerID = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching cart items');
+        } else {
+            res.json(results); // Send the cart items data as JSON response
+        }
+    });
+});
+
+
+
+    // // Hash the password before saving to the database
+    // bcrypt.hash(password, saltRounds, function(err, hash) {
+    //     if (err) {
+    //         console.error('Error hashing password', err);
+    //         return res.status(500).send('Error processing your request');
+    //     }
+
+    //     // Use the hashed password in your database query
+    //     const query = `INSERT INTO customer (firstName, lastName, email, phone, pword) VALUES (?, ?, ?, ?, ?)`;
+
+    //     db.query(query, [firstName, lastName, email, phone, hash], (err, results) => {
+    //         if (err) {
+    //             console.error(err);
+    //             res.status(500).send('Error saving customer');
+    //         } else {
+    //             // Send back the customer ID in the response
+    //             res.json({ message: 'Customer saved', customerId: results.insertId });
+    //         }
+    //     });
+    // });
 
   
 
