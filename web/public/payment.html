@@ -45,7 +45,7 @@
         </header>
 
         <div class="flex-container">
-            <div class="payment-container ">
+            <div class="container order-summary-container">
                 <form action="#">
                     <h2>Payment Information</h2>
                         <div class="checkout-display">
@@ -70,32 +70,36 @@
                             <input type="checkbox" id="saveInfoCheckbox" name="saveInfo" value="saveInfo">
                             Save card information for next time.
                         </label>   
+                       
                         
-                        <h2>Billing Address</h2>
-                            <div id="billingReceipt" class="receipt">
-                                <div class="checkout-display">
-                                <p><strong>Email:</strong> <span id="billingEmailSpan"></span></p>
-                                <p><strong>Name:</strong> <span id="billingNameSpan"></span></p>
-                                <p><strong>Company:</strong> <span id="billingCompanySpan"></span></p>
-                                <p><strong>Country:</strong> <span id="billingCountrySpan"></span></p>
-                                <p><strong>Street Address:</strong> <span id="billingStAddressSpan"></span></p>
-                                <p><strong>Optional Address:</strong> <span id="billingOptAddressSpan"></span></p>
-                                <p><strong>City:</strong> <span id="billingCitySpan"></span></p>
-                                </div>
-                                <button onclick="toggleEditBilling()">Edit</button>
-                            </div>
 
-<div id="billingEdit" class="checkout-display hidden">
-    <!-- Include input fields for editing -->
-</div>
+                    <div id="billingEdit" class="checkout-display hidden">
+                         <!-- Include input fields for editing -->
+                    </div>
                         
                         </div>
-                        <button type="submit"  onclick="goToPlaceOrder()">Next</button>
-                        <button type="submit"  onclick="goToCheckout()">Back</button>
-                        <button type="button" onclick="goToIndex()">Cancel</button>
 
                 </form>
-
+            </div>
+            <div class="container checkout-container">
+                <div>
+                    <h2>Billing Address</h2>
+                    <div id="billingReceipt" class="receipt">
+                        <div class="checkout-display">
+                            <p><strong>Email:</strong> <span id="billingEmailSpan"></span></p>
+                            <p><strong>Name:</strong> <span id="billingNameSpan"></span></p>
+                            <p><strong>Company:</strong> <span id="billingCompanySpan"></span></p>
+                            <p><strong>Country:</strong> <span id="billingCountrySpan"></span></p>
+                            <p><strong>Street Address:</strong> <span id="billingStAddressSpan"></span></p>
+                            <p><strong>Optional Address:</strong> <span id="billingOptAddressSpan"></span></p>
+                            <p><strong>City:</strong> <span id="billingCitySpan"></span></p>
+                            </div>
+                            <button onclick="toggleEditBilling()">Edit</button>
+                    </div>
+                </div>
+                <button type="submit"  onclick="goToPlaceOrder()">Next</button>
+                        <button type="submit"  onclick="goToCheckout()">Back</button>
+                        <button type="button" onclick="goToIndex()">Cancel</button>
             </div>
         </div>
 <script src="app.js"></script>
