@@ -131,41 +131,44 @@
        
     var cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-        function addToCart() {
-            var selectedOption = document.getElementById('options').value;
-            var selectedQuantity = parseInt(document.getElementById('quantity').value);
-            var rentDate = document.getElementById('rentDate').value;
-            var rentTime = document.getElementById('rentTime').value;
-            var returnDate = document.getElementById('returnDate').value;
-            var returnTime = document.getElementById('returnTime').value;
-            var comment = document.getElementById('comment').value;
+    function addToCart() {
+    var selectedOption = document.getElementById('options').value;
+    var selectedQuantity = parseInt(document.getElementById('quantity').value);
+    var rentDate = document.getElementById('rentDate').value;
+    var rentTime = document.getElementById('rentTime').value;
+    var returnDate = document.getElementById('returnDate').value;
+    var returnTime = document.getElementById('returnTime').value;
+    var comment = document.getElementById('comment').value;
 
-            var optionCosts = {
-                'Red Wine Glass': 120,  // Red Wine Glass cost per dozen
-                'Champagne Glass': 60,   // Champagne Glass cost per dozen
-                'Cocktail Glass': 72,   // Cocktail Glass cost per dozen
-                'Martini Glass': 96,    // Martini Glass cost per dozen
-            };
+    var optionCosts = {
+        'Red Wine Glass': 120,  // Red Wine Glass cost per dozen
+        'Champagne Glass': 60,   // Champagne Glass cost per dozen
+        'Cocktail Glass': 72,   // Cocktail Glass cost per dozen
+        'Martini Glass': 96,    // Martini Glass cost per dozen
+    };
 
-            var costPerDozen = optionCosts[selectedOption] || 0;
-            var estimatedCost = (selectedQuantity / 12) * costPerDozen;
+    var costPerDozen = optionCosts[selectedOption] || 0;
+    var estimatedCost = (selectedQuantity / 12) * costPerDozen;
 
-            // Create a new cart item
-            var newItem = {
-                option: selectedOption,
-                quantity: selectedQuantity,
-                costEstimate: estimatedCost,
-                comment: comment,
-                rentDate: rentDate,
-                rentTime: rentTime,
-                returnDate: returnDate,
-                returnTime: returnTime
-            };
+    // Prepare the data to send to the server
+    var data = {
+        options: selectedOption,
+        quantity: selectedQuantity,
+        costEstimate: estimatedCost,
+        comment: comment,
+        rentDate: rentDate,
+        rentTime: rentTime,
+        returnDate: returnDate,
+        returnTime: returnTime
+    };
 
-            // Add the new item to the cart
-            cart.push(newItem);
-
-            // Display added to cart message
+    // Make an AJAX request to add the item to the cart
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/cart');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            // Item added successfully, display the message
             var addedToCartMessage = document.getElementById('addedToCartMessage');
             addedToCartMessage.style.display = 'block';
 
@@ -174,12 +177,18 @@
                 addedToCartMessage.style.display = 'none';
             }, 2000);
 
-
-            // Save the updated cart to sessionStorage
-            sessionStorage.setItem('cart', JSON.stringify(cart));
-        // Pass the container IDs to the displayCart function
-        displayCart('cartContent', 'cartTotal');
+            // Item added successfully, do something if needed
+            console.log('Item added to cart');
+        } else {
+            // Error handling
+            console.error('Error adding item to cart:', xhr.statusText);
         }
+    };
+    xhr.onerror = function () {
+        console.error('Request failed');
+    };
+    xhr.send(JSON.stringify(data));
+}
 
           function displayCart(cartContentId, cartTotalId) {
         var cartContent = document.getElementById(cartContentId);
@@ -209,9 +218,7 @@
         cartContent.appendChild(table);
         cartTotal.innerHTML = '<p>Cart Total: $' + totalCost.toFixed(2) + '</p>';
     }
-    
-    // Display the initial cart on page load
-    displayCart('cartContent', 'cartTotal');
+ 
     </script>
     <script src="app.js"></script>
     <script src="https://kit.fontawesome.com/ece7d978a6.js" crossorigin="anonymous"></script>
