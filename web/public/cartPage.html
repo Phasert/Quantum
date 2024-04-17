@@ -6,7 +6,6 @@
     <title>Shopping Cart</title>
     <!-- Link to your CSS file if you have one -->
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -90,10 +89,24 @@
     </div>
     <section class="shoppingCart">
         <h2>Your Shopping Cart</h2>
-    <div id="cartContent"></div>
-    <section class="shoppingCart-info">
-        <p>*The displayed cost estimate prices for items correspond to the rental duration in days.</p>
-    </section>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Cost Estimate</th>
+                    <th>Customer Comment</th>
+                    <th>Rent Date</th>
+                    <th>Rent Time</th>
+                    <th>Return Date</th>
+                    <th>Return Time</th>
+                    <th>Cart ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be dynamically inserted here -->
+            </tbody>
+        </table>
     <div id="cartTotal"></div>
     </section>
     <div class="shoppingCart-Btn">
@@ -105,82 +118,124 @@
    
     
     <script>
-        var cart = []; // Initialize an empty cart array
-    
-        // Retrieve the cart data from sessionStorage
-        var cart = JSON.parse(sessionStorage.getItem('cart')) || [];
 
-        function displayCart() {
-            var cartContent = document.getElementById('cartContent');
-            var cartTotal = document.getElementById('cartTotal');
-            var totalCost = 0;
-    
-            // Clear existing content
-            cartContent.innerHTML = '';
-    
-            // Create a table to display cart items
-            var table = document.createElement('table');
-            table.innerHTML = '<tr><th>Item</th><th>Quantity</th><th>Cost Estimate</th><th>Comment</th><th>Rent Date</th><th>Rent Time</th><th>Return Date</th><th>Return Time</th></tr>';
-    
-            // Loop through cart items and add rows to the table
-            for (var i = 0; i < cart.length; i++) {
-                var item = cart[i];
-                var row = table.insertRow();
-    
-                // Populate the row with item information
-                row.insertCell(0).textContent = item.option;
-                row.insertCell(1).textContent = item.quantity;
-                row.insertCell(2).textContent = '$' + item.costEstimate.toFixed(2);
-                row.insertCell(3).textContent = item.comment;
-                row.insertCell(4).textContent = item.rentDate;  // Format the rent date
-                row.insertCell(5).textContent = item.rentTime;
-                row.insertCell(6).textContent = item.returnDate;  // Format the return date
-                row.insertCell(7).textContent = item.returnTime;
-                
-                // Add a delete button to each row
-                var deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Remove';
-                deleteButton.className = 'remove-button'; // Add the class to the delete button
-                deleteButton.onclick = createRemoveItemHandler(i); // Assign a function to handle deletion
-                row.insertCell(8).appendChild(deleteButton);
-
-                var rentStart = new Date(item.rentDate + ' ' + item.rentTime);
-                var rentEnd = new Date(item.returnDate + ' ' + item.returnTime);
-                var durationInDays = Math.max(1, Math.ceil((rentEnd - rentStart) / (24 * 60 * 60 * 1000))); // Calculate duration in days
-
-                // Update the cost estimate based on the number of days
-                var updatedCost = item.costEstimate * durationInDays;
-
-                row.cells[2].textContent = '$' + updatedCost.toFixed(2);
-
-                totalCost += updatedCost;
-            }
-    
-            // Append the table to the cart content
-            cartContent.appendChild(table);
-    
-            // Display the total cost
-            cartTotal.innerHTML = '<p>Cart Total: $' + totalCost.toFixed(2) + '</p>';
+        // Function to fetch cart data from the server and populate the table
+function fetchAndDisplayCart() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/cart');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var cartData = JSON.parse(xhr.responseText);
+            // Update the HTML table with the retrieved data
+            displayCart(cartData);
+        } else {
+            console.error('Error fetching cart data:', xhr.statusText);
         }
-       
+    };
+    xhr.onerror = function () {
+        console.error('Request failed');
+    };
+    xhr.send();
+}
+
+function displayCart(cartData) {
+    var tableBody = document.querySelector('.shoppingCart tbody');
+    tableBody.innerHTML = ''; // Clear existing table rows
+    
+    var totalCost = 0; // Initialize total cost
+    
+    cartData.forEach(function (item) {
+        var row = document.createElement('tr');
         
-        // Function to create a closure for the remove item handler
-    function createRemoveItemHandler(index) {
-        return function () {
-            removeItem(index);
-        };
+        // Create a cell for product name
+        var productNameCell = document.createElement('td');
+        productNameCell.textContent = item.pName;
+        row.appendChild(productNameCell);
+        
+        // Loop through each property of the item and create table cells
+        for (var key in item) {
+            if (key !== 'pName') { // Skip product name since we already added it
+                var cell = document.createElement('td');
+                // Check if the property is a date and format it accordingly
+                if (key.includes('Date')) {
+                    // Format date
+                    var formattedDate = new Date(item[key]).toLocaleDateString('en-US', { timeZone: 'UTC' });
+                    cell.textContent = formattedDate;
+                } else {
+                    cell.textContent = item[key];
+                }
+                row.appendChild(cell);
+            }
+        }
+        
+        // Create a delete button
+        var deleteButtonCell = document.createElement('td');
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('remove-button'); 
+        deleteButton.addEventListener('click', function() {
+            // Call a function to handle deletion when the button is clicked
+            deleteCartItem(item); // Pass the item object to the function
+        });
+        deleteButtonCell.appendChild(deleteButton);
+        row.appendChild(deleteButtonCell);
+        
+        tableBody.appendChild(row);
+        
+        // Add cost estimate to total
+        totalCost += item.Cost_Est;
+    });
+
+    // Add a row for the total cost
+    var totalRow = document.createElement('tr');
+    var totalHeaderCell = document.createElement('td');
+    totalHeaderCell.textContent = 'Total';
+    totalRow.appendChild(totalHeaderCell);
+    
+    // Add empty cells for other columns
+    for (var i = 1; i < 1; i++) {
+        var emptyCell = document.createElement('td');
+        totalRow.appendChild(emptyCell);
     }
 
-    function removeItem(index) {
-        // Remove the item from the cart array
-        cart.splice(index, 1);
+    // Create a cell for total cost
+    var totalCostCell = document.createElement('td');
+    totalCostCell.textContent = totalCost;
+    totalRow.appendChild(totalCostCell);
 
-        // Update the cart display
-        displayCart();
+    tableBody.appendChild(totalRow);
+}
 
-        // Save the updated cart to sessionStorage
-        sessionStorage.setItem('cart', JSON.stringify(cart));
-    }
+
+        
+    
+
+
+
+function deleteCartItem(item) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/cart/' + item.cartID); // Assuming 'cartID' is the primary key
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            // Reload the cart data after successful deletion
+            fetchAndDisplayCart();
+        } else {
+            console.error('Error deleting cart item:', xhr.statusText);
+        }
+    };
+    xhr.onerror = function () {
+        console.error('Request failed');
+    };
+    xhr.send();
+}
+
+// Call the fetchAndDisplayCart function when the page loads to populate the table
+window.onload = function() {
+    fetchAndDisplayCart();
+};
+
+     
+   
        // Function to proceed to checkout
        function proceedToCheckout() {
             // Add your checkout logic here
@@ -188,39 +243,7 @@
             window.location.href = "checkout.html";
         }
     
-        // Call the displayCart function when the page loads to show the initial cart content
-        displayCart();
-        // Function to fetch cart items from the server and populate the cart section
-// function fetchAndDisplayCart() {
-//     var xhr = new XMLHttpRequest();
-//     xhr.open('GET', '/cart');
-//     xhr.onload = function () {
-//         if (xhr.status === 200) {
-//             var cartItems = JSON.parse(xhr.responseText);
-//             // Update the cart content with the retrieved data
-//             displayCart(cartItems);
-//         } else {
-//             console.error('Error fetching cart items:', xhr.statusText);
-//         }
-//     };
-//     xhr.onerror = function () {
-//         console.error('Request failed');
-//     };
-//     xhr.send();
-// }
-
-// // Function to display cart items
-// function displayCart(cartItems) {
-//     // Populate the shopping cart section with the retrieved data
-//     // You can use similar logic as in your existing displayCart function
-//     // to dynamically create HTML elements and populate them with cart item data
-// }
-
-// // Call the fetchAndDisplayCart function when the shopping cart page loads
-// window.onload = function() {
-//     fetchAndDisplayCart();
-// };
-
+ 
     </script>
     <script src="app.js"></script>
     <script src="https://kit.fontawesome.com/ece7d978a6.js" crossorigin="anonymous"></script>

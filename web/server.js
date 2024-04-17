@@ -132,37 +132,6 @@ app.get('/get-user-data', (req, res) => {
 
 
 
-// // Route to add an item to the cart
-// app.post('/add-to-cart', (req, res) => {
-//     console.log('Attempting to add item to cart:', req.body); // Log the incoming cart item
-
-//     // Check if the user is logged in
-//     if (!req.session.userId) {
-//         console.log('User not logged in, session:', req.session);
-//         return res.status(401).send('User not logged in');
-//     }
-    
-//     // Capture the cart item from the request body
-//     const cartItem = {
-//         ...req.body,
-//         customerID: req.session.userId // Add the user ID from the session
-//     };
-
-//     console.log('Prepared cart item:', cartItem); // Log the prepared cart item
-
-//     // Insert the cart item into the database
-//     const query = 'INSERT INTO ShoppingCart SET ?';
-//     db.query(query, cartItem, (err, result) => {
-//         if (err) {
-//             console.error('Error saving cart item', err);
-//             return res.status(500).send('Error saving cart item');
-//         }
-//         console.log('Cart item saved:', result); // Log the result of the insert
-//         res.json({ message: 'Cart item saved', cartItemId: result.insertId });
-//     });
-// });
-
-
 app.post('/update-customer-info', (req, res) => {
     const userId = req.session.userId;
     if (!userId) {
@@ -408,20 +377,37 @@ app.post('/cart', async (req, res) => {
         }
     });
 });
-app.get('/cart', async (req, res) => {
-    const userId = req.session.userId;
+app.get('/cart', (req, res) => {
+    const userId = req.session.userId; // Retrieve the logged-in user's ID from the session
 
-    // Query to fetch cart items for the current user
-    const query = 'SELECT * FROM shoppingcart WHERE CustomerID = ?';
-    db.query(query, [userId], (err, results) => {
+    // Query to select only the shopping cart items for the current customer
+    const query = 'SELECT c.Quantity, c.Cost_Est, c.custComment, c.rentDate, c.rentTime, c.returnDate, c.returnTime, c.cartID, p.pName FROM shoppingcart c JOIN product p ON c.ProductID = p.productID WHERE c.CustomerID = ?';
+
+    db.query(query, [userId], (err, result) => {
         if (err) {
             console.error(err);
-            res.status(500).send('Error fetching cart items');
+            res.status(500).send('Error fetching cart data');
         } else {
-            res.json(results); // Send the cart items data as JSON response
+            res.json(result);
         }
     });
 });
+
+
+app.delete('/cart/:cartID', (req, res) => {
+    const cartID = req.params.cartID;
+    // Query to delete the item with the specified cartID
+    const deleteQuery = 'DELETE FROM shoppingcart WHERE cartID = ?';
+    db.query(deleteQuery, [cartID], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error deleting cart item');
+        } else {
+            res.status(200).send('Cart item deleted successfully');
+        }
+    });
+});
+
 
 
 
