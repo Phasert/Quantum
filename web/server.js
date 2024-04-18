@@ -49,28 +49,57 @@ app.get('/', (req, res) => {
 // Route to handle POST request
 app.post('/signup', async (req, res) => {
     const { firstName, lastName, email, phone, password } = req.body;
+
     
-    // Hash the password before saving to the database
     bcrypt.hash(password, saltRounds, function(err, hash) {
         if (err) {
             console.error('Error hashing password', err);
-            return res.status(500).send('Error processing your request');
+            return res.status(500).send('Error hashing password');
         }
 
-        // Use the hashed password in your database query
         const query = `INSERT INTO customer (firstName, lastName, email, phone, pword) VALUES (?, ?, ?, ?, ?)`;
 
         db.query(query, [firstName, lastName, email, phone, hash], (err, results) => {
             if (err) {
-                console.error(err);
-                res.status(500).send('Error saving customer');
-            } else {
-                // Send back the customer ID in the response
-                res.json({ message: 'Customer saved', customerId: results.insertId });
+                console.error('Error saving customer', err);
+                return res.status(500).send('Error saving customer');
             }
+
+            // Send welcome email
+            sendWelcomeEmail(firstName, email, results.insertId)
+                .then(() => {
+                    // Send back the customer ID in the response
+                    res.json({ message: 'Customer saved', customerId: results.insertId });
+                })
+                .catch(error => {
+                    console.error('Error sending welcome email:', error);
+                    // Even if email sending fails, still respond with the customer ID
+                    res.json({ message: 'Customer saved', customerId: results.insertId });
+                });
         });
     });
 });
+
+// Function to send welcome email
+async function sendWelcomeEmail(firstName, userEmail, customerId) {
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'kyleplayfortnite@gmail.com', // Your email
+            pass: 'bycocufvfxaxxixr', // Your email password
+          },
+        });
+      
+        let mailOptions = {
+          from: 'kyleplayfortnite@gmail.com',
+          to: userEmail,
+        subject: 'Welcome to Our Website!',
+        text: `Welcome, ${firstName}! Thank you for signing up. Your customer ID is ${customerId}.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+}
+
 
 
 app.post('/login', (req, res) => {

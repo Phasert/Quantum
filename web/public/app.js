@@ -43,12 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
             openPopup();
         });
     });
+    function isValidPhoneNumber(phoneNumber) {
+        // Regular expression to match the phone number format "XXX-XXX-XXXX" or "XXX-XXXXXXX"
+        const phoneRegex = /^\d{3}-?\d{3}-?\d{4}$/;
+        return phoneRegex.test(phoneNumber);
+    }
+    
 
     signUpForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(this);
         const password = formData.get('password');
         const confirmPassword = formData.get('confirmPassword');
+        const phoneNumber = formData.get('phone');
         
         // Check if passwords match
         if (password !== confirmPassword) {
@@ -56,6 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return; // Stop the form submission
         }
     
+        // Check if phone number format is valid
+        if (!isValidPhoneNumber(phoneNumber)) {
+            alert('Please enter a phone number in the format XXX-XXX-XXXX.');
+            return; // Stop the form submission
+        }
+    
+        // If everything is valid, proceed with form submission
         fetch('/signup', {
             method: 'POST',
             body: new URLSearchParams(formData)
@@ -64,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             console.log('Data received:', data);
             if (data.customerId) {
-                alert(`Signup successful. Your customer ID is ${data.customerId}`);
+                alert(`Signup successful. Check your email for your login ID`);
                 closePopup();
             } else {
                 // This else block might be redundant if you're always expecting a customerId on success
