@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const signUpForm = document.querySelector('.sign-up-container form'); 
     const loginLink = document.getElementById('loginLink');
     const closeButton = document.getElementById('closeButton');
+    
     function openPopup() {
         container.classList.add("right-panel-active");
         popupContainer.style.display = 'flex';
@@ -99,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
         if (data.firstName) {
-            loginLink.outerHTML = '<a href="userDashboard.html" id="dashboardLink"><i class="fas fa-user" style="color: #ffffff;"></i></a>';
+            loginLink.outerHTML = '<a href="userDashboard.html" id="dashboardLink"><i class="fas fa-user" ></i></a>';
         }
     })
     .catch(error => {
@@ -142,28 +143,11 @@ function selectOption(index) {
     }
 }
 
-function closeForm() {
-    document.getElementById("myForm").style.display = "none";
-}
-function updateCostEstimate() {
-var quantitySelector = document.getElementById('quantity');
-var costEstimateSpan = document.getElementById('costEstimate');
-var selectedOption = document.getElementById('options').value;
 
-var selectedQuantity = parseInt(quantitySelector.value);
-var optionCosts = {
-    'Red Wine Glass': 120,  // Red Wine Glass cost per dozen
-    'Champagne Glass': 60,    // Champagne Glass cost per dozen
-    'Cocktail Glass': 72,  // Cocktail Glass cost per dozen
-    'Martini Glass': 96,    // Martini Glass cost per dozen
-};
-var costPerDozen = optionCosts[selectedOption] || 0;  // Default to 0 if option is not found
-var estimatedCost = (selectedQuantity / 12) * costPerDozen;
+  
 
-costEstimateSpan.textContent = '$' + estimatedCost.toFixed(2);
-}
 
-// add to cart
+});
 function addToCart() {
     var selectedOption = document.getElementById('options').value;
     var selectedQuantity = parseInt(document.getElementById('quantity').value);
@@ -173,21 +157,10 @@ function addToCart() {
     var returnTime = document.getElementById('returnTime').value;
     var comment = document.getElementById('comment').value;
 
-    var optionCosts = {
-        'Red Wine Glass': 120,
-        'Champagne Glass': 60,
-        'Cocktail Glass': 72,
-        'Martini Glass': 96,
-    };
 
-    var costPerDozen = optionCosts[selectedOption] || 0;
-    var estimatedCost = (selectedQuantity / 12) * costPerDozen;
-
-    // Create a new cart item
-    var newItem = {
-        option: selectedOption,
+    var data = {
+        options: selectedOption,
         quantity: selectedQuantity,
-        costEstimate: estimatedCost,
         comment: comment,
         rentDate: rentDate,
         rentTime: rentTime,
@@ -195,44 +168,30 @@ function addToCart() {
         returnTime: returnTime
     };
 
-    // Add the new item to the cart
-    cart.push(newItem);
+    // Make an AJAX request to add the item to the cart
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/cart');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            // Item added successfully, display the message
+            var addedToCartMessage = document.getElementById('addedToCartMessage');
+            addedToCartMessage.style.display = 'block';
 
-    // Display added to cart message
-    var addedToCartMessage = document.getElementById('addedToCartMessage');
-    addedToCartMessage.style.display = 'block';
+            // Hide the message after 2 seconds (adjust as needed)
+            setTimeout(function () {
+                addedToCartMessage.style.display = 'none';
+            }, 2000);
 
-    // Hide the message after 2 seconds (adjust as needed)
-    setTimeout(function () {
-        addedToCartMessage.style.display = 'none';
-    }, 2000);
-
-    // Save the updated cart to sessionStorage
-    sessionStorage.setItem('cart', JSON.stringify(cart));
-
-    // Send cart data to the server
-    fetch('/add-to-cart', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newItem)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // Item added successfully, do something if needed
+            console.log('Item added to cart');
+        } else {
+            // Error handling
+            console.error('Error adding item to cart:', xhr.statusText);
         }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Item added to the cart:', data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-    
+    };
+    xhr.onerror = function () {
+        console.error('Request failed');
+    };
+    xhr.send(JSON.stringify(data));
 }
-
-
-
-});

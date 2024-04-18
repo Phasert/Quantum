@@ -161,6 +161,9 @@ function displayCart(cartData) {
                     // Format date
                     var formattedDate = new Date(item[key]).toLocaleDateString('en-US', { timeZone: 'UTC' });
                     cell.textContent = formattedDate;
+                } else if (key === 'Cost_Est') {
+                    // Add dollar sign in front of cost estimate
+                    cell.textContent = '$' + item[key];
                 } else {
                     cell.textContent = item[key];
                 }
@@ -200,7 +203,7 @@ function displayCart(cartData) {
 
     // Create a cell for total cost
     var totalCostCell = document.createElement('td');
-    totalCostCell.textContent = totalCost;
+    totalCostCell.textContent = '$' + totalCost; // Add dollar sign in front of total cost
     totalRow.appendChild(totalCostCell);
 
     tableBody.appendChild(totalRow);
