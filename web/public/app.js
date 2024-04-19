@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred during signup.');
+            alert('The email is already linked to an account. Please use another.');
         });
     });
     

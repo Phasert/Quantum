@@ -50,35 +50,49 @@ app.get('/', (req, res) => {
 app.post('/signup', async (req, res) => {
     const { firstName, lastName, email, phone, password } = req.body;
 
-    
-    bcrypt.hash(password, saltRounds, function(err, hash) {
+    // Check if email already exists in the database
+    const emailExistsQuery = 'SELECT COUNT(*) AS count FROM customer WHERE email = ?';
+    db.query(emailExistsQuery, [email], async (err, emailResults) => {
         if (err) {
-            console.error('Error hashing password', err);
-            return res.status(500).send('Error hashing password');
+            console.error('Error checking email existence', err);
+            return res.status(500).send('Error checking email existence');
         }
 
-        const query = `INSERT INTO customer (firstName, lastName, email, phone, pword) VALUES (?, ?, ?, ?, ?)`;
+        const emailExists = emailResults[0].count > 0;
+        if (emailExists) {
+            return res.status(400).send('Email already exists');
+        }
 
-        db.query(query, [firstName, lastName, email, phone, hash], (err, results) => {
+        // Email doesn't exist, proceed with hashing password and inserting user
+        bcrypt.hash(password, saltRounds, function(err, hash) {
             if (err) {
-                console.error('Error saving customer', err);
-                return res.status(500).send('Error saving customer');
+                console.error('Error hashing password', err);
+                return res.status(500).send('Error hashing password');
             }
 
-            // Send welcome email
-            sendWelcomeEmail(firstName, email, results.insertId)
-                .then(() => {
-                    // Send back the customer ID in the response
-                    res.json({ message: 'Customer saved', customerId: results.insertId });
-                })
-                .catch(error => {
-                    console.error('Error sending welcome email:', error);
-                    // Even if email sending fails, still respond with the customer ID
-                    res.json({ message: 'Customer saved', customerId: results.insertId });
-                });
+            const insertQuery = `INSERT INTO customer (firstName, lastName, email, phone, pword) VALUES (?, ?, ?, ?, ?)`;
+            db.query(insertQuery, [firstName, lastName, email, phone, hash], (err, results) => {
+                if (err) {
+                    console.error('Error saving customer', err);
+                    return res.status(500).send('Error saving customer');
+                }
+
+                // Send welcome email
+                sendWelcomeEmail(firstName, email, results.insertId)
+                    .then(() => {
+                        // Send back the customer ID in the response
+                        res.json({ message: 'Customer saved', customerId: results.insertId });
+                    })
+                    .catch(error => {
+                        console.error('Error sending welcome email:', error);
+                        // Even if email sending fails, still respond with the customer ID
+                        res.json({ message: 'Customer saved', customerId: results.insertId });
+                    });
+            });
         });
     });
 });
+
 
 // Function to send welcome email
 async function sendWelcomeEmail(firstName, userEmail, customerId) {
