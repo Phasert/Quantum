@@ -105,138 +105,127 @@
                 </div>                           
             </div>
             <div class="container checkout-container">
-            <form action="#">
-            <h2>Delivery Information</h2>
-            <div class="checkout-display">
-                <label>
-                    <input type="radio" name="delivery_method" value="delivery" checked>
-                    Delivery
-                    <input type="radio" name="delivery_method" value="pickup">
-                    Pick Up
-                </label>
-                
-                <input type="email" id="email" name="email" placeholder="* Email" required>
-
-                <div class="name-container">
-                    <input type="text" id="fname" name="fname" placeholder="* First Name" required>
-                    <input type="text" id="lname" name="lname" placeholder="* Last Name" required>
-                </div>
-
-            <input type="text" id="company" name="company" placeholder="Company(Optional)" >
-
-           
-            <select id="country" name="country" required>
-                <option value="">Select Country</option>
-                <option value="TRI">Trinidad</option>
-                <option value="TOB">Tobago</option>
-            </select>
-
-            
-            <textarea id="Staddress" name="Staddress" placeholder="* Street Address" required></textarea>
-
-   
-            <textarea id="Optaddress" name="Optaddress" placeholder=" Apt/Suite/Floor(Optional)" ></textarea>
-
-            <textarea id="city" name="city" placeholder="* City" required></textarea>
-
-            <label>
-                <input type="radio" name="billing" id="useBilling" value="billing">
-                Use as billing address
-            </label>
-            
-
+                <form id="deliveryForm" method="post">
+                    <h2>Delivery Information</h2>
+                    <div class="checkout-display">
+                        <label>
+                            <input type="radio" name="delivery_method" value="delivery" checked>
+                            Delivery
+                            <input type="radio" name="delivery_method" value="pickup">
+                            Pick Up
+                        </label>
+                        
+                        <input type="email" id="email" name="email" placeholder="* Email" required>
+    
+                        <div class="name-container">
+                            <input type="text" id="fname" name="fname" placeholder="* First Name" required>
+                            <input type="text" id="lname" name="lname" placeholder="* Last Name" required>
+                        </div>
+    
+                        <input type="text" id="company" name="company" placeholder="Company(Optional)" >
+    
+                        <select id="country" name="country" required>
+                            <option value="">Select Country</option>
+                            <option value="TRI">Trinidad</option>
+                            <option value="TOB">Tobago</option>
+                        </select>
+    
+                        <textarea id="Staddress" name="Staddress" placeholder="* Street Address" required></textarea>
+                        <textarea id="Optaddress" name="Optaddress" placeholder=" Apt/Suite/Floor(Optional)"></textarea>
+                        <textarea id="city" name="city" placeholder="* City" required></textarea>
+    
+                        <label>
+                            <input type="checkbox" id="useBilling" name="billing">
+                            Use as billing address
+                        </label>
+                    </div>
+                    <button type="submit">Next</button>
+                    <button type="button" onclick="goToCart()">Back</button>
+                    <button type="button" onclick="goToIndex()">Cancel</button>
+                </form>
             </div>
-            <button type="submit"  onclick="goToPayment()">Next</button>
-            <button type="submit"  onclick="goToCart()">Back</button>
-            <button type="button" onclick="goToIndex()">Cancel</button>
-
-        </form>
-    </div>
-    </div>
-    <script src="app.js"></script>
-    <script>
-        // Fetch cart data from the server
-// Fetch cart data from the server
-fetch('/cart')
-    .then(response => response.json())
-    .then(cartData => {
-        // Display cart items
-        displayCartItems(cartData);
-
-        // Calculate total cost
-        const totalCost = cartData.reduce((acc, item) => acc + item.Cost_Est, 0);
-
-        // Display total cost
-        document.getElementById('total-cost').textContent = `Total Cost: $${totalCost.toFixed(2)}`;
-
-        // Display item count
-        document.getElementById('item-count').textContent = cartData.length;
-    })
-    .catch(error => {
-        console.error('Error fetching cart data:', error);
-    });
-
-function displayCartItems(cartData) {
-    const cartItemsContainer = document.getElementById('cart-items');
-    cartItemsContainer.innerHTML = ''; // Clear existing items
-
-    cartData.forEach(item => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${item.pName} - Quantity: ${item.Quantity} - Cost: $${item.Cost_Est.toFixed(2)}`;
-        cartItemsContainer.appendChild(listItem);
-    });
-}
-
-
-        // Get the elements
-var useBillingCheckbox = document.getElementById("useBilling");
-var deliveryEmail = document.getElementById("email");
-var deliveryFirstName = document.getElementById("fname");
-var deliveryLastName = document.getElementById("lname");
-var deliveryCompany = document.getElementById("company");
-var deliveryCountry = document.getElementById("country");
-var deliveryStAddress = document.getElementById("Staddress");
-var deliveryOptAddress = document.getElementById("Optaddress");
-var deliveryCity = document.getElementById("city");
-
-// Add event listener to the "Use as billing address" checkbox
-useBillingCheckbox.addEventListener("change", function() {
-    // If the checkbox is checked
-    if (this.checked) {
-        // Copy the values from delivery fields to billing fields
-        document.getElementById("billingEmail").value = deliveryEmail.value;
-        document.getElementById("billingFirstName").value = deliveryFirstName.value;
-        document.getElementById("billingLastName").value = deliveryLastName.value;
-        document.getElementById("billingCompany").value = deliveryCompany.value;
-        document.getElementById("billingCountry").value = deliveryCountry.value;
-        document.getElementById("billingStAddress").value = deliveryStAddress.value;
-        document.getElementById("billingOptAddress").value = deliveryOptAddress.value;
-        document.getElementById("billingCity").value = deliveryCity.value;
-    } else {
-        // If the checkbox is unchecked, clear the billing fields
-        document.getElementById("billingEmail").value = "";
-        document.getElementById("billingFirstName").value = "";
-        document.getElementById("billingLastName").value = "";
-        document.getElementById("billingCompany").value = "";
-        document.getElementById("billingCountry").value = "";
-        document.getElementById("billingStAddress").value = "";
-        document.getElementById("billingOptAddress").value = "";
-        document.getElementById("billingCity").value = "";
-    }
-});
-
-        function goToIndex() {
-    // Redirect to the index.html page
-    window.location.href = "index.html";
-}
-
-function goToPayment() {
-window.location.href = "payment.html";
-}
-
-function goToCart() {
-window.location.href = "cartPage.html";
-}
+        </div>
+        <script src="app.js"></script>
+        <script>
+            document.getElementById('deliveryForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+    
+                const formData = {
+                    email: document.getElementById('email').value,
+                    firstName: document.getElementById('fname').value,
+                    lastName: document.getElementById('lname').value,
+                    company: document.getElementById('company').value,
+                    country: document.getElementById('country').value,
+                    streetAddress: document.getElementById('Staddress').value,
+                    aptSuiteFloor: document.getElementById('Optaddress').value,
+                    city: document.getElementById('city').value,
+                    isBillingAddress: document.getElementById('useBilling').checked
+                };
+    
+                fetch('/submit-delivery-info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    // Optionally, redirect to a new page or display a success message
+                    window.location.href = "payment.html";
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Optionally, display an error message
+                });
+            });
+    
+            // Fetch cart data from the server
+            fetch('/cart')
+                .then(response => response.json())
+                .then(cartData => {
+                    // Display cart items
+                    displayCartItems(cartData);
+    
+                    // Calculate total cost
+                    const totalCost = cartData.reduce((acc, item) => acc + item.Cost_Est, 0);
+    
+                    // Display total cost
+                    document.getElementById('total-cost').textContent = `Total Cost: $${totalCost.toFixed(2)}`;
+    
+                    // Display item count
+                    document.getElementById('item-count').textContent = cartData.length;
+                })
+                .catch(error => {
+                    console.error('Error fetching cart data:', error);
+                });
+    
+            function displayCartItems(cartData) {
+                const cartItemsContainer = document.getElementById('cart-items');
+                cartItemsContainer.innerHTML = ''; // Clear existing items
+    
+                cartData.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${item.pName} - Quantity: ${item.Quantity} - Cost: $${item.Cost_Est.toFixed(2)}`;
+                    cartItemsContainer.appendChild(listItem);
+                });
+            }
+    
+            function goToIndex() {
+                // Redirect to the index.html page
+                window.location.href = "index.html";
+            }
+    
+            function goToPayment() {
+                // Trigger form submission to save delivery info before navigating to payment page
+                document.getElementById('deliveryForm').submit();
+            }
+    
+            function goToCart() {
+                // Handle navigation to the cart page
+                window.location.href = "cartPage.html";
+            }
     </script>
 </body>
 </html>

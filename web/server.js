@@ -493,3 +493,36 @@ app.delete('/cart/:cartID', (req, res) => {
         });
     });
     
+// Route to handle form submission
+app.post('/submit-delivery-info', (req, res) => {
+    const { email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress } = req.body;
+
+    const query = `
+        INSERT INTO Address (Email, FirstName, LastName, Company, Country, StreetAddress, AptSuiteFloor, City, IsBillingAddress)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress ? 1 : 0];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+            res.status(500).send('Error inserting data');
+            return;
+        }
+
+        // Save billing info in the session
+        req.session.billingInfo = { email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress };
+
+        res.json({ redirect: '/payment.html' }); // Send a JSON response with the redirect URL
+    });
+});
+
+// Route to get billing info
+app.get('/get-billing-info', (req, res) => {
+    if (req.session.billingInfo) {
+        res.json(req.session.billingInfo);
+    } else {
+        res.status(404).send('No billing information found');
+    }
+});
