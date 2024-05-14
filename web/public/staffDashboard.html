@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="user.css">
+<link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=IM+Fell+French+Canon&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+
+
+<title>User Dashboard</title>
+</head>
+<body>
+
+<div class="sidebar">
+    <!-- Logo -->
+    <div class="logo">
+        <h1>REL Trading</h1>
+    </div>
+
+    <!-- Navigation Menu -->
+    <ul class="nav-menu">
+        <li class="nav-item"><a href="userDashboard.html" class="active"><i class="fas fa-grip-vertical" style="color: #ffffff;"></i> Dashboard</a></li>
+        <li class="nav-item"><a href="index.html"><i class="fas fa-home" style="color: #ffffff;"></i> Home</a></li>
+        <li class="nav-item"><a href="order.html"><i class="fas fa-exchange-alt" style="color: #ffffff;"></i> Order History</a></li>
+        <li class="nav-item"><a href="invoice.html"><i class="fas fa-file-invoice" style="color: #ffffff;"></i> Invoice</a></li>
+        <li class="nav-item"><a href="settings.html"><i class="fas fa-cog" style="color: #ffffff;"></i> Settings</a></li>
+        <li class="nav-item"><a href="/logout"><i class="fas fa-sign-out-alt" style="color: #ffffff;"></i> Log Out</a></li>
+        <li class="nav-item" style="margin-top: 155%;"><a href="helpdesk"><i class="fa fa-question" style="color: #ffffff;"></i> Help Desk</a></li>
+    </ul>
+    
+</div>
+
+<div class="main-content">
+  
+    <div class="user-info">
+        <h2 id="welcomeMessage">Welcome Back, User</h2>
+        <p>Get your summary of your monthly transaction here</p>
+    </div>
+    
+
+
+    <!-- Dashboard Widgets -->
+    <div class="dashboard-widget">
+        <h3>Your Balance</h3>
+        <table>
+            <tr>
+                <th>Invoice ID</th>
+                <th>Amt Paid</th>
+                <th>Balance</th>
+            </tr>
+            <tr>
+                
+            </tr>
+            <tr>
+               
+            </tr>
+        </table>
+       
+    </div>
+    <div class="card">
+    <div class="dashboard-widget">
+        <h3>Current Rental</h3>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Rent Date</th>
+                <th>Return Date</th>
+            </tr>
+        </table>
+   </div>
+   <div class="mini-widget">
+    <h3>Order Status</h3>
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+   </div>
+</div>
+<div class="card">
+    <div class="dashboard-widget">
+        <h3>Client Status</h3>
+        <h4> Good Standing</h4>
+      
+   </div>
+   <div class="mini-widget">
+    
+   </div>
+</div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchUserFirstNameAndUpdateGreeting();
+    });
+    
+    function fetchUserFirstNameAndUpdateGreeting() {
+    fetch('/get-user-data')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.firstName) {
+                document.getElementById('welcomeMessage').textContent = `Welcome Back, ${data.firstName}`;
+            }
+        })
+        .catch(error => console.error('Error fetching user data:', error));
+}
+
+
+    </script>
+    <script src="app.js"></script>
+    
+</body>
+</html>
