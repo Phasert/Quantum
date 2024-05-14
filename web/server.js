@@ -379,6 +379,7 @@ app.post('/cart', async (req, res) => {
 });
 app.get('/cart', (req, res) => {
     const userId = req.session.userId; // Retrieve the logged-in user's ID from the session
+    
 
     // Query to select only the shopping cart items for the current customer
     const query = 'SELECT c.Quantity, c.Cost_Est, c.custComment, c.rentDate, c.rentTime, c.returnDate, c.returnTime, c.cartID, p.pName FROM shoppingcart c JOIN product p ON c.ProductID = p.productID WHERE c.CustomerID = ?';
@@ -431,6 +432,61 @@ app.delete('/cart/:cartID', (req, res) => {
     //         }
     //     });
     // });
-
   
 
+    app.post('/save', async(req,res) =>{
+        const userId = req.session.userId;
+        const {amt} =req.body;
+    
+        const query = 'SELECT CustomerID, ProductID, Quantity, Cost_Est, custComment, rentDate, returnDate FROM shoppingcart WHERE CustomerID = ?';
+        db.query(query, [userId] , (err, results) => {
+            if (err) {
+                console.error(err);
+                res.status(500).send('Error fetching Cart details');
+            } else {
+                if (results.length === 0) {
+                    res.status(404).send('Customer card not found');
+                } else {
+                    const insertQuery = 'INSERT into productorder (CustomerID,ProductID, Quantity) VALUES (?,?,?)';
+                    const insertOrdQuery = 'INSERT into ord (CustomerID, POrderID, RentDate, ReturnDate) VALUES (?,?,?,?)';
+                    const insertInvoiceQuery = 'INSERT into invoice (OrderID, CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate) VALUES (?,?,?,?,?,?,?,?)';
+                    results.forEach((item) => {
+                        const {CustomerID, ProductID, Quantity, Cost_Est, custComment, rentDate, returnDate } = item;
+                        db.query(insertQuery, [userId, ProductID, Quantity], (err, insertResult) => {
+                            if (err) {
+                                console.error(err);
+                                res.status(500).send('Error saving to product order table');
+                            } else {
+                                const POrderID = insertResult.insertId;
+                                db.query(insertOrdQuery, [userId, POrderID, rentDate, returnDate], (err, insertOrdResult) => {
+                                    if (err) {
+                                        console.error(err);
+                                        res.status(500).send('Error saving to ord table');
+                                    } else {
+                                        const OrderID = insertOrdResult.insertId;
+                                        const PaidAmt = amt; // assuming amt is defined somewhere in your code
+                                        const Total = Cost_Est;
+                                        const Balance = Total - PaidAmt;
+                                        let PaymentStatus = "Unpaid";
+                                        if (Balance > 0 && Balance < Total) {
+                                            PaymentStatus = "Pending";
+                                        } else if (Balance === 0) {
+                                            PaymentStatus = "Paid";
+                                        }
+                                        db.query(insertInvoiceQuery, [OrderID, userId, Balance, PaidAmt, Total, PaymentStatus, rentDate, returnDate], (err, insertInvoiceResult) => {
+                                            if (err) {
+                                                console.error(err);
+                                                res.status(500).send('Error saving to invoice table');
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    res.json({ message: 'Saved to product order, ord, and invoice tables' });
+                }
+            }
+        });
+    });
+    
