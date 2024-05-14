@@ -448,13 +448,13 @@ app.delete('/cart/:cartID', (req, res) => {
                     res.status(404).send('Customer cart not found');
                 } else {
                     const insertQuery = 'INSERT INTO productorder (CustomerID, ProductID, Quantity) VALUES (?,?,?)';
-                    const insertOrdQuery = 'INSERT INTO ord (CustomerID, POrderID, RentDate, ReturnDate) VALUES (?,?,?,?)';
+                    const insertOrdQuery = 'INSERT INTO ord (CustomerID, POrderID, RentDate, ReturnDate, Note) VALUES (?,?,?,?,?)';
                     const insertInvoiceQuery = 'INSERT INTO invoice (CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate) VALUES (?,?,?,?,?,?,?)';
                     
                     let totalCost = 0;
     
                     results.forEach((item, index) => {
-                        const { ProductID, Quantity, Cost_Est, rentDate, returnDate } = item;
+                        const { ProductID, Quantity, Cost_Est, rentDate, returnDate, custComment } = item;
                         totalCost += Cost_Est;
     
                         db.query(insertQuery, [userId, ProductID, Quantity], (err, insertResult) => {
@@ -463,7 +463,7 @@ app.delete('/cart/:cartID', (req, res) => {
                                 res.status(500).send('Error saving to product order table');
                             } else {
                                 const POrderID = insertResult.insertId;
-                                db.query(insertOrdQuery, [userId, POrderID, rentDate, returnDate], (err, insertOrdResult) => {
+                                db.query(insertOrdQuery, [userId, POrderID, rentDate, returnDate, custComment], (err, insertOrdResult) => {
                                     if (err) {
                                         console.error(err);
                                         res.status(500).send('Error saving to ord table');
@@ -490,6 +490,38 @@ app.delete('/cart/:cartID', (req, res) => {
                     });
                 }
             }
+        });
+    });
+    app.get('/get-dashboard-data', (req, res) => {
+        const userId = req.session.userId;
+    
+        const invoicesQuery = 'SELECT InvoiceID, PaidAmt, Balance, PaymentStatus, RentDate, ReturnDate FROM invoice WHERE CustomerID = ?';
+        const rentalsQuery = `
+            SELECT product.pName AS item, productorder.Quantity, ord.RentDate, ord.ReturnDate, ord.Note AS comment 
+            FROM productorder 
+            JOIN ord ON productorder.POrderID = ord.POrderID 
+            JOIN product ON productorder.ProductID = product.ProductID
+            WHERE productorder.CustomerID = ?
+        `;
+    
+        db.query(invoicesQuery, [userId], (err, invoiceResults) => {
+            if (err) {
+                console.error('SQL Error:', err);
+                return res.status(500).send('Error fetching invoice data');
+            }
+    
+            db.query(rentalsQuery, [userId], (err, rentalResults) => {
+                if (err) {
+                    console.error('SQL Error:', err);
+                    return res.status(500).send('Error fetching rental data');
+                }
+    
+                res.json({
+                    invoices: invoiceResults,
+                    rentals: rentalResults,
+                    clientStatus: invoiceResults.length > 0 ? invoiceResults[0].PaymentStatus : 'Unknown'
+                });
+            });
         });
     });
     

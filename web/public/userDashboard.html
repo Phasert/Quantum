@@ -7,23 +7,14 @@
 <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=IM+Fell+French+Canon&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=IM+Fell+French+Canon&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-
-
 
 <title>User Dashboard</title>
 </head>
@@ -45,110 +36,169 @@
         <li class="nav-item"><a href="/logout"><i class="fas fa-sign-out-alt" style="color: #ffffff;"></i> Log Out</a></li>
         <li class="nav-item" style="margin-top: 155%;"><a href="helpdesk"><i class="fa fa-question" style="color: #ffffff;"></i> Help Desk</a></li>
     </ul>
-    
 </div>
 
 <div class="main-content">
-  
     <div class="user-info">
         <h2 id="welcomeMessage">Welcome Back, User</h2>
         <p>Get your summary of your monthly transaction here</p>
     </div>
-    
-
 
     <!-- Dashboard Widgets -->
     <div class="dashboard-widget">
         <h3>Your Balance</h3>
         <table>
-            <tr>
-                <th>Invoice ID</th>
-                <th>Amt Paid</th>
-                <th>Balance</th>
-            </tr>
-            <tr>
-                <td></td>
-                <td>$</td>
-                <td>$</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>$</td>
-                <td>$</td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Amt Paid</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody id="balanceTableBody">
+                <!-- Balance data will be populated here -->
+            </tbody>
         </table>
-       
     </div>
+
     <div class="card">
-    <div class="dashboard-widget">
-        <h3>Current Rental</h3>
-        <table>
-            <tr>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Rent Date</th>
-                <th>Return Date</th>
-                <th>Amt Paid</th>
-                <th>Balance</th>
-            </tr>
-        </table>
-   </div>
-   <div class="mini-widget">
-    <h3>Order Status</h3>
-    <table>
-        <tr>
-            <th>Order ID</th>
-            <th>Status</th>
-        </tr>
-        <tr>
-            <td>5001</td>
-            <td>Processing</td>
-            <td><button>Cancel</button></td>
-        </tr>
-    </table>
-   </div>
+        <div class="dashboard-widget">
+            <h3>Current Rental</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Rent Date</th>
+                        <th>Return Date</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody id="currentRentalTableBody">
+                    <!-- Current rental data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="mini-widget">
+            <h3>Order Status</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="clientStatus">
+                    <!-- Order status data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="dashboard-widget">
+            <h3>Client Status</h3>
+            <h4 >Good Standing</h4>
+        </div>
+    </div>
 </div>
-<div class="card">
-    <div class="dashboard-widget">
-        <h3>Client Status</h3>
-        <h4> Good Standing</h4>
-      
-   </div>
-   <div class="mini-widget">
-    
-   </div>
-</div>
-</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         fetchUserFirstNameAndUpdateGreeting();
+        fetchDashboardData();
     });
-    
+
     function fetchUserFirstNameAndUpdateGreeting() {
-    fetch('/get-user-data')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.firstName) {
-                document.getElementById('welcomeMessage').textContent = `Welcome Back, ${data.firstName}`;
-            }
-        })
-        .catch(error => console.error('Error fetching user data:', error));
-}
+        fetch('/get-user-data')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.firstName) {
+                    document.getElementById('welcomeMessage').textContent = `Welcome Back, ${data.firstName}`;
+                }
+            })
+            .catch(error => console.error('Error fetching user data:', error));
+    }
 
-EACH ITEM WHERE {
-    CustomerID = UserID && Rentdate = same DO
-    Total = total + estimate cost
-    
-}
+    function fetchDashboardData() {
+        fetch('/get-dashboard-data')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                updateBalanceTable(data.invoices);
+                updateCurrentRentalTable(data.rentals);
+                updateClientStatus(data.clientStatus);
+            })
+            .catch(error => console.error('Error fetching dashboard data:', error));
+    }
 
+    function updateBalanceTable(invoices) {
+        const tableBody = document.getElementById('balanceTableBody');
+        tableBody.innerHTML = ''; // Clear existing table rows
+        
+        invoices.forEach(invoice => {
+            const row = document.createElement('tr');
+            
+            const invoiceIdCell = document.createElement('td');
+            invoiceIdCell.textContent = invoice.InvoiceID;
+            row.appendChild(invoiceIdCell);
+            
+            const amtPaidCell = document.createElement('td');
+            amtPaidCell.textContent = `$${invoice.PaidAmt}`;
+            row.appendChild(amtPaidCell);
+            
+            const balanceCell = document.createElement('td');
+            balanceCell.textContent = `$${invoice.Balance}`;
+            row.appendChild(balanceCell);
+            
+            tableBody.appendChild(row);
+        });
+    }
 
-    </script>
-    <script src="app.js"></script>
-    
+    function updateCurrentRentalTable(rentals) {
+        const tableBody = document.getElementById('currentRentalTableBody');
+        tableBody.innerHTML = ''; // Clear existing table rows
+        
+        rentals.forEach(rental => {
+            const row = document.createElement('tr');
+            
+            const itemCell = document.createElement('td');
+            itemCell.textContent = rental.item;
+            row.appendChild(itemCell);
+            
+            const quantityCell = document.createElement('td');
+            quantityCell.textContent = rental.Quantity;
+            row.appendChild(quantityCell);
+            
+            const rentDateCell = document.createElement('td');
+            rentDateCell.textContent = new Date(rental.RentDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+            row.appendChild(rentDateCell);
+            
+            const returnDateCell = document.createElement('td');
+            returnDateCell.textContent = new Date(rental.ReturnDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+            row.appendChild(returnDateCell);
+            
+            const commentCell = document.createElement('td');
+            commentCell.textContent = rental.comment;
+            row.appendChild(commentCell);
+            
+            tableBody.appendChild(row);
+        });
+    }
+
+    function updateClientStatus(clientStatus) {
+        document.getElementById('clientStatus').textContent = clientStatus;
+    }
+</script>
+<script src="app.js"></script>
+
 </body>
 </html>
