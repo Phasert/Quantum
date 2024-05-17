@@ -119,12 +119,6 @@
                             <input type="checkbox" id="saveInfoCheckbox" name="saveInfo" value="saveInfo">
                             Save card information for next time.
                         </label>   
-                       
-                        
-
-                    <div id="billingEdit" class="checkout-display hidden">
-                         <!-- Include input fields for editing -->
-                    </div>
                         
                         </div>
                         <button type="submit" >Pay</button>
@@ -134,7 +128,7 @@
             <div class="container checkout-container">
                 <div>
                     <h2>Billing Address</h2>
-                    <div id="billingReceipt" class="receipt">
+                    <div id="billingReceipt" class="receipt hidden">
                         <div class="checkout-display">
                             <p><strong>Email:</strong> <span id="billingEmailSpan"></span></p>
                             <p><strong>Name:</strong> <span id="billingNameSpan"></span></p>
@@ -143,61 +137,151 @@
                             <p><strong>Street Address:</strong> <span id="billingStAddressSpan"></span></p>
                             <p><strong>Optional Address:</strong> <span id="billingOptAddressSpan"></span></p>
                             <p><strong>City:</strong> <span id="billingCitySpan"></span></p>
+                        </div>
+                        <button onclick="toggleEditBilling()">Edit</button>
+                    </div>
+            
+                    <div id="billingEdit" class="receipt">
+                        <form id="billingForm">
+                            <div class="checkout-display">
+                                <p><strong>Email:</strong> <input type="text" id="billingEmailInput" required></p>
+                                <p><strong>Name:</strong> <input type="text" id="billingNameInput" required></p>
+                                <p><strong>Company:</strong> <input type="text" id="billingCompanyInput"></p>
+                                <p><strong>Country:</strong>
+                                    <select id="billingCountryInput" name="country" required>
+                                        <option value="">Select Country</option>
+                                        <option value="TRI">Trinidad</option>
+                                        <option value="TOB">Tobago</option>
+                                    </select>
+                                </p>
+                                <p><strong>Street Address:</strong> <input type="text" id="billingStAddressInput" required></p>
+                                <p><strong>Optional Address:</strong> <input type="text" id="billingOptAddressInput"></p>
+                                <p><strong>City:</strong> <input type="text" id="billingCityInput" required></p>
                             </div>
-                            <button onclick="toggleEditBilling()">Edit</button>
+                            <button type="submit">Save</button>
+                        </form>
                     </div>
                 </div>
-                <button type="submit" >Pay</button>
-                <!-- <button type="submit"  onclick="goToPlaceOrder()">Pay</button> -->
-                        <button type="submit"  onclick="goToCheckout()">Back</button>
-                        <button type="button" onclick="goToIndex()">Cancel</button>
+                <button type="submit">Pay</button>
+                <button type="button" onclick="goToCheckout()">Back</button>
+                <button type="button" onclick="goToIndex()">Cancel</button>
             </div>
-        </div>
-<script src="app.js"></script>
-<script>
+            
+            
+            <script src="app.js"></script>
+            <script>
+               document.addEventListener('DOMContentLoaded', function() {
+    fetchUserData();
 
-// Get the checkbox element
-var saveInfoCheckbox = document.getElementById("saveInfoCheckbox");
-
-// Add an event listener to toggle the checkbox state when the label is clicked
-saveInfoCheckbox.addEventListener("click", function() {
-    // Toggle the checked state of the checkbox
-    this.checked = !this.checked;
+    // Attach the saveChanges function to the form's submit event
+    document.getElementById('billingForm').addEventListener('submit', saveChanges);
 });
+
+function fetchUserData() {
+    fetch('/get-billing-info')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No billing information found');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Check if the retrieved data has IsBillingAddress set to true (or 1)
+            if (data.IsBillingAddress == 1) {
+                document.getElementById('billingEmailSpan').innerText = data.Email;
+                document.getElementById('billingNameSpan').innerText = `${data.FirstName} ${data.LastName}`;
+                document.getElementById('billingCompanySpan').innerText = data.Company;
+                document.getElementById('billingCountrySpan').innerText = data.Country;
+                document.getElementById('billingStAddressSpan').innerText = data.StreetAddress;
+                document.getElementById('billingOptAddressSpan').innerText = data.AptSuiteFloor;
+                document.getElementById('billingCitySpan').innerText = data.City;
+
+                document.getElementById('billingReceipt').classList.remove('hidden');
+                document.getElementById('billingEdit').classList.add('hidden');
+            } else {
+                document.getElementById('billingReceipt').classList.add('hidden');
+                document.getElementById('billingEdit').classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+            document.getElementById('billingReceipt').classList.add('hidden');
+            document.getElementById('billingEdit').classList.remove('hidden');
+        });
+}
 
 function toggleEditBilling() {
     var receipt = document.getElementById("billingReceipt");
     var edit = document.getElementById("billingEdit");
 
-    // Toggle visibility
     receipt.classList.toggle("hidden");
     edit.classList.toggle("hidden");
 
     if (!edit.classList.contains("hidden")) {
-        // Populate input fields with current values
         document.getElementById("billingEmailInput").value = document.getElementById("billingEmailSpan").innerText;
-        // Populate other input fields similarly
+        document.getElementById("billingNameInput").value = document.getElementById("billingNameSpan").innerText;
+        document.getElementById("billingCompanyInput").value = document.getElementById("billingCompanySpan").innerText;
+        document.getElementById("billingCountryInput").value = document.getElementById("billingCountrySpan").innerText;
+        document.getElementById("billingStAddressInput").value = document.getElementById("billingStAddressSpan").innerText;
+        document.getElementById("billingOptAddressInput").value = document.getElementById("billingOptAddressSpan").innerText;
+        document.getElementById("billingCityInput").value = document.getElementById("billingCitySpan").innerText;
     }
 }
 
+function saveChanges(event) {
+    event.preventDefault(); // Prevent the form from submitting the traditional way
 
+    var email = document.getElementById("billingEmailInput").value;
+    var name = document.getElementById("billingNameInput").value;
+    var company = document.getElementById("billingCompanyInput").value;
+    var country = document.getElementById("billingCountryInput").value;
+    var streetAddress = document.getElementById("billingStAddressInput").value;
+    var optAddress = document.getElementById("billingOptAddressInput").value;
+    var city = document.getElementById("billingCityInput").value;
+    var isBillingAddress = true; // or however you determine this value
 
-    function goToIndex() {
-// Redirect to the index.html page
-window.location.href = "index.html";
+    var [firstName, lastName] = name.split(' ');
+
+    var billingInfo = {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        company: company,
+        country: country,
+        streetAddress: streetAddress,
+        aptSuiteFloor: optAddress,
+        city: city,
+        isBillingAddress: isBillingAddress
+    };
+
+    fetch('/submit-delivery-info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(billingInfo)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.redirect) {
+            window.location.href = data.redirect;
+        } else {
+            alert('Information saved successfully');
+            fetchUserData(); // Refresh user data to reflect changes
+        }
+    })
+    .catch(error => {
+        alert('An error occurred. Please try again.');
+        console.error('Fetch error:', error);
+    });
 }
 
-function goToPlaceOrder() {
-
-window.location.href = "placeOrder.html";
+function goToIndex() {
+    window.location.href = "index.html";
 }
 
 function goToCheckout() {
-
-window.location.href = "checkout.html";
+    window.location.href = "checkout.html";
 }
 
 
-</script>
-</body>
-</html>
+            </script>
+            

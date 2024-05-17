@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Clement@71', // Change this to your MySQL password
+    password: 'ilMeesha', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -527,14 +527,15 @@ app.delete('/cart/:cartID', (req, res) => {
     
     // Route to handle form submission
 app.post('/submit-delivery-info', (req, res) => {
+    const userId = req.session.userId;
     const { email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress } = req.body;
 
     const query = `
-        INSERT INTO Address (Email, FirstName, LastName, Company, Country, StreetAddress, AptSuiteFloor, City, IsBillingAddress)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Address (CustomerID, Email, FirstName, LastName, Company, Country, StreetAddress, AptSuiteFloor, City, IsBillingAddress)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
     `;
 
-    const values = [email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress ? 1 : 0];
+    const values = [userId, email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress ? 1 : 0];
 
     db.query(query, values, (err, result) => {
         if (err) {
@@ -550,11 +551,54 @@ app.post('/submit-delivery-info', (req, res) => {
     });
 });
 
+// Route to handle updates to existing records
+app.post('/update-delivery-info', (req, res) => {
+    const userId = req.session.userId;
+    const { email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress } = req.body;
+
+    const query = `
+        UPDATE Address
+        SET Email = ?, FirstName = ?, LastName = ?, Company = ?, Country = ?, StreetAddress = ?, AptSuiteFloor = ?, City = ?, IsBillingAddress = ?
+        WHERE CustomerID = ?
+    `;
+
+    const values = [email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress ? 1 : 0, userId];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Error updating data:', err);
+            res.status(500).send('Error updating data');
+            return;
+        }
+
+        // Save billing info in the session
+        req.session.billingInfo = { email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress };
+
+        res.json({ status: 'success', updatedInfo: req.session.billingInfo });
+    });
+});
+
+
 // Route to get billing info
 app.get('/get-billing-info', (req, res) => {
-    if (req.session.billingInfo) {
-        res.json(req.session.billingInfo);
-    } else {
-        res.status(404).send('No billing information found');
-    }
+    const userId = req.session.userId;
+
+    const query = `
+        SELECT * FROM Address
+        WHERE CustomerID = ? AND IsBillingAddress = 1
+    `;
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).send('Error fetching data');
+            return;
+        }
+
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(404).send('No billing information found');
+        }
+    });
 });
