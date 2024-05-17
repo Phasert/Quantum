@@ -68,7 +68,7 @@ body {
 }
 
 .invoice-box {
-    min-width: 70rem;
+    min-width: 50rem;
     margin: auto;
     margin-top: 2%;
     padding: 20px;
@@ -175,6 +175,29 @@ input:focus {
     border-color: #451F0F;
 }
 
+#chat-container {
+    width: 400px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
+}
+
+#chat-box {
+    height: 300px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+#messages {
+    list-style: none;
+    padding: 0;
+}
+
+#message-input {
+    width: calc(100% - 50px);
+    padding: 10px;
+}
   
   @media screen and (max-width: 768px) {
     .sidebar {
