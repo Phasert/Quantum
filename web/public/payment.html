@@ -165,7 +165,8 @@
                 <button type="submit">Pay</button>
                 <button type="button" onclick="goToCheckout()">Back</button>
                 <button type="button" onclick="goToIndex()">Cancel</button>
-            </div>            
+            </div>
+            
             
             
             <script src="app.js"></script>
@@ -254,24 +255,40 @@ function saveChanges(event) {
         isBillingAddress: isBillingAddress
     };
 
-    fetch('/submit-delivery-info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(billingInfo)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.redirect) {
-            window.location.href = data.redirect;
-        } else {
-            alert('Information saved successfully');
-            fetchUserData(); // Refresh user data to reflect changes
-        }
-    })
-    .catch(error => {
-        alert('An error occurred. Please try again.');
-        console.error('Fetch error:', error);
-    });
+    fetch('/get-billing-info')
+        .then(response => {
+            if (!response.ok) {
+                // No existing billing info, insert a new one
+                return fetch('/submit-delivery-info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(billingInfo)
+                });
+            } else {
+                // Existing billing info found, update it
+                return fetch('/update-delivery-info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(billingInfo)
+                });
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            } else if (data.status === 'success') {
+                alert('Information updated successfully');
+                fetchUserData(); // Refresh user data to reflect changes
+            } else {
+                alert('Information saved successfully');
+                fetchUserData(); // Refresh user data to reflect changes
+            }
+        })
+        .catch(error => {
+            alert('An error occurred. Please try again.');
+            console.error('Fetch error:', error);
+        });
 }
 
 function goToIndex() {
@@ -283,6 +300,6 @@ function goToCheckout() {
 }
 
 
-
             </script>
+            
             
