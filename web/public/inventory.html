@@ -54,9 +54,37 @@
     <div class="user-info">
         <h2>Inventory</h2>
     </div>
-    
-
-
+    <div class="dashboard-widget">
+        <form action="/submit" method="post">
+        <h3>Add Product</h3>
+        <table>
+            <tr>
+                <th>Product Name</th>
+                <th>Cost Per Piece</th>
+                <th>Quantity</th>
+                <th>Description</th>
+                <th>Catergory</th>
+                <th>Add Product</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="product_name" required></td>
+                <td><input type="text" name="cost_per_piece" required></td>
+                <td><input type="number" name="quantity" required></td>
+                <td><textarea name="description" required></textarea></td>
+                <td>
+                    <select name="category" required>
+                        <option value="glass">glass</option>
+                        <option value="water glass">water glass</option>
+                        <option value="linen">linen</option>
+                        <option value="cutlery">cutlery</option>
+                        <option value="cutlery">stands</option>
+                    </select>
+                </td>
+                <td><button type="submit" class="submit-button">Add</button></td>
+            </tr>
+        </table>
+    </form>
+    </div>
     <!-- Dashboard Widgets -->
     <div class="dashboard-widget">
         <table>
@@ -70,6 +98,7 @@
         </table>
        
     </div>
+   
     
 <script>
     document.addEventListener('DOMContentLoaded', function() {
