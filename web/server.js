@@ -483,6 +483,7 @@ app.delete('/cart/:cartID', (req, res) => {
                     const insertQuery = 'INSERT INTO productorder (CustomerID, ProductID, Quantity) VALUES (?,?,?)';
                     const insertOrdQuery = 'INSERT INTO ord (CustomerID, POrderID, RentDate, ReturnDate, Note) VALUES (?,?,?,?,?)';
                     const insertInvoiceQuery = 'INSERT INTO invoice (CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate) VALUES (?,?,?,?,?,?,?)';
+                    const deleteCartQuery = 'DELETE FROM shoppingcart WHERE CustomerID = ?';
                     
                     let totalCost = 0;
     
@@ -513,7 +514,14 @@ app.delete('/cart/:cartID', (req, res) => {
                                                 console.error(err);
                                                 res.status(500).send('Error saving to invoice table');
                                             } else {
-                                                res.json({ message: 'Saved to product order, ord, and invoice tables' });
+                                                db.query(deleteCartQuery, [userId], (err, deleteResult) => {
+                                                    if (err) {
+                                                        console.error(err);
+                                                        res.status(500).send('Error deleting from shopping cart table');
+                                                    } else {
+                                                        res.json({ message: 'Saved to product order, ord, and invoice tables, and cart cleared' });
+                                                    }
+                                                });
                                             }
                                         });
                                     }
@@ -525,6 +533,7 @@ app.delete('/cart/:cartID', (req, res) => {
             }
         });
     });
+    
     app.get('/get-dashboard-data', (req, res) => {
         const userId = req.session.userId;
     
