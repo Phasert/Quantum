@@ -7,25 +7,16 @@
 <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=IM+Fell+French+Canon&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&family=Baskervville&family=Bodoni+Moda:ital,opsz@1,6..96&family=Castoro&family=Cinzel&family=Diphylleia&family=Forum&family=Gilda+Display&family=IM+Fell+French+Canon&family=Krub:ital,wght@1,200&family=Manrope:wght@200&family=Playfair:ital,opsz,wght@1,5..1200,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
-
-
-<title>User Dashboard</title>
+<title>Your Dashboard</title>
 </head>
 <body>
 
@@ -37,40 +28,46 @@
 
     <!-- Navigation Menu -->
     <ul class="nav-menu">
-        <li class="nav-item"><a href="userDashboard.html"><i class="fas fa-grip-vertical" style="color: #ffffff;"></i> Dashboard</a></li>
+        <li class="nav-item"><a href="userDashboard.html" ><i class="fas fa-grip-vertical" style="color: #ffffff;"></i> Dashboard</a></li>
         <li class="nav-item"><a href="index.html"><i class="fas fa-home" style="color: #ffffff;"></i> Home</a></li>
-        <li class="nav-item"><a href="order.html" class="active"><i class="fas fa-exchange-alt" style="color: #ffffff;"></i> Order History</a></li>
+        <li class="nav-item"><a href="order.html"><i class="fas fa-exchange-alt" style="color: #ffffff;"></i> Order History</a></li>
         <li class="nav-item"><a href="invoice.html"><i class="fas fa-file-invoice" style="color: #ffffff;"></i> Invoice</a></li>
         <li class="nav-item"><a href="settings.html"><i class="fas fa-cog" style="color: #ffffff;"></i> Settings</a></li>
         <li class="nav-item"><a href="/logout"><i class="fas fa-sign-out-alt" style="color: #ffffff;"></i> Log Out</a></li>
-        <li class="nav-item" style="margin-top: 155%;"><a href="helpdesk"><i class="fa fa-question" style="color: #ffffff;"></i> Help Desk</a></li>
+        <li class="nav-item" style="margin-top: 155%;"><a href="helpdesk.html" class="active"><i class="fa fa-question" style="color: #ffffff;"></i> Help Desk</a></li>
     </ul>
-    
 </div>
 
 <div class="main-content">
-    <h2>Order History</h2>
-    <!-- Dashboard Widgets -->
-    <div class="dashboard-widget">
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Invoice ID</th>
-                <th>Total</th>
-                <th>View</th>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><button>view full invoice</button></td>
-            </tr>
-        </table>
+    <div class="user-info">
+        <h2>Help Desk</h2>
+        <p>Let us know how can we assist you</p>
     </div>
-</div>
-<script src="app.js">
+
+    <div id="chat-container">
+        <div id="chat-box">
+            <div id="messages"></div>
+        </div>
+        <input type="text" id="message-input" placeholder="Type a message...">
+        <button id="send-button">Send</button>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    const socket = io();
+
+    document.getElementById('send-button').addEventListener('click', () => {
+        const message = document.getElementById('message-input').value;
+        socket.emit('chat message', message);
+        document.getElementById('message-input').value = '';
+    });
     
-</script>
+    socket.on('chat message', (msg) => {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = msg;
+        document.getElementById('messages').appendChild(messageElement);
+    });
+    </script>
+   
 
 </body>
 </html>
