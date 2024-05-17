@@ -602,3 +602,13 @@ app.get('/get-billing-info', (req, res) => {
         }
     });
 });
+app.get('/order/:InvoiceID', (req, res) => {
+    const invoiceID = req.params.invoiceID;
+    const query = `SELECT * FROM Invoice WHERE InvoiceID = ${invoiceID}`;
+  
+    connection.query(query, (error, results, fields) => {
+      if (error) throw error;
+      const invoice = results[0]; // Assuming only one invoice per order for simplicity
+      res.render('order', { invoice });
+    });
+  });

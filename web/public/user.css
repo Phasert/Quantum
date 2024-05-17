@@ -8,7 +8,6 @@ body {
     width: 250px;
     background-color: #623E2A;
     color: white;
-    height: 100%;
     padding: 20px;
     box-sizing: border-box;
 }
@@ -137,43 +136,56 @@ button:hover {
 /*settings page css*/
 .page-content {
     display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 18px;
     background-color: #f5f5f5;
     box-sizing: border-box;
     max-height: 250px;
-
+    flex-wrap: wrap; /* Allow widgets to wrap */
 }
 
 .page-widget {
-    flex-grow: 1;
-    margin-right: 20px; /* Adjust margin as needed */
+    margin-right: 20px;
+    margin-bottom: 20px;
     background: #fff;
     padding: 20px;
     border-radius: 5px;
-    margin-bottom: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    height: auto;
-    width: 325px;
+    width: 300px; /* Adjusted width */
+}
+
+input {
+    width: calc(100% - 22px); /* Adjusted input width */
+    padding: 5px;
+    border: 2px solid #623E2A;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    font-family: 'Manrope', sans-serif;
+}
+
+/* Style the placeholder text */
+input::placeholder {
+    color: #999;
+}
+
+/* Style the input box when it's focused */
+input:focus {
+    border-color: #451F0F;
 }
 
   
-input {
-    width: 200px; /* Set the width of the input box */
-    padding: 5px; /* Add padding to the input box */
-    border: 2px solid #623E2A; /* Add a border around the input box */
-    border-radius: 4px; /* Add rounded corners to the input box */
-    font-size: 14px; /* Set the font size of the text inside the input box */
-    outline: none; /* Remove the default focus outline */
-    font-family: 'Manrope', sans-serif;
-  }
-  
-  /* Style the placeholder text */
-input::placeholder {
-    color: #999; /* Set the color of the placeholder text */
-  }
-  
-  /* Style the input box when it's focused */
-input:focus {
-    border-color: #451F0F; /* Change the border color when the input box is focused */
-  }
-  
+  @media screen and (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Full width sidebar on small screens */
+    }
+
+    .nav-item a {
+        padding: 8px; /* Reduce padding for nav links on small screens */
+    }
+
+    .card .dashboard-widget {
+        width: 100%; /* Full width for dashboard widget on small screens */
+    }
+}
