@@ -118,34 +118,67 @@ async function sendWelcomeEmail(firstName, userEmail, customerId) {
 
 app.post('/login', (req, res) => {
     const { loginId, password } = req.body;
-    
-    // First, get the user's hashed password from the database
-    const query = 'SELECT * FROM customer WHERE customerID = ?';
-    
-    db.query(query, [loginId], (err, results) => {
+
+    // First, get the user's hashed password from the customer table
+    const customerQuery = 'SELECT * FROM customer WHERE customerID = ?';
+
+    db.query(customerQuery, [loginId], (err, results) => {
         if (err) {
-            console.error('Error fetching user', err);
+            console.error('Error fetching user from customer table', err);
             return res.status(500).send('An error occurred');
         }
         if (results.length > 0) {
-            // Now, compare the submitted password with the hashed password
-            bcrypt.compare(password, results[0].pword, function(err, result) {
+            // Compare the submitted password with the hashed password for customer
+            bcrypt.compare(password, results[0].pword, (err, result) => {
+                if (err) {
+                    console.error('Error comparing passwords', err);
+                    return res.status(500).send('An error occurred');
+                }
                 if (result) {
-                    // Passwords match, login successful
+                    // Passwords match, login successful for customer
                     req.session.userId = results[0].customerID;
                     req.session.firstName = results[0].firstName;
-                    res.redirect('/userDashboard.html');
+                    return res.redirect('/userDashboard.html');
                 } else {
-                    // Passwords do not match, login failed
-                    res.status(401).send('Login failed');
+                    // Passwords do not match for customer
+                    return res.status(401).send('Login failed');
                 }
             });
         } else {
-            // No user found with the provided ID
-            res.status(401).send('Login failed');
+            // No user found in customer table, check the staff table
+            const staffQuery = 'SELECT * FROM staff WHERE employeeID = ?';
+            db.query(staffQuery, [loginId], (err, results) => {
+                if (err) {
+                    console.error('Error fetching user from staff table', err);
+                    return res.status(500).send('An error occurred');
+                }
+                if (results.length > 0) {
+                    // Compare the submitted password with the stored password for staff
+                    const storedPassword = results[0].pword; // Assuming the staff password is stored in plain text or a different format
+                    if (password === storedPassword) {
+                        // Passwords match, login successful for staff
+                        req.session.userId = results[0].employeeID;
+                        req.session.firstName = results[0].firstName;
+                        
+                        // Check the position and redirect accordingly
+                        if (results[0].position === 'driver') {
+                            return res.redirect('/driverDashboard.html');
+                        } else {
+                            return res.redirect('/staffDashboard.html');
+                        }
+                    } else {
+                        // Passwords do not match for staff
+                        return res.status(401).send('Login failed');
+                    }
+                } else {
+                    // No user found in either customer or staff table
+                    return res.status(401).send('Login failed');
+                }
+            });
         }
     });
 });
+
 
 // Server-side: Ensure this route is defined in your Express application
 app.get('/get-user-data', (req, res) => {
