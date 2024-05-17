@@ -1,2 +1,3 @@
 
 web/node_modules/bcrypt/lib/binding/napi-v3/bcrypt_lib.node
+/web/node_modules/bcrypt
