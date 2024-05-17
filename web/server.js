@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Clement@71', // Change this to your MySQL password
+    password: 'ilMeesha', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -118,34 +118,67 @@ async function sendWelcomeEmail(firstName, userEmail, customerId) {
 
 app.post('/login', (req, res) => {
     const { loginId, password } = req.body;
-    
-    // First, get the user's hashed password from the database
-    const query = 'SELECT * FROM customer WHERE customerID = ?';
-    
-    db.query(query, [loginId], (err, results) => {
+
+    // First, get the user's hashed password from the customer table
+    const customerQuery = 'SELECT * FROM customer WHERE customerID = ?';
+
+    db.query(customerQuery, [loginId], (err, results) => {
         if (err) {
-            console.error('Error fetching user', err);
+            console.error('Error fetching user from customer table', err);
             return res.status(500).send('An error occurred');
         }
         if (results.length > 0) {
-            // Now, compare the submitted password with the hashed password
-            bcrypt.compare(password, results[0].pword, function(err, result) {
+            // Compare the submitted password with the hashed password for customer
+            bcrypt.compare(password, results[0].pword, (err, result) => {
+                if (err) {
+                    console.error('Error comparing passwords', err);
+                    return res.status(500).send('An error occurred');
+                }
                 if (result) {
-                    // Passwords match, login successful
+                    // Passwords match, login successful for customer
                     req.session.userId = results[0].customerID;
                     req.session.firstName = results[0].firstName;
-                    res.redirect('/userDashboard.html');
+                    return res.redirect('/userDashboard.html');
                 } else {
-                    // Passwords do not match, login failed
-                    res.status(401).send('Login failed');
+                    // Passwords do not match for customer
+                    return res.status(401).send('Login failed');
                 }
             });
         } else {
-            // No user found with the provided ID
-            res.status(401).send('Login failed');
+            // No user found in customer table, check the staff table
+            const staffQuery = 'SELECT * FROM staff WHERE employeeID = ?';
+            db.query(staffQuery, [loginId], (err, results) => {
+                if (err) {
+                    console.error('Error fetching user from staff table', err);
+                    return res.status(500).send('An error occurred');
+                }
+                if (results.length > 0) {
+                    // Compare the submitted password with the stored password for staff
+                    const storedPassword = results[0].pword; // Assuming the staff password is stored in plain text or a different format
+                    if (password === storedPassword) {
+                        // Passwords match, login successful for staff
+                        req.session.userId = results[0].employeeID;
+                        req.session.firstName = results[0].firstName;
+                        
+                        // Check the position and redirect accordingly
+                        if (results[0].position === 'driver') {
+                            return res.redirect('/driverDashboard.html');
+                        } else {
+                            return res.redirect('/staffDashboard.html');
+                        }
+                    } else {
+                        // Passwords do not match for staff
+                        return res.status(401).send('Login failed');
+                    }
+                } else {
+                    // No user found in either customer or staff table
+                    return res.status(401).send('Login failed');
+                }
+            });
         }
     });
 });
+
 
 // Server-side: Ensure this route is defined in your Express application
 app.get('/get-user-data', (req, res) => {
@@ -527,14 +560,15 @@ app.delete('/cart/:cartID', (req, res) => {
     
     // Route to handle form submission
 app.post('/submit-delivery-info', (req, res) => {
+    const userId = req.session.userId;
     const { email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress } = req.body;
 
     const query = `
-        INSERT INTO Address (Email, FirstName, LastName, Company, Country, StreetAddress, AptSuiteFloor, City, IsBillingAddress)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Address (CustomerID, Email, FirstName, LastName, Company, Country, StreetAddress, AptSuiteFloor, City, IsBillingAddress)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
     `;
 
-    const values = [email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress ? 1 : 0];
+    const values = [userId, email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress ? 1 : 0];
 
     db.query(query, values, (err, result) => {
         if (err) {
@@ -550,15 +584,57 @@ app.post('/submit-delivery-info', (req, res) => {
     });
 });
 
-// Route to get billing info
-app.get('/get-billing-info', (req, res) => {
-    if (req.session.billingInfo) {
-        res.json(req.session.billingInfo);
-    } else {
-        res.status(404).send('No billing information found');
-    }
+// Route to handle updates to existing records
+app.post('/update-delivery-info', (req, res) => {
+    const userId = req.session.userId;
+    const { email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress } = req.body;
+
+    const query = `
+        UPDATE Address
+        SET Email = ?, FirstName = ?, LastName = ?, Company = ?, Country = ?, StreetAddress = ?, AptSuiteFloor = ?, City = ?, IsBillingAddress = ?
+        WHERE CustomerID = ?
+    `;
+
+    const values = [email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress ? 1 : 0, userId];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Error updating data:', err);
+            res.status(500).send('Error updating data');
+            return;
+        }
+
+        // Save billing info in the session
+        req.session.billingInfo = { email, firstName, lastName, company, country, streetAddress, aptSuiteFloor, city, isBillingAddress };
+
+        res.json({ status: 'success', updatedInfo: req.session.billingInfo });
+    });
 });
 
+
+// Route to get billing info
+app.get('/get-billing-info', (req, res) => {
+    const userId = req.session.userId;
+
+    const query = `
+        SELECT * FROM Address
+        WHERE CustomerID = ? AND IsBillingAddress = 1
+    `;
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).send('Error fetching data');
+            return;
+        }
+
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(404).send('No billing information found');
+        }
+    });
+});
 app.get('/order/:InvoiceID', (req, res) => {
     const invoiceID = req.params.invoiceID;
     const query = `SELECT * FROM Invoice WHERE InvoiceID = ${invoiceID}`;
@@ -569,5 +645,3 @@ app.get('/order/:InvoiceID', (req, res) => {
       res.render('order', { invoice });
     });
   });
-
- 
