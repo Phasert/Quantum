@@ -23,6 +23,7 @@ section {
   margin-top: 5rem;
 }
 
+
 nav {
     margin: 0;
     color: rgb(0,0,0);
@@ -63,25 +64,19 @@ li a:hover::after {
   width: 100%;
 }
 
-
-
-
-.text-and-image-section h2,
-.three-columns-section h2 {
-    font-family: 'Baskervville';
-    font-size: 2.5em;
-   
+section .text-container p{
+  font-family: 'Manrope', sans-serif;
 }
 
+.text-and-image-section{
+  margin-bottom: 2%;
+}
 .text-and-image-section p,
 .text-and-image-section2 p,
 .three-columns-section p {
     line-height: 1.5;
     font-size: 1em;
-    font-weight: 600;
 }
-
-
 
 .three-columns {
     display: flex;
@@ -148,10 +143,11 @@ li a:hover::after {
     flex-wrap: wrap;
   }
   /* pop up styling */
+ 
 .popup-container h1 {
     font-weight: bold;
     margin: 0;
-      font-family: 'Cinzel', serif;
+    font-family: 'Cinzel', serif;
   }
   
   .popup-container h2 {
@@ -212,6 +208,7 @@ li a:hover::after {
     padding: 12px 15px;
     margin: 8px 0;
     width: 100%;
+    font-family: 'Manrope', sans-serif;
   }
   
   .popup-container .container {
@@ -238,6 +235,7 @@ li a:hover::after {
     top: 0;
     height: 100%;
     transition: all 0.6s ease-in-out;
+    
   }
   
   .popup-container .sign-in-container {
@@ -388,3 +386,32 @@ li a:hover::after {
             margin: 0 10px; 
             font-family:'Segoe UI', Tahoma, Verdana, sans-serif;
           }       
+
+          
+
+          .spaced-heading h2 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .spaced-heading span {
+            display: inline-block;
+            margin: 0 8rem 0 5rem; 
+            flex: 1 1 auto; /* Ensures elements are flexible and responsive */
+            min-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+          .spaced-heading span {
+              margin: 0 1rem; /* Adjust margin for medium screens */
+          }
+      }
+
+      @media (max-width: 480px) {
+          .spaced-heading span {
+              margin: 0.5rem 0; /* Adjust margin for small screens */
+              flex-basis: 100%; /* Makes each element take full width */
+          }
+      }

@@ -79,7 +79,7 @@ li a:hover::after {
 .popup-container h1 {
   font-weight: bold;
   margin: 0;
-    font-family: 'Cinzel', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .popup-container h2 {
@@ -306,8 +306,6 @@ li a:hover::after {
         }
 /* reservation and catalogue buttons styling */
 .buttons-container {
-
-  
   margin-top: 8%;
 }
 
@@ -533,6 +531,20 @@ li a:hover::after {
   width: 100%;
   height: auto;
 }
+.text-box {
+  margin-bottom: -6%;
+}
+.text-box h3 {
+  margin-bottom: 11.5%;
+}
+.text-box p {
+  margin-top: -8%;
+  margin-bottom: 6%;
+}
+.learn-more-button {
+  font-size: 12px;
+}
+
 .pagination-container { /*pagination*/
   text-align: center;
   margin: 3%;
@@ -915,4 +927,66 @@ margin-bottom: 20px;
   color: #FFFFFF;
   margin-right: 10px;
   margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+  .catalogue h2 {
+      font-size: 2em;
+  }
+  .image-catalogue {
+      margin: 0 10px;
+  }
+  .text-box h3 {
+      margin-bottom: 8%;
+  }
+  .text-box p {
+      margin-top: -5%;
+      margin-bottom: 5%;
+  }
+  .footer-section h2 {
+    font-size: 1.75em;
+  }
+
+  .footer-column {
+    margin: 0 2px;
+    padding: 8px;
+  }
+}
+@media (max-width: 480px) {
+  .catalogue h2 {
+      font-size: 1.5em;
+  }
+  .columns-catalogue {
+      flex-direction: column;
+      align-items: center;
+  }
+  .image-catalogue {
+      margin: 0 5px;
+  }
+  .text-box h3 {
+      margin-bottom: 5%;
+  }
+  .text-box p {
+      margin-top: -3%;
+      margin-bottom: 3%;
+  }
+  .learn-more-button {
+      font-size: 10px;
+  }
+  .footer-section h2 {
+    font-size: 1.5em;
+  }
+
+  .footer-columns {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-column {
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid white;
+    width: 100%;
+    max-width: 300px; /* Ensure it doesn't stretch too wide on large screens */
+  }
 }
