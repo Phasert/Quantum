@@ -88,166 +88,180 @@
         </div>
     </div>
     <section class="shoppingCart">
-        <h2>Your Shopping Cart</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Cost Estimate</th>
-                    <th>Customer Comment</th>
-                    <th>Rent Date</th>
-                    <th>Rent Time</th>
-                    <th>Return Date</th>
-                    <th>Return Time</th>
-                    <th>Cart ID</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data will be dynamically inserted here -->
-            </tbody>
-        </table>
-    <div id="cartTotal"></div>
-    </section>
-    <div class="shoppingCart-Btn">
-         <!-- Added "Proceed to Checkout" button with styling -->
-         <button id="proceedToCheckout" onclick="proceedToCheckout()" class="checkout-button">Proceed to Checkout</button>
-         <a href="index.html" class="checkout-button" onclick="closeForm()">Close</a>
-    </div>
-  
-   
+            <h2>Your Shopping Cart</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Cost Estimate</th>
+                        <th>Customer Comment</th>
+                        <th>Rent Date</th>
+                        <th>Rent Time</th>
+                        <th>Return Date</th>
+                        <th>Return Time</th>
+                        <th>Cart ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+            <div id="cartTotal"></div>
+        </section>
+        <div class="shoppingCart-Btn">
+             <button id="proceedToCheckout" onclick="proceedToCheckout()" class="checkout-button">Proceed to Checkout</button>
+             <a href="index.html" class="checkout-button" onclick="closeForm()">Close</a>
+        </div>
     
-    <script>
-
-        // Function to fetch cart data from the server and populate the table
-function fetchAndDisplayCart() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/cart');
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            var cartData = JSON.parse(xhr.responseText);
-            // Update the HTML table with the retrieved data
-            displayCart(cartData);
-        } else {
-            console.error('Error fetching cart data:', xhr.statusText);
-        }
-    };
-    xhr.onerror = function () {
-        console.error('Request failed');
-    };
-    xhr.send();
-}
-
-function displayCart(cartData) {
-    var tableBody = document.querySelector('.shoppingCart tbody');
-    tableBody.innerHTML = ''; // Clear existing table rows
-    
-    var totalCost = 0; // Initialize total cost
-    
-    cartData.forEach(function (item) {
-        var row = document.createElement('tr');
-        
-        // Create a cell for product name
-        var productNameCell = document.createElement('td');
-        productNameCell.textContent = item.pName;
-        row.appendChild(productNameCell);
-        
-        // Loop through each property of the item and create table cells
-        for (var key in item) {
-            if (key !== 'pName') { // Skip product name since we already added it
-                var cell = document.createElement('td');
-                // Check if the property is a date and format it accordingly
-                if (key.includes('Date')) {
-                    // Format date
-                    var formattedDate = new Date(item[key]).toLocaleDateString('en-US', { timeZone: 'UTC' });
-                    cell.textContent = formattedDate;
-                } else if (key === 'Cost_Est') {
-                    // Add dollar sign in front of cost estimate
-                    cell.textContent = '$' + item[key];
-                } else {
-                    cell.textContent = item[key];
-                }
-                row.appendChild(cell);
+        <script>
+            function fetchAndDisplayCart() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/cart');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var cartData = JSON.parse(xhr.responseText);
+                        displayCart(cartData);
+                    } else {
+                        console.error('Error fetching cart data:', xhr.statusText);
+                    }
+                };
+                xhr.onerror = function () {
+                    console.error('Request failed');
+                };
+                xhr.send();
             }
-        }
-        
-        // Create a delete button
-        var deleteButtonCell = document.createElement('td');
-        var deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.classList.add('remove-button'); 
-        deleteButton.addEventListener('click', function() {
-            // Call a function to handle deletion when the button is clicked
-            deleteCartItem(item); // Pass the item object to the function
-        });
-        deleteButtonCell.appendChild(deleteButton);
-        row.appendChild(deleteButtonCell);
-        
-        tableBody.appendChild(row);
-        
-        // Add cost estimate to total
-        totalCost += item.Cost_Est;
-    });
-
-    // Add a row for the total cost
-    var totalRow = document.createElement('tr');
-    var totalHeaderCell = document.createElement('td');
-    totalHeaderCell.textContent = 'Total';
-    totalRow.appendChild(totalHeaderCell);
     
-    // Add empty cells for other columns
-    for (var i = 1; i < 1; i++) {
-        var emptyCell = document.createElement('td');
-        totalRow.appendChild(emptyCell);
-    }
-
-    // Create a cell for total cost
-    var totalCostCell = document.createElement('td');
-    totalCostCell.textContent = '$' + totalCost; // Add dollar sign in front of total cost
-    totalRow.appendChild(totalCostCell);
-
-    tableBody.appendChild(totalRow);
-}
-
-
-        
+            function displayCart(cartData) {
+                var tableBody = document.querySelector('.shoppingCart tbody');
+                tableBody.innerHTML = '';
+                
+                var totalCost = 0;
+                
+                cartData.forEach(function (item) {
+                    var row = document.createElement('tr');
+                    
+                    var productNameCell = document.createElement('td');
+                    productNameCell.textContent = item.pName;
+                    row.appendChild(productNameCell);
+                    
+                    for (var key in item) {
+                        if (key !== 'pName') {
+                            var cell = document.createElement('td');
+                            if (key.includes('Date')) {
+                                var formattedDate = new Date(item[key]).toLocaleDateString('en-US', { timeZone: 'UTC' });
+                                cell.textContent = formattedDate;
+                            } else if (key === 'Cost_Est') {
+                                cell.textContent = '$' + item[key];
+                            } else {
+                                cell.textContent = item[key];
+                            }
+                            row.appendChild(cell);
+                        }
+                    }
+                    
+                    var deleteButtonCell = document.createElement('td');
+                    var deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.classList.add('remove-button'); 
+                    deleteButton.addEventListener('click', function() {
+                        deleteCartItem(item);
+                    });
+                    deleteButtonCell.appendChild(deleteButton);
+                    row.appendChild(deleteButtonCell);
+                    
+                    tableBody.appendChild(row);
+                    
+                    totalCost += item.Cost_Est;
+                });
     
-
-
-
-function deleteCartItem(item) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('DELETE', '/cart/' + item.cartID); // Assuming 'cartID' is the primary key
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            // Reload the cart data after successful deletion
-            fetchAndDisplayCart();
-        } else {
-            console.error('Error deleting cart item:', xhr.statusText);
-        }
-    };
-    xhr.onerror = function () {
-        console.error('Request failed');
-    };
-    xhr.send();
-}
-
-// Call the fetchAndDisplayCart function when the page loads to populate the table
-window.onload = function() {
-    fetchAndDisplayCart();
-};
-
-     
-   
-       // Function to proceed to checkout
-       function proceedToCheckout() {
-            // Add your checkout logic here
-            alert('Proceeding to Checkout.');
-            window.location.href = "checkout.html";
-        }
+                var totalRow = document.createElement('tr');
+                var totalHeaderCell = document.createElement('td');
+                totalHeaderCell.textContent = 'Total';
+                totalRow.appendChild(totalHeaderCell);
+                
+                for (var i = 1; i < 1; i++) {
+                    var emptyCell = document.createElement('td');
+                    totalRow.appendChild(emptyCell);
+                }
     
- 
-    </script>
+                var totalCostCell = document.createElement('td');
+                totalCostCell.textContent = '$' + totalCost;
+                totalRow.appendChild(totalCostCell);
+    
+                tableBody.appendChild(totalRow);
+            }
+    
+            function deleteCartItem(item) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', '/cart/' + item.cartID);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        fetchAndDisplayCart();
+                    } else {
+                        console.error('Error deleting cart item:', xhr.statusText);
+                    }
+                };
+                xhr.onerror = function () {
+                    console.error('Request failed');
+                };
+                xhr.send();
+            }
+    
+            window.onload = function() {
+                fetchAndDisplayCart();
+            };
+    
+            function proceedToCheckout() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/cart');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var cartData = JSON.parse(xhr.responseText);
+                        checkInventory(cartData, function(inventoryCheckResult) {
+                            if (inventoryCheckResult.success) {
+                                alert('Proceeding to Checkout.');
+                                window.location.href = "checkout.html";
+                            } else {
+                                if (inventoryCheckResult.unavailableItems) {
+                                    var unavailableItems = inventoryCheckResult.unavailableItems.map(item => {
+                                        return `${item.pName}: Only ${item.availableQuantity} left`;
+                                    }).join('\n');
+                                    alert('Some items in your cart are not available in sufficient quantity:\n' + unavailableItems);
+                                } else {
+                                    alert('There was an error checking inventory. Please try again.');
+                                }
+                            }
+                        });
+                    } else {
+                        console.error('Error fetching cart data:', xhr.statusText);
+                    }
+                };
+                xhr.onerror = function () {
+                    console.error('Request failed');
+                };
+                xhr.send();
+            }
+    
+            function checkInventory(cartData, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/check-inventory', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200 || xhr.status === 400) {
+                            const response = JSON.parse(xhr.responseText);
+                            console.error('Error checking inventory:', response);
+                            callback(response);
+                        } else {
+                            console.error('Unexpected error checking inventory:', xhr.responseText);
+                            callback({ success: false });
+                        }
+                    }
+                };
+                xhr.send(JSON.stringify({ cartItems: cartData }));
+            }
+        </script>
     <script src="app.js"></script>
     <script src="https://kit.fontawesome.com/ece7d978a6.js" crossorigin="anonymous"></script>
     
