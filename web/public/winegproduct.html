@@ -174,5 +174,26 @@
                                                 
     <script src="app.js"></script>
     <script src="https://kit.fontawesome.com/ece7d978a6.js" crossorigin="anonymous"></script>
+    <script>
+        function selectOption(index) {
+            var smallImages = document.querySelectorAll('.small-image');
+            var selectedImage = document.getElementById('selectedImage');
+            var selectedOptionName = document.getElementById('selectedOptionName');
+            var productDescription = document.getElementById('productDescription');
+            var optionSelector = document.getElementById('options');
+
+            // Change the source of the big image
+            selectedImage.src = smallImages[index].src;
+
+            // Display the name of the selected option
+            selectedOptionName.innerText = optionSelector.options[index].text;
+
+            // Highlight the selected small image
+            smallImages.forEach(function (image, i) {
+                image.style.opacity = i === index ? 1 : 0.7;
+            });
+        }
+        </script>
+
 </body>
 </html>
