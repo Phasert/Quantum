@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Clement@71', // Change this to your MySQL password
+    password: 'ilMeesha', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -483,6 +483,8 @@ app.delete('/cart/:cartID', (req, res) => {
                     const insertQuery = 'INSERT INTO productorder (CustomerID, ProductID, Quantity) VALUES (?,?,?)';
                     const insertOrdQuery = 'INSERT INTO ord (CustomerID, POrderID, RentDate, ReturnDate, Note) VALUES (?,?,?,?,?)';
                     const insertInvoiceQuery = 'INSERT INTO invoice (CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate) VALUES (?,?,?,?,?,?,?)';
+                    const updateInventoryQuery = 'UPDATE quantum.inventory SET quantity = quantity - ? WHERE productID = ?';
+                    const insertOrdInventoryQuery = 'INSERT INTO quantum.ordinventory (productID, CustomerID, quantity, status, Category) VALUES (?,?,?,?,?)';
                     const deleteCartQuery = 'DELETE FROM shoppingcart WHERE CustomerID = ?';
     
                     let totalCost = 0;
@@ -501,25 +503,52 @@ app.delete('/cart/:cartID', (req, res) => {
                                     if (err) {
                                         console.error(err);
                                         res.status(500).send('Error saving to ord table');
-                                    } else if (index === results.length - 1) {  // Check if it is the last iteration
-                                        const Balance = totalCost - amt;
-                                        let PaymentStatus = "Unpaid";
-                                        if (Balance > 0 && Balance < totalCost) {
-                                            PaymentStatus = "Pending";
-                                        } else if (Balance === 0) {
-                                            PaymentStatus = "Paid";
-                                        }
-                                        db.query(insertInvoiceQuery, [userId, Balance, amt, totalCost, PaymentStatus, rentDate, returnDate], (err, insertInvoiceResult) => {
+                                    } else {
+                                        // Update inventory quantity
+                                        db.query(updateInventoryQuery, [Quantity, ProductID], (err, updateInventoryResult) => {
                                             if (err) {
                                                 console.error(err);
-                                                res.status(500).send('Error saving to invoice table');
+                                                res.status(500).send('Error updating inventory');
                                             } else {
-                                                db.query(deleteCartQuery, [userId], (err, deleteResult) => {
+                                                // Insert into ordinventory
+                                                const currentDate = new Date();
+                                                const rentDateObj = new Date(rentDate);
+                                                let status = rentDateObj > currentDate ? 'for order' : 'in use';
+                                                db.query('SELECT Category FROM quantum.inventory WHERE productID = ?', [ProductID], (err, categoryResult) => {
                                                     if (err) {
                                                         console.error(err);
-                                                        res.status(500).send('Error deleting from shopping cart table');
+                                                        res.status(500).send('Error fetching product category');
                                                     } else {
-                                                        res.redirect('/userDashboard.html?message=Order%20successfully%20placed');
+                                                        const Category = categoryResult[0].Category;
+                                                        db.query(insertOrdInventoryQuery, [ProductID, userId, Quantity, status, Category], (err, insertOrdInventoryResult) => {
+                                                            if (err) {
+                                                                console.error(err);
+                                                                res.status(500).send('Error saving to ordinventory table');
+                                                            } else if (index === results.length - 1) {
+                                                                const Balance = totalCost - amt;
+                                                                let PaymentStatus = "Unpaid";
+                                                                if (Balance > 0 && Balance < totalCost) {
+                                                                    PaymentStatus = "Pending";
+                                                                } else if (Balance === 0) {
+                                                                    PaymentStatus = "Paid";
+                                                                }
+                                                                db.query(insertInvoiceQuery, [userId, Balance, amt, totalCost, PaymentStatus, rentDate, returnDate], (err, insertInvoiceResult) => {
+                                                                    if (err) {
+                                                                        console.error(err);
+                                                                        res.status(500).send('Error saving to invoice table');
+                                                                    } else {
+                                                                        db.query(deleteCartQuery, [userId], (err, deleteResult) => {
+                                                                            if (err) {
+                                                                                console.error(err);
+                                                                                res.status(500).send('Error deleting from shopping cart table');
+                                                                            } else {
+                                                                                res.redirect('/userDashboard.html?message=Order%20successfully%20placed');
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
                                                     }
                                                 });
                                             }
@@ -533,6 +562,7 @@ app.delete('/cart/:cartID', (req, res) => {
             }
         });
     });
+    ;
     
     
     
