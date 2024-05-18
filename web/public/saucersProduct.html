@@ -88,44 +88,51 @@
             </div> 
         </div>
     </div>
+    <div id="addedToCartMessage" style="display: none; color: #623E2A; margin: 10px 0 0 80%; ">
+        Item added to cart!
+     </div>
     <div class="product-container" id="myForm">
         <div class="small-images-container">
-            <img class="small-image" src="images/roundglass.jpeg" alt="Thumbnail 1" onclick="selectOption(0)">
-            <img class="small-image" src="images/tallglass.jpeg" alt="Thumbnail 2" onclick="selectOption(1)">
-            <img class="small-image" src="images/scotchglass.jpeg" alt="Thumbnail 3" onclick="selectOption(2)">
-            <img class="small-image" src="images/roundstemglass.jpeg" alt="Thumbnail 4" onclick="selectOption(3)">
+            <img class="small-image" src="images/squarePlate.jpeg" alt="Thumbnail 1" onclick="selectOption(0)">
+            <img class="small-image" src="images/circularCeramicPlate.jpeg" alt="Thumbnail 2" onclick="selectOption(1)">
+            <img class="small-image" src="images/rectangularPlate.jpeg" alt="Thumbnail 3" onclick="selectOption(2)">
+            <img class="small-image" src="images/basicPlate.jpeg" alt="Thumbnail 4" onclick="selectOption(3)">
             <!-- Add more small images as needed -->
         </div>
         <div class="big-image-container">
-            <img class="big-image" src="images/roundglass.jpeg" alt="Big Image" id="selectedImage">
+            <img class="big-image" src="images/squarePlate.jpeg" alt="Big Image" id="selectedImage">
         </div>
         
         <div class="product-info">
-            <h2 id="selectedOptionName">Classic Glasses</h2>
+            <h2 id="selectedOptionName">Plates</h2>
             <p style="margin-bottom: 2%;" id="productDescription">Description of the product goes here. Provide details about the product and its features.</p>
             <div class="option-selector">
                 <label for="options">Select Option:</label>
                 <select id="options" name="options">
-                    <option value="option1">Round Water Glass</option>
-                    <option value="option2">Tall Glass</option>
-                    <option value="option3">Scotch Glass</option>
-                    <option value="option4">Round Stem Glass</option>
+                    <option value="Sqaure Ceramic plate">Sqaure Ceramic plate</option>
+                    <option value="Circular Ceramic Plate">Circular Ceramic Plate</option>
+                    <option value="Rectangular Ceramic Plate">Rectangular Ceramic Plate</option>
+                    <option value="Basic Plate">Basic Plate</option>
                     <!-- Add more options as needed -->
                 </select>
             </div>
             <div class="quantity-selector">
                 <label for="quantity">Quantity:</label>
-                <select id="quantity" name="quantity">
-                    <option value="1">12</option>
-                    <option value="2">24</option>
-                    <option value="3">36</option>
-                    <option value="1">48</option>
-                    <option value="2">60</option>
-                    <option value="3">72</option>
-                    <option value="3">100</option>
-                    <option value="3">Other (Please specify amount in comment section)</option>
+                <select id="quantity" name="quantity" onchange="updateCostEstimate()">
+                    <option value="12">12</option>
+                    <option value="24">24</option>
+                    <option value="36">36</option>
+                    <option value="48">48</option>
+                    <option value="60">60</option>
+                    <option value="72">72</option>
+                    <option value="100">100</option>
+                    <option value="0">Other (Please specify amount in comment section)</option>
                     <!-- Add more options as needed -->
                 </select>
+            </div>
+            <div class="cost-estimate">
+                <label for="costEstimate">Estimated Cost:</label>
+                <span id="costEstimate">$0.00</span>
             </div>
             <div class="comment-form">
                 <form action="#" method="post">
@@ -158,8 +165,8 @@
                 </div>
                 </div>
             </div>
-            <a href="checkout.html" class="reserve-button">Reserve Now</a>
-            <a href="cartPage.html" class="reserve-button">Add To Cart</a>
+            <a href="checkout.html" class="reserve-button" onclick="reserveNow()">Reserve Now</a>
+            <button class="reserve-button" onclick="addToCart()" >Add To Cart</button>
             <a href="catalogue.html" class="reserve-button" onclick="closeForm()">Close</a>
         </div>
     </div>
@@ -203,6 +210,77 @@
         function closeForm() {
             document.getElementById("myForm").style.display = "none";
         }
+
+        function updateCostEstimate() {
+        var quantitySelector = document.getElementById('quantity');
+        var costEstimateSpan = document.getElementById('costEstimate');
+        var selectedOption = document.getElementById('options').value;
+
+        var selectedQuantity = parseInt(quantitySelector.value);
+        var optionCosts = {
+            'Sqaure Ceramic plate': 36,  //  cost per dozen
+            'Circular Ceramic Plate': 36,    //  cost per dozen
+            'Rectangular Ceramic Plate': 48,  // cost per dozen
+            'Basic Plate': 24,    // cost per dozen
+        };
+        var costPerDozen = optionCosts[selectedOption] || 0;  // Default to 0 if option is not found
+        var estimatedCost = (selectedQuantity / 12) * costPerDozen;
+
+        costEstimateSpan.textContent = '$' + estimatedCost.toFixed(2);
+    }
+
+    var cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+    function addToCart() {
+        var selectedOption = document.getElementById('options').value;
+        var selectedQuantity = parseInt(document.getElementById('quantity').value);
+        var rentDate = document.getElementById('rentDate').value;
+        var rentTime = document.getElementById('rentTime').value;
+        var returnDate = document.getElementById('returnDate').value;
+        var returnTime = document.getElementById('returnTime').value;
+        var comment = document.getElementById('comment').value;
+
+        var optionCosts = {
+            'Sqaure Ceramic plate': 36,  //  cost per dozen
+            'Circular Ceramic Plate': 36,    //  cost per dozen
+            'Rectangular Ceramic Plate': 48,  // cost per dozen
+            'Basic Plate': 24,    // cost per dozen
+            };
+
+            var costPerDozen = optionCosts[selectedOption] || 0;
+            var estimatedCost = (selectedQuantity / 12) * costPerDozen;
+
+            // Create a new cart item
+            var newItem = {
+                option: selectedOption,
+                quantity: selectedQuantity,
+                costEstimate: estimatedCost,
+                comment: comment,
+                rentDate: rentDate,
+                rentTime: rentTime,
+                returnDate: returnDate,
+                returnTime: returnTime
+            };
+
+        // Add the item to the cart
+        cart.push(newItem);
+
+       // Display added to cart message
+       var addedToCartMessage = document.getElementById('addedToCartMessage');
+            addedToCartMessage.style.display = 'block';
+
+            // Hide the message after 2 seconds (adjust as needed)
+            setTimeout(function () {
+                addedToCartMessage.style.display = 'none';
+            }, 2000);
+
+
+                  // Save the updated cart to sessionStorage
+                  sessionStorage.setItem('cart', JSON.stringify(cart));
+        // Pass the container IDs to the displayCart function
+        displayCart('cartContent', 'cartTotal');
+    }
+
     </script>
     <script src="app.js"></script>
     <script src="https://kit.fontawesome.com/ece7d978a6.js" crossorigin="anonymous"></script>

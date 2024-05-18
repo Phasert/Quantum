@@ -171,37 +171,6 @@
             <a href="catalogue.html" class="reserve-button" onclick="closeForm()">Close</a>
         </div>
     </div>
-    <!-- "You May Also Like" Section -->
-    <section  class="you-may-also-like-text">
-        <h2>You May Also Like</h2>
-    </section>
-    
-    <!-- Example Products (Replace with your actual products) -->
-    <section class="you-may-also-like-container">
-    <div class="you-may-also-like" id="relatedProducts">
-        <img src="images/redwine.jpeg" alt="Related Product 1">
-            <h3>Red Wine Glasses</h3>
-                <p>Description of Related Product 1.</p>
-    </div>
-    <div class="you-may-also-like" id="relatedProducts">
-        <img src="images/2tierstand.jpeg" alt="Related Product 2">
-            <h3>2 Tier Cupcake Stand</h3>
-                 <p>Description of Related Product 2.</p>
-    </div>
-    <div class="you-may-also-like" id="relatedProducts">
-        <img src="images/redwine.jpeg" alt="Related Product 1">
-            <h3>Red Wine Glasses</h3>
-                <p>Description of Related Product 1.</p>
-    </div>
-    <div class="you-may-also-like" id="relatedProducts">
-        <img src="images/2tierstand.jpeg" alt="Related Product 2">
-            <h3>2 Tier Cupcake Stand</h3>
-                 <p>Description of Related Product 2.</p>
-    </div>
-
-    <!-- Add more products as needed -->
-
-    </section>
 
     <script>
         function selectOption(index) {
@@ -312,52 +281,7 @@
         // Pass the container IDs to the displayCart function
         displayCart('cartContent', 'cartTotal');
     }
-
-    // Sample data for related products (replace with your actual product data)
-    var relatedProducts = [
-        { name: 'Related Product 1', image: 'images/redwine.jpeg', description: 'Description of Related Product 1.' },
-        { name: 'Related Product 2', image: 'path/to/related-product-2.jpg', description: 'Description of Related Product 2.' },
-        { name: 'Related Product 3', image: 'images/redwine.jpeg', description: 'Description of Related Product 1.' },
-        { name: 'Related Product 4', image: 'path/to/related-product-2.jpg', description: 'Description of Related Product 2.' },
-        // Add more related products as needed
-    ];
-
-    // Function to create a product element
-    function createProductElement(product) {
-        var productDiv = document.createElement('div');
-        productDiv.className = 'you-may-also-like';
-
-        var img = document.createElement('img');
-        img.src = product.image;
-        img.alt = product.name;
-
-        var heading = document.createElement('h3');
-        heading.textContent = product.name;
-
-        var paragraph = document.createElement('p');
-        paragraph.textContent = product.description;
-
-        productDiv.appendChild(img);
-        productDiv.appendChild(heading);
-        productDiv.appendChild(paragraph);
-
-        return productDiv;
-    }
-
-    // Function to populate the "You May Also Like" section
-    function populateYouMayAlsoLike() {
-    
-        var youMayAlsoLikeContainer = document.getElementById('relatedProducts');
-
-
-        relatedProducts.forEach(function (product) {
-            var productElement = createProductElement(product);
-            youMayAlsoLikeSection.appendChild(productElement);
-        });
-    }
-
-    // Call the function to populate the section when the page loads
-    window.addEventListener('load', populateYouMayAlsoLike);
+  
     </script>
     <script src="app.js"></script>
     <script src="https://kit.fontawesome.com/ece7d978a6.js" crossorigin="anonymous"></script>
