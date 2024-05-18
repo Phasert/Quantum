@@ -55,7 +55,7 @@
         <h2>Inventory</h2>
     </div>
     <div class="dashboard-widget">
-        <form action="/submit" method="post">
+        <form action="/inven-submit" method="post">
         <h3>Add Product</h3>
         <table>
             <tr>
@@ -80,48 +80,46 @@
                         <option value="cutlery">stands</option>
                     </select>
                 </td>
-                <td><button type="submit" class="submit-button">Add</button></td>
+                <td><button type="inven-submit" class="submit-button">Add</button></td>
             </tr>
         </table>
     </form>
     </div>
     <!-- Dashboard Widgets -->
     <div class="dashboard-widget">
-        <table>
+        <table id="inventory-table">
             <tr>
                 <th>Product ID</th>
                 <th>Product Name</th>
                 <th>Quantity</th>
                 <th>Status</th>
-                <th>Catergory</th>
+                <th>Category</th>
             </tr>
         </table>
-       
     </div>
-   
-    
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        fetchUserFirstNameAndUpdateGreeting();
-    });
-    
-    function fetchUserFirstNameAndUpdateGreeting() {
-    fetch('/get-user-data')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.firstName) {
-                document.getElementById('welcomeMessage').textContent = `Welcome Back, ${data.firstName}`;
-            }
-        })
-        .catch(error => console.error('Error fetching user data:', error));
-}
 
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/inventory-data')
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('inventory-table');
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.productID}</td>
+                            <td>${item.pName}</td>
+                            <td>${item.quantity}</td>
+                            <td>${item.status}</td>
+                            <td>${item.category}</td>
+                        `;
+                        table.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching inventory data:', error);
+                });
+        });
     </script>
     <script src="app.js"></script>
     

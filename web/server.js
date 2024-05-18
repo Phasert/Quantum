@@ -656,3 +656,132 @@ app.get('/order/:InvoiceID', (req, res) => {
       res.render('order', { invoice });
     });
   });
+
+  app.post('/inven-submit', (req, res) => {
+    const { product_name, cost_per_piece, quantity, description, category } = req.body;
+
+    let status;
+    if (quantity === 0) {
+        status = 'out of stock';
+    } else if (quantity <= 24) {
+        status = 'low';
+    } else {
+        status = 'in stock';
+    }
+
+    const selectQuery = 'SELECT productID FROM product WHERE pName = ?';
+    const insertProductQuery = 'INSERT INTO product (pName, cost, pDesc, category) VALUES (?, ?, ?, ?)';
+    const insertInvQuery = 'INSERT INTO inventory (productID, quantity, status, category) VALUES (?, ?, ?, ?)';
+
+    db.query(selectQuery, [product_name], (err, result) => {
+        if (err) {
+            return res.status(500).send('Error fetching product ID');
+        }
+
+        if (result.length > 0) {
+            const productID = result[0].productID;
+            db.query(insertInvQuery, [productID, quantity, status, category], (err, result) => {
+                if (err) {
+                    return res.status(500).send('Error inserting into inventory');
+                }
+                res.send('Inventory updated successfully');
+            });
+        } else {
+            db.query(insertProductQuery, [product_name, cost_per_piece, description, category], (err, result) => {
+                if (err) {
+                    return res.status(500).send('Error inserting into product table');
+                }
+                const productID = result.insertId;
+                db.query(insertInvQuery, [productID, quantity, status, category], (err, result) => {
+                    if (err) {
+                        return res.status(500).send('Error inserting into inventory');
+                    }
+                    res.send('Product and inventory updated successfully');
+                });
+            });
+        }
+    });
+});
+app.get('/inventory-data', (req, res) => {
+    const query = `
+        SELECT 
+            p.productID, 
+            p.pName, 
+            i.quantity, 
+            i.status, 
+            p.category 
+        FROM 
+            product p 
+        JOIN 
+            inventory i 
+        ON 
+            p.productID = i.productID`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).send('Error fetching inventory data');
+        }
+        res.json(results);
+    });
+});
+
+app.post('/check-inventory', (req, res) => {
+    const cartItems = req.body.cartItems;
+    let unavailableItems = [];
+    let itemsChecked = 0;
+
+    cartItems.forEach(item => {
+        const queryProductID = 'SELECT productID FROM quantum.shoppingcart WHERE cartID = ?';
+        db.query(queryProductID, [item.cartID], (err, productIDResults) => {
+            if (err) {
+                console.error('Error fetching productID:', err);
+                return res.status(500).send('Error fetching productID');
+            }
+
+            if (productIDResults.length > 0) {
+                const productID = productIDResults[0].productID;
+
+                const queryQuantity = 'SELECT quantity FROM quantum.inventory WHERE productID = ?';
+                db.query(queryQuantity, [productID], (err, quantityResults) => {
+                    itemsChecked++;
+                    if (err) {
+                        console.error('Error checking inventory:', err);
+                        return res.status(500).send('Error checking inventory');
+                    }
+
+                    console.log(`Results for productID ${productID}:`, quantityResults); // Debug log for results
+                    if (quantityResults.length > 0) {
+                        const availableQuantity = quantityResults[0].quantity;
+                        console.log(`ProductID: ${productID}, Cart Quantity: ${item.Quantity}, Available Quantity: ${availableQuantity}`); // Debug log
+                        if (availableQuantity < item.Quantity) {
+                            unavailableItems.push({ productID: productID, pName: item.pName, availableQuantity });
+                        }
+                    } else {
+                        console.log(`ProductID: ${productID} not found in inventory`); // Debug log
+                        unavailableItems.push({ productID: productID, pName: item.pName, availableQuantity: 0 });
+                    }
+
+                    if (itemsChecked === cartItems.length) {
+                        if (unavailableItems.length > 0) {
+                            return res.status(400).json({ success: false, unavailableItems });
+                        } else {
+                            return res.json({ success: true });
+                        }
+                    }
+                });
+            } else {
+                console.log(`CartID: ${item.cartID} not found in shoppingcart`); // Debug log
+                itemsChecked++;
+                unavailableItems.push({ productID: null, pName: item.pName, availableQuantity: 0 });
+
+                if (itemsChecked === cartItems.length) {
+                    if (unavailableItems.length > 0) {
+                        return res.status(400).json({ success: false, unavailableItems });
+                    } else {
+                        return res.json({ success: true });
+                    }
+                }
+            }
+        });
+    });
+});
