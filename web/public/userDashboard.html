@@ -169,37 +169,45 @@
         const tableBody = document.getElementById('currentRentalTableBody');
         tableBody.innerHTML = ''; // Clear existing table rows
         
-        rentals.forEach(rental => {
-            const row = document.createElement('tr');
+        if (rentals.length > 0) {
+            rentals.sort((a, b) => new Date(b.RentDate) - new Date(a.RentDate));
+            const latestDate = rentals[0].RentDate;
+            const latestRentals = rentals.filter(rental => rental.RentDate === latestDate);
             
-            const itemCell = document.createElement('td');
-            itemCell.textContent = rental.item;
-            row.appendChild(itemCell);
-            
-            const quantityCell = document.createElement('td');
-            quantityCell.textContent = rental.Quantity;
-            row.appendChild(quantityCell);
-            
-            const rentDateCell = document.createElement('td');
-            rentDateCell.textContent = new Date(rental.RentDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
-            row.appendChild(rentDateCell);
-            
-            const returnDateCell = document.createElement('td');
-            returnDateCell.textContent = new Date(rental.ReturnDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
-            row.appendChild(returnDateCell);
-            
-            const commentCell = document.createElement('td');
-            commentCell.textContent = rental.comment;
-            row.appendChild(commentCell);
-            
-            tableBody.appendChild(row);
-        });
+            latestRentals.forEach(rental => {
+                const row = document.createElement('tr');
+                
+                const itemCell = document.createElement('td');
+                itemCell.textContent = rental.item;
+                row.appendChild(itemCell);
+                
+                const quantityCell = document.createElement('td');
+                quantityCell.textContent = rental.Quantity;
+                row.appendChild(quantityCell);
+                
+                const rentDateCell = document.createElement('td');
+                rentDateCell.textContent = new Date(rental.RentDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+                row.appendChild(rentDateCell);
+                
+                const returnDateCell = document.createElement('td');
+                returnDateCell.textContent = new Date(rental.ReturnDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+                row.appendChild(returnDateCell);
+                
+                const commentCell = document.createElement('td');
+                commentCell.textContent = rental.comment;
+                row.appendChild(commentCell);
+                
+                tableBody.appendChild(row);
+            });
+        }
     }
 
     function updateClientStatus(clientStatus) {
         document.getElementById('clientStatus').textContent = clientStatus;
     }
 </script>
+
+
 <script src="app.js"></script>
 
 </body>

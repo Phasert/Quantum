@@ -51,42 +51,88 @@
 <div class="main-content">
     <h2>Order History</h2>
 
-<div class="invoice-box">
-    <div class="info">
-        <div>Invoice #: </div>
-        <div>Customer #: </div>
-        <div>Staff #: </div>
-        <div>Date: </div>
+    <div class="invoice-box">
+        <div class="info">
+            <div>Invoice #: <span id="invoiceId"></span></div>
+            <div>Customer #: <span id="customerId"></span></div>
+            <div>Customer Name: <span id="customerName"></span></div>
+            <div>Date: <span id="invoiceDate"></span></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceItems">
+                <!-- Invoice items will be populated here -->
+            </tbody>
+            <tr class="total">
+                <td></td>
+                <td></td>
+                <td>Total:</td>
+                <td id="invoiceTotal">$</td>
+            </tr>
+        </table>
     </div>
-    <table>
-        <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Subtotal</th>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>$</td>
-            <td>$</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>$</td>
-            <td>$</td>
-        </tr>
-        <tr class="total">
-            <td></td>
-            <td></td>
-            <td>Total:</td>
-            <td>$</td>
-        </tr>
-    </table>
 </div>
 
-</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchInvoiceDetails();
+    });
+
+    function fetchInvoiceDetails() {
+        fetch(`/get-latest-invoice-details`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('invoiceId').textContent = data.InvoiceID;
+                document.getElementById('customerId').textContent = data.CustomerID;
+                document.getElementById('customerName').textContent = data.CustomerName;
+                document.getElementById('invoiceDate').textContent = new Date(data.RentDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+
+                const tableBody = document.getElementById('invoiceItems');
+                tableBody.innerHTML = ''; // Clear existing table rows
+
+                let total = 0;
+
+                data.Products.forEach(product => {
+                    const row = document.createElement('tr');
+
+                    const itemCell = document.createElement('td');
+                    itemCell.textContent = product.ProductName;
+                    row.appendChild(itemCell);
+
+                    const quantityCell = document.createElement('td');
+                    quantityCell.textContent = product.Quantity;
+                    row.appendChild(quantityCell);
+
+                    const priceCell = document.createElement('td');
+                    priceCell.textContent = `$${product.Cost}`;
+                    row.appendChild(priceCell);
+
+                    const subtotalCell = document.createElement('td');
+                    subtotalCell.textContent = `$${product.Subtotal}`;
+                    row.appendChild(subtotalCell);
+
+                    total += product.Subtotal;
+
+                    tableBody.appendChild(row);
+                });
+
+                document.getElementById('invoiceTotal').textContent = `$${total}`;
+            })
+            .catch(error => console.error('Error fetching invoice details:', error));
+    }
+</script>
 <script src="app.js"></script>
 
 </body>

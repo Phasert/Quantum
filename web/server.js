@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Clement@71', // Change this to your MySQL password
+    password: 'ilMeesha', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -475,94 +475,138 @@ app.delete('/cart/:cartID', (req, res) => {
         db.query(query, [userId], (err, results) => {
             if (err) {
                 console.error(err);
-                res.status(500).send('Error fetching Cart details');
-            } else {
-                if (results.length === 0) {
-                    res.status(404).send('Customer cart not found');
-                } else {
-                    const insertQuery = 'INSERT INTO productorder (CustomerID, ProductID, Quantity) VALUES (?,?,?)';
-                    const insertOrdQuery = 'INSERT INTO ord (CustomerID, POrderID, RentDate, ReturnDate, Note) VALUES (?,?,?,?,?)';
-                    const insertInvoiceQuery = 'INSERT INTO invoice (CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate) VALUES (?,?,?,?,?,?,?)';
-                    const updateInventoryQuery = 'UPDATE quantum.inventory SET quantity = quantity - ? WHERE productID = ?';
-                    const insertOrdInventoryQuery = 'INSERT INTO quantum.ordinventory (productID, CustomerID, quantity, status, Category) VALUES (?,?,?,?,?)';
-                    const deleteCartQuery = 'DELETE FROM shoppingcart WHERE CustomerID = ?';
+                return res.status(500).send('Error fetching Cart details');
+            }
     
-                    let totalCost = 0;
+            if (results.length === 0) {
+                return res.status(404).send('Customer cart not found');
+            }
     
-                    results.forEach((item, index) => {
-                        const { ProductID, Quantity, Cost_Est, rentDate, returnDate, custComment } = item;
-                        totalCost += Cost_Est;
+            const insertQuery = 'INSERT INTO productorder (CustomerID, ProductID, Quantity) VALUES (?,?,?)';
+            const insertOrdQuery = 'INSERT INTO ord (CustomerID, POrderID, RentDate, ReturnDate, Note) VALUES (?,?,?,?,?)';
+            const insertInvoiceQuery = 'INSERT INTO invoice (CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate) VALUES (?,?,?,?,?,?,?)';
+            const updateInventoryQuery = 'UPDATE quantum.inventory SET quantity = quantity - ? WHERE productID = ?';
+            const insertOrdInventoryQuery = 'INSERT INTO quantum.ordinventory (productID, CustomerID, quantity, status, Category) VALUES (?,?,?,?,?)';
+            const deleteCartQuery = 'DELETE FROM shoppingcart WHERE CustomerID = ?';
     
-                        db.query(insertQuery, [userId, ProductID, Quantity], (err, insertResult) => {
+            let totalCost = 0;
+            let orders = [];
+            let rentDate, returnDate;
+    
+            results.forEach((item, index) => {
+                const { ProductID, Quantity, Cost_Est, rentDate: itemRentDate, returnDate: itemReturnDate, custComment } = item;
+                rentDate = itemRentDate;
+                returnDate = itemReturnDate;
+                totalCost += Cost_Est;
+    
+                db.query(insertQuery, [userId, ProductID, Quantity], (err, insertResult) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).send('Error saving to product order table');
+                    }
+    
+                    const POrderID = insertResult.insertId;
+                    orders.push({ userId, POrderID, rentDate, returnDate, custComment });
+    
+                    db.query(insertOrdQuery, [userId, POrderID, rentDate, returnDate, custComment], (err, insertOrdResult) => {
+                        if (err) {
+                            console.error(err);
+                            return res.status(500).send('Error saving to ord table');
+                        }
+    
+                        db.query(updateInventoryQuery, [Quantity, ProductID], (err, updateInventoryResult) => {
                             if (err) {
                                 console.error(err);
-                                res.status(500).send('Error saving to product order table');
-                            } else {
-                                const POrderID = insertResult.insertId;
-                                db.query(insertOrdQuery, [userId, POrderID, rentDate, returnDate, custComment], (err, insertOrdResult) => {
+                                return res.status(500).send('Error updating inventory');
+                            }
+    
+                            const currentDate = new Date();
+                            const rentDateObj = new Date(rentDate);
+                            let status = rentDateObj > currentDate ? 'for order' : 'in use';
+                            db.query('SELECT Category FROM quantum.inventory WHERE productID = ?', [ProductID], (err, categoryResult) => {
+                                if (err) {
+                                    console.error(err);
+                                    return res.status(500).send('Error fetching product category');
+                                }
+    
+                                const Category = categoryResult[0].Category;
+    
+                                // Check for existing entry before inserting
+                                db.query('SELECT * FROM quantum.ordinventory WHERE productID = ? AND CustomerID = ?', [ProductID, userId], (err, checkResult) => {
                                     if (err) {
                                         console.error(err);
-                                        res.status(500).send('Error saving to ord table');
-                                    } else {
-                                        // Update inventory quantity
-                                        db.query(updateInventoryQuery, [Quantity, ProductID], (err, updateInventoryResult) => {
+                                        return res.status(500).send('Error checking ordinventory table');
+                                    }
+    
+                                    if (checkResult.length === 0) {
+                                        db.query(insertOrdInventoryQuery, [ProductID, userId, Quantity, status, Category], (err, insertOrdInventoryResult) => {
                                             if (err) {
                                                 console.error(err);
-                                                res.status(500).send('Error updating inventory');
-                                            } else {
-                                                // Insert into ordinventory
-                                                const currentDate = new Date();
-                                                const rentDateObj = new Date(rentDate);
-                                                let status = rentDateObj > currentDate ? 'for order' : 'in use';
-                                                db.query('SELECT Category FROM quantum.inventory WHERE productID = ?', [ProductID], (err, categoryResult) => {
-                                                    if (err) {
-                                                        console.error(err);
-                                                        res.status(500).send('Error fetching product category');
-                                                    } else {
-                                                        const Category = categoryResult[0].Category;
-                                                        db.query(insertOrdInventoryQuery, [ProductID, userId, Quantity, status, Category], (err, insertOrdInventoryResult) => {
-                                                            if (err) {
-                                                                console.error(err);
-                                                                res.status(500).send('Error saving to ordinventory table');
-                                                            } else if (index === results.length - 1) {
-                                                                const Balance = totalCost - amt;
-                                                                let PaymentStatus = "Unpaid";
-                                                                if (Balance > 0 && Balance < totalCost) {
-                                                                    PaymentStatus = "Pending";
-                                                                } else if (Balance === 0) {
-                                                                    PaymentStatus = "Paid";
-                                                                }
-                                                                db.query(insertInvoiceQuery, [userId, Balance, amt, totalCost, PaymentStatus, rentDate, returnDate], (err, insertInvoiceResult) => {
-                                                                    if (err) {
-                                                                        console.error(err);
-                                                                        res.status(500).send('Error saving to invoice table');
-                                                                    } else {
-                                                                        db.query(deleteCartQuery, [userId], (err, deleteResult) => {
-                                                                            if (err) {
-                                                                                console.error(err);
-                                                                                res.status(500).send('Error deleting from shopping cart table');
-                                                                            } else {
-                                                                                res.redirect('/userDashboard.html?message=Order%20successfully%20placed');
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                });
+                                                return res.status(500).send('Error saving to ordinventory table');
+                                            }
+    
+                                            if (index === results.length - 1) {
+                                                finalizeOrder(rentDate, returnDate);
                                             }
                                         });
+                                    } else {
+                                        // Entry exists, skip insertion
+                                        if (index === results.length - 1) {
+                                            finalizeOrder(rentDate, returnDate);
+                                        }
                                     }
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+    
+            function finalizeOrder(rentDate, returnDate) {
+                const Balance = totalCost - amt;
+                let PaymentStatus = "Unpaid";
+                if (Balance > 0 && Balance < totalCost) {
+                    PaymentStatus = "Pending";
+                } else if (Balance === 0) {
+                    PaymentStatus = "Paid";
+                }
+    
+                db.query(insertInvoiceQuery, [userId, Balance, amt, totalCost, PaymentStatus, rentDate, returnDate], (err, insertInvoiceResult) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).send('Error saving to invoice table');
+                    }
+    
+                    const invoiceID = insertInvoiceResult.insertId;
+    
+                    orders.forEach((order, orderIndex) => {
+                        const { userId, POrderID, rentDate, returnDate, custComment } = order;
+                        db.query('UPDATE ord SET InvoiceID = ? WHERE POrderID = ?', [invoiceID, POrderID], (err, updateOrderResult) => {
+                            if (err) {
+                                console.error(err);
+                                return res.status(500).send('Error updating order with invoiceID');
+                            }
+    
+                            if (orderIndex === orders.length - 1) {
+                                db.query(deleteCartQuery, [userId], (err, deleteResult) => {
+                                    if (err) {
+                                        console.error(err);
+                                        return res.status(500).send('Error deleting from shopping cart table');
+                                    }
+    
+                                    res.redirect('/userDashboard.html?message=Order%20successfully%20placed');
                                 });
                             }
                         });
                     });
-                }
+                });
             }
         });
     });
-    ;
+    
+
+    
+    
     
     
     
@@ -815,3 +859,129 @@ app.post('/check-inventory', (req, res) => {
         });
     });
 });
+app.get('/get-invoices', (req, res) => {
+    const userId = req.session.userId;
+    const query = 'SELECT InvoiceID, RentDate, Total FROM invoice WHERE CustomerID = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching invoice data');
+        } else {
+            res.json(results);
+        }
+    });
+});
+app.get('/get-latest-invoice-details', (req, res) => {
+    const userId = req.session.userId;
+
+    const latestInvoiceQuery = `
+        SELECT 
+            invoice.InvoiceID, invoice.CustomerID, invoice.RentDate, invoice.ReturnDate, invoice.Total, 
+            customer.firstName, customer.lastName
+        FROM 
+            invoice
+            JOIN customer ON invoice.CustomerID = customer.CustomerID
+        WHERE 
+            invoice.CustomerID = ?
+        ORDER BY invoice.RentDate DESC
+        LIMIT 1`;
+
+    db.query(latestInvoiceQuery, [userId], (err, invoiceResults) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching latest invoice details');
+        } else {
+            if (invoiceResults.length === 0) {
+                res.status(404).send('No invoice found');
+            } else {
+                const latestInvoice = invoiceResults[0];
+                const invoiceId = latestInvoice.InvoiceID;
+
+                const productsQuery = `
+                    SELECT 
+                        product.ProductID, product.pName, product.Cost, productorder.Quantity, ord.RentDate, ord.ReturnDate
+                    FROM 
+                        productorder
+                        JOIN ord ON productorder.POrderID = ord.POrderID
+                        JOIN product ON productorder.ProductID = product.ProductID
+                    WHERE 
+                        ord.InvoiceID = ?`;
+
+                db.query(productsQuery, [invoiceId], (err, productResults) => {
+                    if (err) {
+                        console.error(err);
+                        res.status(500).send('Error fetching product details');
+                    } else {
+                        const invoiceDetails = {
+                            InvoiceID: latestInvoice.InvoiceID,
+                            CustomerID: latestInvoice.CustomerID,
+                            CustomerName: `${latestInvoice.firstName} ${latestInvoice.lastName}`,
+                            RentDate: latestInvoice.RentDate,
+                            ReturnDate: latestInvoice.ReturnDate,
+                            Total: latestInvoice.Total,
+                            Products: productResults.map(product => {
+                                const rentalDuration = Math.ceil((new Date(product.ReturnDate) - new Date(product.RentDate)) / (1000 * 60 * 60 * 24));
+                                const costEst = product.Cost * product.Quantity * rentalDuration;
+                                return {
+                                    ProductID: product.ProductID,
+                                    ProductName: product.pName,
+                                    Quantity: product.Quantity,
+                                    Cost: product.Cost,
+                                    Subtotal: costEst
+                                };
+                            })
+                        };
+                        res.json(invoiceDetails);
+                    }
+                });
+            }
+        }
+    });
+});
+app.get('/get-ordinvoice-details', (req, res) => {
+    const invoiceId = req.query.invoiceId;
+
+    const invoiceQuery = `
+        SELECT 
+            invoice.InvoiceID, invoice.CustomerID, invoice.RentDate, invoice.ReturnDate, invoice.Total, 
+            customer.firstName, customer.lastName, product.ProductID, product.pName, product.Cost, productorder.Quantity
+        FROM 
+            invoice
+            JOIN customer ON invoice.CustomerID = customer.CustomerID
+            JOIN ord ON invoice.InvoiceID = ord.InvoiceID
+            JOIN productorder ON ord.POrderID = productorder.POrderID
+            JOIN product ON productorder.ProductID = product.ProductID
+        WHERE 
+            invoice.InvoiceID = ?`;
+
+    db.query(invoiceQuery, [invoiceId], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching invoice details');
+        } else {
+            if (results.length === 0) {
+                res.status(404).send('Invoice not found');
+            } else {
+                const invoiceDetails = results.map(result => {
+                    const rentalDuration = Math.ceil((new Date(result.ReturnDate) - new Date(result.RentDate)) / (1000 * 60 * 60 * 24));
+                    const costEst = result.Cost * result.Quantity * rentalDuration;
+                    return {
+                        InvoiceID: result.InvoiceID,
+                        CustomerID: result.CustomerID,
+                        CustomerName: `${result.firstName} ${result.lastName}`,
+                        RentDate: result.RentDate,
+                        ReturnDate: result.ReturnDate,
+                        Total: result.Total,
+                        ProductID: result.ProductID,
+                        ProductName: result.pName,
+                        Quantity: result.Quantity,
+                        Cost: result.Cost,
+                        Subtotal: costEst
+                    };
+                });
+                res.json(invoiceDetails);
+            }
+        }
+    });
+});
+
