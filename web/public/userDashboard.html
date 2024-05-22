@@ -59,7 +59,19 @@
                 <!-- Balance data will be populated here -->
             </tbody>
         </table>
-        <button>Clear Balance</button>
+        <div id="balancePopup" class="balancePopup-container">
+            <div class="balancePopup-content">
+                <span class="close-btn">&times;</span>
+                <h2>Balance Information</h2>
+                <p>Your current balance is:</p>
+                <p class="balance-amount">$1,234.56</p>
+                <button class="close-button">Close</button>
+                <button class="clear-button">Clear Balance</button>
+            </div>
+        </div>
+    
+        <button id="openPopupBtn" class="open-popup-btn">Check Balance</button>
+    
     </div>
 
     <div class="card">
@@ -205,6 +217,32 @@
     function updateClientStatus(clientStatus) {
         document.getElementById('clientStatus').textContent = clientStatus;
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const balancePopup = document.getElementById('balancePopup');
+    const openPopupBtn = document.getElementById('openPopupBtn');
+    const closeBtns = document.querySelectorAll('.close-btn, .close-button');
+    const clearButton = document.querySelector('.clear-button');
+
+    openPopupBtn.addEventListener('click', () => {
+        balancePopup.style.display = 'flex';
+    });
+
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            balancePopup.style.display = 'none';
+        });
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === balancePopup) {
+            balancePopup.style.display = 'none';
+        }
+    });
+    clearButton.addEventListener('click', () => {
+        window.location.href = 'payment.html';
+    });
+});
 </script>
 
 
