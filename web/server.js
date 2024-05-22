@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Clement@71', // Change this to your MySQL password
+    password: 'ilMeesha', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -484,7 +484,7 @@ app.delete('/cart/:cartID', (req, res) => {
     
             const insertQuery = 'INSERT INTO productorder (CustomerID, ProductID, Quantity) VALUES (?,?,?)';
             const insertOrdQuery = 'INSERT INTO ord (CustomerID, POrderID, RentDate, ReturnDate, Note) VALUES (?,?,?,?,?)';
-            const insertInvoiceQuery = 'INSERT INTO invoice (CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate) VALUES (?,?,?,?,?,?,?)';
+            const insertInvoiceQuery = 'INSERT INTO invoice (CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate, DelStatus) VALUES (?,?,?,?,?,?,?,?)';
             const updateInventoryQuery = 'UPDATE quantum.inventory SET quantity = quantity - ? WHERE productID = ?';
             const insertOrdInventoryQuery = 'INSERT INTO quantum.ordinventory (productID, CustomerID, quantity, status, Category) VALUES (?,?,?,?,?)';
             const deleteCartQuery = 'DELETE FROM shoppingcart WHERE CustomerID = ?';
@@ -571,7 +571,7 @@ app.delete('/cart/:cartID', (req, res) => {
                     PaymentStatus = "Paid";
                 }
     
-                db.query(insertInvoiceQuery, [userId, Balance, amt, totalCost, PaymentStatus, rentDate, returnDate], (err, insertInvoiceResult) => {
+                db.query(insertInvoiceQuery, [userId, Balance, amt, totalCost, PaymentStatus, rentDate, returnDate, 'Undelivered'], (err, insertInvoiceResult) => {
                     if (err) {
                         console.error(err);
                         return res.status(500).send('Error saving to invoice table');
@@ -603,6 +603,9 @@ app.delete('/cart/:cartID', (req, res) => {
             }
         });
     });
+    
+    
+    
     
 
     
@@ -951,6 +954,80 @@ app.get('/get-ordinvoice-details', (req, res) => {
             JOIN ord ON invoice.InvoiceID = ord.InvoiceID
             JOIN productorder ON ord.POrderID = productorder.POrderID
             JOIN product ON productorder.ProductID = product.ProductID
+        WHERE 
+            invoice.InvoiceID = ?`;
+
+    db.query(invoiceQuery, [invoiceId], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching invoice details');
+        } else {
+            if (results.length === 0) {
+                res.status(404).send('Invoice not found');
+            } else {
+                const invoiceDetails = results.map(result => {
+                    const rentalDuration = Math.ceil((new Date(result.ReturnDate) - new Date(result.RentDate)) / (1000 * 60 * 60 * 24));
+                    const costEst = result.Cost * result.Quantity * rentalDuration;
+                    return {
+                        InvoiceID: result.InvoiceID,
+                        CustomerID: result.CustomerID,
+                        CustomerName: `${result.firstName} ${result.lastName}`,
+                        RentDate: result.RentDate,
+                        ReturnDate: result.ReturnDate,
+                        Total: result.Total,
+                        ProductID: result.ProductID,
+                        ProductName: result.pName,
+                        Quantity: result.Quantity,
+                        Cost: result.Cost,
+                        Subtotal: costEst
+                    };
+                });
+                res.json(invoiceDetails);
+            }
+        }
+    });
+});
+app.get('/staff-get-invoices', (req, res) => {
+    const query = `
+        SELECT 
+            invoice.InvoiceID, invoice.CustomerID, invoice.RentDate, invoice.ReturnDate, invoice.Total, invoice.Balance, 
+            customer.firstName, customer.lastName, customer.phone,
+            address.StreetAddress, address.City, address.AptSuiteFloor, address.Country, ord.Note
+        FROM 
+            invoice
+        JOIN 
+            customer ON invoice.CustomerID = customer.CustomerID
+        JOIN 
+            address ON customer.CustomerID = address.CustomerID
+        JOIN 
+            ord ON invoice.InvoiceID = ord.InvoiceID
+        ORDER BY 
+            customer.CustomerID, invoice.RentDate DESC`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching invoice data');
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+
+app.get('/staff-get-invoice-details', (req, res) => {
+    const invoiceId = req.query.invoiceId;
+
+    const invoiceQuery = `
+        SELECT 
+            invoice.InvoiceID, invoice.CustomerID, invoice.RentDate, invoice.ReturnDate, invoice.Total, 
+            customer.firstName, customer.lastName, product.ProductID, product.pName, product.Cost, productorder.Quantity
+        FROM 
+            invoice
+        JOIN customer ON invoice.CustomerID = customer.CustomerID
+        JOIN ord ON invoice.InvoiceID = ord.InvoiceID
+        JOIN productorder ON ord.POrderID = productorder.POrderID
+        JOIN product ON productorder.ProductID = product.ProductID
         WHERE 
             invoice.InvoiceID = ?`;
 

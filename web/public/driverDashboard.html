@@ -47,54 +47,111 @@
     
 </div>
 
+<title>Your Deliveries</title>
+</head>
+<body>
 <div class="main-content">
-  
+    <h2>Your Deliveries</h2>
     <div class="user-info">
         <h2 id="welcomeMessage">Welcome Back, User</h2>
     </div>
-    
-
 
     <!-- Dashboard Widgets -->
     <div class="dashboard-widget">
-        <h3>Your Deliveries</h3>
-        <h4>Customer Details</h4>
-        <table>
-            <tr>
-                <th>Invoice ID</th>
-                <th>Name</th>
-                <th>Contact No.</th>
-                <th>Address</th>
-                <th>Rent Date</th>
-                <th>Return Date</th>
-                <th>Note</th>
-                <th>Balance</th>
-                <th></th>
-            </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th><button>Complete Delivery</button></th>
-            </tr>
+        <h3>Customer Details</h3>
+        <table id="invoiceTable">
+            <thead>
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Name</th>
+                    <th>Contact No.</th>
+                    <th>Address</th>
+                    <th>Rent Date</th>
+                    <th>Return Date</th>
+                    <th>Note</th>
+                    <th>Balance</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Invoice data will be populated here -->
+            </tbody>
         </table>
-       
     </div>
-    <div class="dashboard-widget">
-        <h3>Delivery Status</h3>
-        <table>
-            <tr>
-                <th>Invoice ID</th>
-                <th>Status</th>
-            </tr>
-        </table>
-   </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchInvoices();
+    });
+
+    function fetchInvoices() {
+        fetch('/staff-get-invoices')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector('#invoiceTable tbody');
+                tableBody.innerHTML = ''; // Clear existing table rows
+
+                data.forEach(invoice => {
+                    const row = document.createElement('tr');
+
+                    const invoiceIdCell = document.createElement('td');
+                    invoiceIdCell.textContent = invoice.InvoiceID;
+                    row.appendChild(invoiceIdCell);
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = `${invoice.firstName} ${invoice.lastName}`;
+                    row.appendChild(nameCell);
+
+                    const contactNoCell = document.createElement('td');
+                    contactNoCell.textContent = invoice.phone;
+                    row.appendChild(contactNoCell);
+
+                    const addressCell = document.createElement('td');
+                    addressCell.textContent = `${invoice.StreetAddress}, ${invoice.AptSuiteFloor}, ${invoice.City}, ${invoice.Country}`;
+                    row.appendChild(addressCell);
+
+                    const rentDateCell = document.createElement('td');
+                    rentDateCell.textContent = new Date(invoice.RentDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+                    row.appendChild(rentDateCell);
+
+                    const returnDateCell = document.createElement('td');
+                    returnDateCell.textContent = new Date(invoice.ReturnDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+                    row.appendChild(returnDateCell);
+
+                    const noteCell = document.createElement('td');
+                    noteCell.textContent = invoice.Note || '';  // Adjust this if you have a Note field
+                    row.appendChild(noteCell);
+
+                    const balanceCell = document.createElement('td');
+                    balanceCell.textContent = `$${invoice.Balance}`;
+                    row.appendChild(balanceCell);
+
+                    const actionCell = document.createElement('td');
+                    const completeButton = document.createElement('button');
+                    completeButton.textContent = 'Complete Delivery';
+                    completeButton.onclick = () => {
+                        completeDelivery(invoice.InvoiceID);
+                    };
+                    actionCell.appendChild(completeButton);
+                    row.appendChild(actionCell);
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching invoices:', error));
+    }
+
+    function completeDelivery(invoiceId) {
+        // Implement the logic to mark the delivery as complete
+        console.log(`Completing delivery for Invoice ID: ${invoiceId}`);
+    }
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         fetchUserFirstNameAndUpdateGreeting();

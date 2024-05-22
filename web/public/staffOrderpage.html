@@ -53,22 +53,171 @@
     <h2>Order History</h2>
     <!-- Dashboard Widgets -->
     <div class="dashboard-widget">
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Invoice ID</th>
-                <th>Total</th>
-                <th>View</th>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><button>view full invoice</button></td>
-            </tr>
+        <table id="invoiceTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Customer ID</th>
+                    <th>Invoice ID</th>
+                    <th>Total</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Invoice data will be populated here -->
+            </tbody>
         </table>
     </div>
 </div>
+
+<!-- Modal Structure -->
+<div id="invoiceModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="main-content">
+            <h2>Invoice Details</h2>
+            <div class="invoice-box">
+                <div class="info">
+                    <div>Invoice #: <span id="modalInvoiceId"></span></div>
+                    <div>Customer #: <span id="modalCustomerId"></span></div>
+                    <div>Customer Name: <span id="modalCustomerName"></span></div>
+                    <div>Staff #: <span id="modalStaffId"></span></div>
+                    <div>Date: <span id="modalInvoiceDate"></span></div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalInvoiceItems">
+                        <!-- Invoice items will be populated here -->
+                    </tbody>
+                    <tr class="total">
+                        <td></td>
+                        <td></td>
+                        <td>Total:</td>
+                        <td id="modalInvoiceTotal">$</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchInvoices();
+    });
+
+    function fetchInvoices() {
+        fetch('/staff-get-invoices')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector('#invoiceTable tbody');
+                tableBody.innerHTML = ''; // Clear existing table rows
+
+                data.forEach(invoice => {
+                    const row = document.createElement('tr');
+
+                    const dateCell = document.createElement('td');
+                    dateCell.textContent = new Date(invoice.RentDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+                    row.appendChild(dateCell);
+
+                    const customerIdCell = document.createElement('td');
+                    customerIdCell.textContent = invoice.CustomerID;
+                    row.appendChild(customerIdCell);
+
+                    const invoiceIdCell = document.createElement('td');
+                    invoiceIdCell.textContent = invoice.InvoiceID;
+                    row.appendChild(invoiceIdCell);
+
+                    const totalCell = document.createElement('td');
+                    totalCell.textContent = `$${invoice.Total}`;
+                    row.appendChild(totalCell);
+
+                    const viewCell = document.createElement('td');
+                    const viewButton = document.createElement('button');
+                    viewButton.textContent = 'View full invoice';
+                    viewButton.onclick = () => {
+                        openModal(invoice.InvoiceID);
+                    };
+                    viewCell.appendChild(viewButton);
+                    row.appendChild(viewCell);
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching invoices:', error));
+    }
+
+    function openModal(invoiceId) {
+        fetch(`/staff-get-invoice-details?invoiceId=${invoiceId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.length > 0) {
+                    const invoice = data[0];
+                    document.getElementById('modalInvoiceId').textContent = invoice.InvoiceID;
+                    document.getElementById('modalCustomerId').textContent = invoice.CustomerID;
+                    document.getElementById('modalCustomerName').textContent = invoice.CustomerName;
+                    document.getElementById('modalInvoiceDate').textContent = new Date(invoice.RentDate).toLocaleDateString('en-US', { timeZone: 'UTC' });
+
+                    const tableBody = document.getElementById('modalInvoiceItems');
+                    tableBody.innerHTML = ''; // Clear existing table rows
+
+                    let total = 0;
+
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+
+                        const itemCell = document.createElement('td');
+                        itemCell.textContent = item.ProductName;
+                        row.appendChild(itemCell);
+
+                        const quantityCell = document.createElement('td');
+                        quantityCell.textContent = item.Quantity;
+                        row.appendChild(quantityCell);
+
+                        const priceCell = document.createElement('td');
+                        priceCell.textContent = `$${item.Cost}`;
+                        row.appendChild(priceCell);
+
+                        const subtotalCell = document.createElement('td');
+                        subtotalCell.textContent = `$${item.Subtotal}`;
+                        row.appendChild(subtotalCell);
+
+                        total += item.Subtotal;
+
+                        tableBody.appendChild(row);
+                    });
+
+                    document.getElementById('modalInvoiceTotal').textContent = `$${total}`;
+
+                    document.getElementById('invoiceModal').style.display = 'block';
+                } else {
+                    console.error('No invoice data found');
+                }
+            })
+            .catch(error => console.error('Error fetching invoice details:', error));
+    }
+
+    function closeModal() {
+        document.getElementById('invoiceModal').style.display = 'none';
+    }
+</script>
 <script src="app.js">
     
 </script>
