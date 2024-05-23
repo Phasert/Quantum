@@ -991,16 +991,16 @@ app.get('/staff-get-invoices', (req, res) => {
     const query = `
         SELECT 
             invoice.InvoiceID, invoice.CustomerID, invoice.RentDate, invoice.ReturnDate, invoice.Total, invoice.Balance, 
-            customer.firstName, customer.lastName, customer.phone,
-            address.StreetAddress, address.City, address.AptSuiteFloor, address.Country, ord.Note
+            invoice.DelStatus, customer.firstName, customer.lastName, customer.phone
         FROM 
             invoice
         JOIN 
             customer ON invoice.CustomerID = customer.CustomerID
         JOIN 
-            address ON customer.CustomerID = address.CustomerID
-        JOIN 
             ord ON invoice.InvoiceID = ord.InvoiceID
+        GROUP BY 
+            invoice.InvoiceID, invoice.CustomerID, invoice.RentDate, invoice.ReturnDate, invoice.Total, invoice.Balance, 
+            invoice.DelStatus, customer.firstName, customer.lastName, customer.phone
         ORDER BY 
             customer.CustomerID, invoice.RentDate DESC`;
 
@@ -1013,6 +1013,8 @@ app.get('/staff-get-invoices', (req, res) => {
         }
     });
 });
+
+
 
 
 app.get('/staff-get-invoice-details', (req, res) => {
@@ -1061,4 +1063,65 @@ app.get('/staff-get-invoice-details', (req, res) => {
         }
     });
 });
+app.get('/staff-get-pending-deliveries', (req, res) => {
+    const query = `
+        SELECT 
+            invoice.InvoiceID, invoice.CustomerID, invoice.RentDate, invoice.ReturnDate, invoice.Total, invoice.Balance, 
+            invoice.DelStatus, customer.firstName, customer.lastName, customer.phone,
+            address.StreetAddress, address.City, address.AptSuiteFloor, address.Country, ord.Note
+        FROM 
+            invoice
+        JOIN 
+            customer ON invoice.CustomerID = customer.CustomerID
+        JOIN 
+            address ON customer.CustomerID = address.CustomerID
+        JOIN 
+            ord ON invoice.InvoiceID = ord.InvoiceID
+        WHERE 
+            invoice.DelStatus IN ('Undelivered', 'Out for Delivery')
+        ORDER BY 
+            customer.CustomerID, invoice.RentDate DESC`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching pending deliveries');
+        } else {
+            res.json(results);
+        }
+    });
+});
+app.post('/update-delivery-status', (req, res) => {
+    const invoiceId = req.body.invoiceId;
+    const query = `UPDATE invoice SET DelStatus = 'Delivered' WHERE InvoiceID = ?`;
+
+    db.query(query, [invoiceId], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error updating delivery status');
+        } else {
+            res.send('Delivery status updated successfully');
+        }
+    });
+});
+app.get('/staff-get-delivery-history', (req, res) => {
+    const query = `
+        SELECT 
+            InvoiceID, DelStatus
+        FROM 
+            invoice
+        ORDER BY 
+            RentDate DESC`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching delivery history');
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+
 

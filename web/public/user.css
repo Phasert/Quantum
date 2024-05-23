@@ -1,81 +1,104 @@
-body {
-    font-family: 'Manrope', sans-serif;
+html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
+    font-family: 'Manrope', sans-serif;
     display: flex;
+    flex-direction: row;
+    flex-grow: 1;
 }
+
+
+   
+
+
 .sidebar {
-    width: 250px;
+    width: 15.625rem;
     background-color: #623E2A;
     color: white;
-    padding: 20px;
+    padding: 1.25rem;
     box-sizing: border-box;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
 }
+
 .main-content {
     flex-grow: 1;
-    padding: 20px;
+    padding: 1.25rem;
     background-color: #f5f5f5;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
+
 .nav-menu {
     list-style: none;
     padding: 0;
+    flex-grow: 1;
 }
+
 .nav-item {
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
 }
+
 .nav-item a {
     color: white;
     text-decoration: none;
     display: block;
-    padding: 10px;
-    border-left: 3px solid transparent;
+    padding: 0.625rem;
+    border-left: 0.1875rem solid transparent;
 }
+
 .nav-item a:hover,
 .nav-item a.active {
     background: #2c1c13;
 }
+
 .nav-menu .fa {
-    margin-right: 5px; 
+    margin-right: 0.3125rem; 
 }
 
 .user-info {
-    margin-bottom: 30px;
+    margin-bottom: 1.875rem;
 }
-.card{
+
+.card {
     display: flex;
 }
-.card .dashboard-widget{
-    width:65% ;
+
+.card .dashboard-widget {
+    width: 65%;
 }
-.mini-widget{
+
+.mini-widget {
     background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    padding: 1.25rem;
+    border-radius: 0.3125rem;
+    margin-bottom: 1.25rem;
     margin-left: 1rem;
     width: 35%;
-   
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
 }
+
 .dashboard-widget {
     background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-   
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1.25rem;
+    border-radius: 0.3125rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
 }
 
 .invoice-box {
     min-width: 50rem;
     margin: auto;
     margin-top: 2%;
-    padding: 20px;
-    border: 1px solid #eee;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    font-size: 16px;
-    line-height: 24px;
+    padding: 1.25rem;
+    border: 0.0625rem solid #eee;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.15);
+    font-size: 1rem;
+    line-height: 1.5rem;
     background: #fff;
 }
 
@@ -85,7 +108,7 @@ h1 {
 }
 
 .info {
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
 }
 
 table {
@@ -101,8 +124,8 @@ th {
 }
 
 th, td {
-    padding: 8px;
-    border: 1px solid #ddd;
+    padding: 0.5rem;
+    border: 0.0625rem solid #ddd;
 }
 
 .total td {
@@ -114,19 +137,19 @@ th, td {
     background: #f0f0f0;
 }
 
-button{
+button {
     font-family: 'Manrope', sans-serif;
     background-color: #623E2A;
     color: white;
     border: none;
-    padding: 4px 18px;
+    padding: 0.25rem 1.125rem;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 14px;
-    margin: 4px 2px;
+    font-size: 0.875rem;
+    margin: 0.25rem 0.125rem;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 0.25rem;
 }
 
 button:hover {
@@ -138,29 +161,29 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 18px;
+    padding: 1.125rem;
     background-color: #f5f5f5;
     box-sizing: border-box;
-    max-height: 250px;
+    max-height: 15.625rem;
     flex-wrap: wrap; /* Allow widgets to wrap */
 }
 
 .page-widget {
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin-right: 1.25rem;
+    margin-bottom: 1.25rem;
     background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px; /* Adjusted width */
+    padding: 1.25rem;
+    border-radius: 0.3125rem;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
+    width: 18.75rem; /* Adjusted width */
 }
 
 input {
-    width: calc(100% - 22px); /* Adjusted input width */
-    padding: 5px;
-    border: 2px solid #623E2A;
-    border-radius: 4px;
-    font-size: 14px;
+    width: calc(100% - 1.375rem); /* Adjusted input width */
+    padding: 0.3125rem;
+    border: 0.125rem solid #623E2A;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
     outline: none;
     font-family: 'Manrope', sans-serif;
 }
@@ -176,17 +199,16 @@ input:focus {
 }
 
 #chat-container {
-    width: 400px;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    
+    width: 25rem;
+    padding: 0.625rem;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
 }
 
 #chat-box {
-    height: 300px;
+    height: 18.75rem;
     overflow-y: auto;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
+    border-bottom: 0.0625rem solid #ccc;
+    margin-bottom: 0.625rem;
 }
 
 #messages {
@@ -195,44 +217,45 @@ input:focus {
 }
 
 #message-input {
-    width: calc(100% - 50px);
-    padding: 10px;
+    width: calc(100% - 3.125rem);
+    padding: 0.625rem;
 }
-  
-  @media screen and (max-width: 768px) {
+
+@media screen and (max-width: 768px) {
     .sidebar {
         width: 100%; /* Full width sidebar on small screens */
     }
 
     .nav-item a {
-        padding: 8px; /* Reduce padding for nav links on small screens */
+        padding: 0.5rem; /* Reduce padding for nav links on small screens */
     }
 
     .card .dashboard-widget {
         width: 100%; /* Full width for dashboard widget on small screens */
     }
 }
+
 /* The Modal (background) */
 .modal {
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 60px;
+    padding-top: 3.75rem;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 /* Modal Content */
 .modal-content {
     background-color: #fefefe;
     margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
+    padding: 1.25rem;
+    border: 0.0625rem solid #888;
     width: 80%;
 }
 
@@ -240,7 +263,7 @@ input:focus {
 .close {
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 1.75rem;
     font-weight: bold;
 }
 
@@ -265,11 +288,11 @@ input:focus {
 
 .balancePopup-content {
     background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
     text-align: center;
-    max-width: 300px;
+    max-width: 18.75rem;
     width: 80%;
 }
 
@@ -278,16 +301,15 @@ input:focus {
 }
 
 .balance-amount {
-    font-size: 1.5em;
+    font-size: 1.5rem;
     font-weight: bold;
     color: #451F0F;
 }
 
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.2em;
+    top: 0.625rem;
+    right: 0.625rem;
+    font-size: 1.2rem;
     cursor: pointer;
 }
-

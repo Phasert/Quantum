@@ -51,14 +51,54 @@
     <h2>Delivery History</h2>
     <!-- Dashboard Widgets -->
     <div class="dashboard-widget">
-        <table>
-            <tr>
-                <th>Invoice ID</th>
-                <th>Status</th>
-            </tr>
+        <table id="deliveryTable">
+            <thead>
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Invoice data will be populated here -->
+            </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchInvoices();
+    });
+
+    function fetchInvoices() {
+        fetch('/staff-get-delivery-history')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector('#deliveryTable tbody');
+                tableBody.innerHTML = ''; // Clear existing table rows
+
+                data.forEach(invoice => {
+                    const row = document.createElement('tr');
+
+                    const invoiceIdCell = document.createElement('td');
+                    invoiceIdCell.textContent = invoice.InvoiceID;
+                    row.appendChild(invoiceIdCell);
+
+                    const statusCell = document.createElement('td');
+                    statusCell.textContent = invoice.DelStatus;
+                    row.appendChild(statusCell);
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching delivery history:', error));
+    }
+</script>
 <script src="app.js">
     
 </script>
