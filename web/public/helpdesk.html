@@ -72,6 +72,7 @@
             messageElement.textContent = data.message;
             document.getElementById('messages').appendChild(messageElement);
             document.getElementById('message-input').value = '';
+            alert('Message sent successfully!');
         })
         .catch(error => {
             console.error('Error sending message:', error);

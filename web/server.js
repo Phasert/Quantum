@@ -187,19 +187,41 @@ app.get('/get-user-data', (req, res) => {
         return res.status(401).send('Not logged in');
     }
 
-    // Query the database for the user's first name, email, and phone using their ID
-    const query = 'SELECT firstName, email, phone FROM customer WHERE customerID = ?';
+    // Query the database for the user's first name, email, phone, and position from the staff and customer tables
+    const staffQuery = 'SELECT firstName, email, phone, position FROM staff WHERE employeeID = ?';
+    const customerQuery = 'SELECT firstName, email, phone FROM customer WHERE customerID = ?';
 
-    db.query(query, [userId], (err, results) => {
+    db.query(staffQuery, [userId], (err, staffResults) => {
         if (err) {
             console.error('SQL Error:', err);
             return res.status(500).send('Error fetching user data');
         }
-        if (results.length > 0) {
-            const user = results[0];
-            res.json({ firstName: user.firstName, email: user.email, phone: user.phone });
+        if (staffResults.length > 0) {
+            const user = staffResults[0];
+            res.json({ 
+                firstName: user.firstName, 
+                email: user.email, 
+                phone: user.phone, 
+                position: user.position 
+            });
         } else {
-            res.status(404).send('User not found');
+            db.query(customerQuery, [userId], (err, customerResults) => {
+                if (err) {
+                    console.error('SQL Error:', err);
+                    return res.status(500).send('Error fetching user data');
+                }
+                if (customerResults.length > 0) {
+                    const user = customerResults[0];
+                    res.json({ 
+                        firstName: user.firstName, 
+                        email: user.email, 
+                        phone: user.phone, 
+                        position: null 
+                    });
+                } else {
+                    res.status(404).send('User not found');
+                }
+            });
         }
     });
 });
@@ -755,33 +777,34 @@ app.get('/order/:InvoiceID', (req, res) => {
 
     db.query(selectQuery, [product_name], (err, result) => {
         if (err) {
-            return res.status(500).send('Error fetching product ID');
+            return res.status(500).json({ success: false, message: 'Error fetching product ID' });
         }
 
         if (result.length > 0) {
             const productID = result[0].productID;
             db.query(insertInvQuery, [productID, quantity, status, category], (err, result) => {
                 if (err) {
-                    return res.status(500).send('Error inserting into inventory');
+                    return res.status(500).json({ success: false, message: 'Error inserting into inventory' });
                 }
-                res.send('Inventory updated successfully');
+                res.json({ success: true, message: 'Inventory updated successfully' });
             });
         } else {
             db.query(insertProductQuery, [product_name, cost_per_piece, description, category], (err, result) => {
                 if (err) {
-                    return res.status(500).send('Error inserting into product table');
+                    return res.status(500).json({ success: false, message: 'Error inserting into product table' });
                 }
                 const productID = result.insertId;
                 db.query(insertInvQuery, [productID, quantity, status, category], (err, result) => {
                     if (err) {
-                        return res.status(500).send('Error inserting into inventory');
+                        return res.status(500).json({ success: false, message: 'Error inserting into inventory' });
                     }
-                    res.send('Product and inventory updated successfully');
+                    res.json({ success: true, message: 'Inventory updated successfully' });
                 });
             });
         }
     });
 });
+
 app.get('/inventory-data', (req, res) => {
     const query = `
         SELECT 

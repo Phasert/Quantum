@@ -88,6 +88,9 @@ html, body {
     border-radius: 0.3125rem;
     margin-bottom: 1.25rem;
     box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
+    overflow-y: auto; 
+    max-height: 15rem;
+    border: 1px solid #ccc;
 }
 
 .invoice-box {
@@ -313,3 +316,5 @@ input:focus {
     font-size: 1.2rem;
     cursor: pointer;
 }
+
+

@@ -192,6 +192,25 @@
                 image.style.opacity = i === index ? 1 : 0.7;
             });
         }
+
+        function updateCostEstimate() {
+            var quantitySelector = document.getElementById('quantity');
+            var costEstimateSpan = document.getElementById('costEstimate');
+            var selectedOption = document.getElementById('options').value;
+
+            var selectedQuantity = parseInt(quantitySelector.value);
+            var optionCosts = {
+                'Red Wine Glass': 10,
+                'Champagne Glass': 5,
+                'Cocktail Glass': 6,
+                'Martini Glass': 8,
+            };
+
+            var cost = optionCosts[selectedOption] || 0;
+            var estimatedCost = selectedQuantity * cost;
+
+            costEstimateSpan.textContent = '$' + estimatedCost.toFixed(2);
+        }
         </script>
 
 </body>

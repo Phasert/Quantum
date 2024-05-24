@@ -197,53 +197,6 @@
    
     <!-- Link to your JavaScript file (if you have one) -->
     <script src="app.js"></script>
-     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-    fetch('/get-user-data')
-    .then(response => response.json())
-    .then(data => {
-        if (data.firstName) {
-            // User is logged in, modify the nav bar to show user icon instead of login link
-            const loginLink = document.getElementById('loginLink');
-            loginLink.outerHTML = '<a href="userDashboard.html" id="dashboardLink"><i class="fas fa-user" style="color: #ffffff;"></i></a>'; // Replace login link with user icon link
-        }
-    })
-    .catch(error => {
-        console.log('User not logged in or error fetching user data:', error);
-    });
-});
-
-app.get('/userDashboard.html', (req, res) => {
-    if (req.session.userId) {
-        res.sendFile(__dirname + '/userDashboard.html');
-    } else {
-        // Redirect user to login page or index page if not logged in
-        res.redirect('/');
-    }
-});
-app.use(session({
-    secret: 'your_secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Example for toggling secure attribute
-}));
-document.addEventListener('DOMContentLoaded', () => {
-    // Example function to check if a specific cookie exists
-    function checkCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? match[2] : null;
-    }
-
-    // Check if the "isLoggedIn" cookie is set
-    if (checkCookie("isLoggedIn")) {
-        // If the user is logged in, hide the popup container
-        const popupContainer = document.getElementById('popupContainer');
-        if (popupContainer) {
-            popupContainer.style.display = 'none';
-        }
-    }
-});
-    </script> 
-
+    
 </body>
 </html>

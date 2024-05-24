@@ -55,7 +55,7 @@
         <h2>Inventory</h2>
     </div>
     <div class="dashboard-widget">
-        <form action="/inven-submit" method="post">
+        <form id="inven-submit-form">
         <h3>Add Product</h3>
         <table>
             <tr>
@@ -116,7 +116,7 @@
                             <td>${item.productID}</td>
                             <td>${item.pName}</td>
                             <td>${item.quantity}</td>
-                            <td>${item.status}</td>
+                            <td>${item.stat}</td>
                             <td>${item.category}</td>
                         `;
                         table.appendChild(row);
@@ -137,6 +137,39 @@
                 } else {
                     row.style.display = 'none';
                 }
+            });
+        });
+
+        document.getElementById('inven-submit-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const data = {
+                product_name: formData.get('product_name'),
+                cost_per_piece: formData.get('cost_per_piece'),
+                quantity: formData.get('quantity'),
+                description: formData.get('description'),
+                category: formData.get('category')
+            };
+
+            fetch('/inven-submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert(result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating inventory.');
             });
         });
     </script>
