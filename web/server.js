@@ -750,8 +750,8 @@ app.get('/order/:InvoiceID', (req, res) => {
     }
 
     const selectQuery = 'SELECT productID FROM product WHERE pName = ?';
-    const insertProductQuery = 'INSERT INTO product (pName, cost, pDesc, category) VALUES (?, ?, ?, ?)';
-    const insertInvQuery = 'INSERT INTO inventory (productID, quantity, status, category) VALUES (?, ?, ?, ?)';
+    const insertProductQuery = 'INSERT INTO product (pName, cost, pDesc, Category) VALUES (?, ?, ?, ?)';
+    const insertInvQuery = 'INSERT INTO Inventory (productID, Quantity, stat, Category) VALUES (?, ?, ?, ?)';
 
     db.query(selectQuery, [product_name], (err, result) => {
         if (err) {
@@ -788,12 +788,12 @@ app.get('/inventory-data', (req, res) => {
             p.productID, 
             p.pName, 
             i.quantity, 
-            i.Stat, 
+            i.stat, 
             p.category 
         FROM 
             product p 
         JOIN 
-            Inventory i 
+            inventory i 
         ON 
             p.productID = i.productID`;
 
