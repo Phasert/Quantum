@@ -100,19 +100,18 @@
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="clientStatus">
+                <tbody id="orderStatus">
                     <!-- Order status data will be populated here -->
                 </tbody>
             </table>
             <h3>Client Status</h3>
             <table>
-                <h4 >Good Standing</h4>
+                <h4>Good Standing</h4>
                 <tbody id="clientStatus">
                     <!-- Order status data will be populated here -->
                 </tbody>
             </table>
         </div>
-        
     </div>
 </div>
 
@@ -120,6 +119,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         fetchUserFirstNameAndUpdateGreeting();
         fetchDashboardData();
+        setupBalancePopup();
     });
 
     function fetchUserFirstNameAndUpdateGreeting() {
@@ -218,14 +218,31 @@
         document.getElementById('clientStatus').textContent = clientStatus;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function setupBalancePopup() {
     const balancePopup = document.getElementById('balancePopup');
     const openPopupBtn = document.getElementById('openPopupBtn');
     const closeBtns = document.querySelectorAll('.close-btn, .close-button');
     const clearButton = document.querySelector('.clear-button');
 
     openPopupBtn.addEventListener('click', () => {
-        balancePopup.style.display = 'flex';
+        fetch('/get-latest-balance')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.querySelector('.balance-amount').textContent = `$${data.balance}`;
+                balancePopup.style.display = 'flex';
+                
+                if (data.latestInvoiceId) {
+                    clearButton.setAttribute('data-invoice-id', data.latestInvoiceId);
+                } else {
+                    clearButton.setAttribute('data-invoice-id', 'null');
+                }
+            })
+            .catch(error => console.error('Error fetching balance:', error));
     });
 
     closeBtns.forEach(btn => {
@@ -239,13 +256,14 @@
             balancePopup.style.display = 'none';
         }
     });
+
     clearButton.addEventListener('click', () => {
-        window.location.href = 'payment.html';
+        const invoiceId = clearButton.getAttribute('data-invoice-id');
+        window.location.href = `payment.html?invoiceId=${invoiceId}`;
     });
-});
+}
+
 </script>
-
-
 <script src="app.js"></script>
 
 </body>

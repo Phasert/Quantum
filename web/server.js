@@ -99,13 +99,13 @@ async function sendWelcomeEmail(firstName, userEmail, customerId) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'kyleplayfortnite@gmail.com', // Your email
-            pass: 'bycocufvfxaxxixr', // Your email password
+            user: 'relltrading434@gmail.com', // Your email
+            pass: 'evnzgaitynigfdcy', // Your email password
           },
         });
       
         let mailOptions = {
-          from: 'kyleplayfortnite@gmail.com',
+          from: 'relltrading434@gmail.com',
           to: userEmail,
         subject: 'Welcome to Our Website!',
         text: `Welcome, ${firstName}! Thank you for signing up. Your customer ID is ${customerId}.`,
@@ -298,13 +298,13 @@ async function sendPasswordResetEmail(userEmail) {
   let transporter = nodemailer.createTransport({
     service: 'gmail', // For example, use Gmail. You can use other services.
     auth: {
-      user: 'kyleplayfortnite@gmail.com', // Your email
-      pass: 'bycocufvfxaxxixr', // Your email password
+      user: 'relltrading434@gmail.com', // Your email
+      pass: 'evnzgaitynigfdcy', // Your email password
     },
   });
 
   let mailOptions = {
-    from: 'kyleplayfortnite@gmail.com',
+    from: 'relltrading434@gmail.com',
     to: userEmail,
     subject: 'Password Reset',
     text: 'Here is your password reset link http://localhost:3000/settings.html?token=secure_unique_token', // You can also use HTML content
@@ -444,82 +444,82 @@ app.delete('/cart/:cartID', (req, res) => {
 
 
 
-
-    // // Hash the password before saving to the database
-    // bcrypt.hash(password, saltRounds, function(err, hash) {
-    //     if (err) {
-    //         console.error('Error hashing password', err);
-    //         return res.status(500).send('Error processing your request');
-    //     }
-
-    //     // Use the hashed password in your database query
-    //     const query = `INSERT INTO customer (firstName, lastName, email, phone, pword) VALUES (?, ?, ?, ?, ?)`;
-
-    //     db.query(query, [firstName, lastName, email, phone, hash], (err, results) => {
-    //         if (err) {
-    //             console.error(err);
-    //             res.status(500).send('Error saving customer');
-    //         } else {
-    //             // Send back the customer ID in the response
-    //             res.json({ message: 'Customer saved', customerId: results.insertId });
-    //         }
-    //     });
-    // });
   
 
-    app.post('/save', async (req, res) => {
-        const userId = req.session.userId;
-        const { amt } = req.body;
-    
+app.post('/save', async (req, res) => {
+    const userId = req.session.userId;
+    const { amt, invoiceId } = req.body;
+
+    if (invoiceId && invoiceId !== 'null') {
+        // Update existing invoice
+        const updateInvoiceQuery = `
+            UPDATE invoice 
+            SET PaidAmt = PaidAmt + ?, 
+                Balance = Balance - ?, 
+                PaymentStatus = CASE 
+                    WHEN Balance - ? <= 0 THEN 'Paid' 
+                    ELSE 'Pending' 
+                END 
+            WHERE InvoiceID = ?`;
+
+        db.query(updateInvoiceQuery, [amt, amt, amt, invoiceId], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error updating invoice');
+            }
+            res.redirect('/userDashboard.html?message=Payment%20successfully%20completed');
+        });
+    } else {
+        // Existing code to handle new order
         const query = 'SELECT CustomerID, ProductID, Quantity, Cost_Est, custComment, rentDate, returnDate FROM shoppingcart WHERE CustomerID = ?';
         db.query(query, [userId], (err, results) => {
             if (err) {
                 console.error(err);
                 return res.status(500).send('Error fetching Cart details');
             }
-    
+
             if (results.length === 0) {
                 return res.status(404).send('Customer cart not found');
             }
-    
+
             const insertQuery = 'INSERT INTO productorder (CustomerID, ProductID, Quantity) VALUES (?,?,?)';
             const insertOrdQuery = 'INSERT INTO ord (CustomerID, POrderID, RentDate, ReturnDate, Note) VALUES (?,?,?,?,?)';
             const insertInvoiceQuery = 'INSERT INTO invoice (CustomerID, Balance, PaidAmt, Total, PaymentStatus, RentDate, ReturnDate, DelStatus) VALUES (?,?,?,?,?,?,?,?)';
             const updateInventoryQuery = 'UPDATE quantum.inventory SET quantity = quantity - ? WHERE productID = ?';
             const insertOrdInventoryQuery = 'INSERT INTO quantum.ordinventory (productID, CustomerID, quantity, status, Category) VALUES (?,?,?,?,?)';
             const deleteCartQuery = 'DELETE FROM shoppingcart WHERE CustomerID = ?';
-    
+
             let totalCost = 0;
             let orders = [];
             let rentDate, returnDate;
-    
+
             results.forEach((item, index) => {
                 const { ProductID, Quantity, Cost_Est, rentDate: itemRentDate, returnDate: itemReturnDate, custComment } = item;
                 rentDate = itemRentDate;
                 returnDate = itemReturnDate;
                 totalCost += Cost_Est;
-    
+
                 db.query(insertQuery, [userId, ProductID, Quantity], (err, insertResult) => {
                     if (err) {
                         console.error(err);
                         return res.status(500).send('Error saving to product order table');
                     }
-    
+
                     const POrderID = insertResult.insertId;
                     orders.push({ userId, POrderID, rentDate, returnDate, custComment });
-    
+
                     db.query(insertOrdQuery, [userId, POrderID, rentDate, returnDate, custComment], (err, insertOrdResult) => {
                         if (err) {
                             console.error(err);
                             return res.status(500).send('Error saving to ord table');
                         }
-    
+
                         db.query(updateInventoryQuery, [Quantity, ProductID], (err, updateInventoryResult) => {
                             if (err) {
                                 console.error(err);
                                 return res.status(500).send('Error updating inventory');
                             }
-    
+
                             const currentDate = new Date();
                             const rentDateObj = new Date(rentDate);
                             let status = rentDateObj > currentDate ? 'for order' : 'in use';
@@ -528,23 +528,23 @@ app.delete('/cart/:cartID', (req, res) => {
                                     console.error(err);
                                     return res.status(500).send('Error fetching product category');
                                 }
-    
+
                                 const Category = categoryResult[0].Category;
-    
+
                                 // Check for existing entry before inserting
                                 db.query('SELECT * FROM quantum.ordinventory WHERE productID = ? AND CustomerID = ?', [ProductID, userId], (err, checkResult) => {
                                     if (err) {
                                         console.error(err);
                                         return res.status(500).send('Error checking ordinventory table');
                                     }
-    
+
                                     if (checkResult.length === 0) {
                                         db.query(insertOrdInventoryQuery, [ProductID, userId, Quantity, status, Category], (err, insertOrdInventoryResult) => {
                                             if (err) {
                                                 console.error(err);
                                                 return res.status(500).send('Error saving to ordinventory table');
                                             }
-    
+
                                             if (index === results.length - 1) {
                                                 finalizeOrder(rentDate, returnDate);
                                             }
@@ -561,7 +561,7 @@ app.delete('/cart/:cartID', (req, res) => {
                     });
                 });
             });
-    
+
             function finalizeOrder(rentDate, returnDate) {
                 const Balance = totalCost - amt;
                 let PaymentStatus = "Unpaid";
@@ -570,15 +570,15 @@ app.delete('/cart/:cartID', (req, res) => {
                 } else if (Balance === 0) {
                     PaymentStatus = "Paid";
                 }
-    
+
                 db.query(insertInvoiceQuery, [userId, Balance, amt, totalCost, PaymentStatus, rentDate, returnDate, 'Undelivered'], (err, insertInvoiceResult) => {
                     if (err) {
                         console.error(err);
                         return res.status(500).send('Error saving to invoice table');
                     }
-    
+
                     const invoiceID = insertInvoiceResult.insertId;
-    
+
                     orders.forEach((order, orderIndex) => {
                         const { userId, POrderID, rentDate, returnDate, custComment } = order;
                         db.query('UPDATE ord SET InvoiceID = ? WHERE POrderID = ?', [invoiceID, POrderID], (err, updateOrderResult) => {
@@ -586,14 +586,14 @@ app.delete('/cart/:cartID', (req, res) => {
                                 console.error(err);
                                 return res.status(500).send('Error updating order with invoiceID');
                             }
-    
+
                             if (orderIndex === orders.length - 1) {
                                 db.query(deleteCartQuery, [userId], (err, deleteResult) => {
                                     if (err) {
                                         console.error(err);
                                         return res.status(500).send('Error deleting from shopping cart table');
                                     }
-    
+
                                     res.redirect('/userDashboard.html?message=Order%20successfully%20placed');
                                 });
                             }
@@ -602,7 +602,10 @@ app.delete('/cart/:cartID', (req, res) => {
                 });
             }
         });
-    });
+    }
+});
+
+
     
     
     
@@ -1122,6 +1125,200 @@ app.get('/staff-get-delivery-history', (req, res) => {
         }
     });
 });
+app.post('/undo-order', (req, res) => {
+    const { invoiceID } = req.body;
 
+    // Fetch the order details using the invoiceID
+    const selectOrderQuery = 'SELECT POrderID FROM ord WHERE InvoiceID = ?';
+    const selectInvoiceQuery = 'SELECT CustomerID, Total, PaidAmt FROM invoice WHERE InvoiceID = ?';
+    
+    const deleteInvoiceQuery = 'DELETE FROM invoice WHERE InvoiceID = ?';
+    const deleteOrderQuery = 'DELETE FROM ord WHERE InvoiceID = ?';
+    const deleteProductOrderQuery = 'DELETE FROM productorder WHERE POrderID = ?';
+    const updateInventoryQuery = 'UPDATE quantum.inventory SET quantity = quantity + ? WHERE productID = ?';
+    const deleteOrdInventoryQuery = 'DELETE FROM quantum.ordinventory WHERE productID = ? AND CustomerID = ?';
 
+    db.query(selectInvoiceQuery, [invoiceID], (err, invoiceResults) => {
+        if (err) {
+            console.error('Error fetching invoice details:', err);
+            return res.status(500).send('Error fetching invoice details');
+        }
 
+        if (invoiceResults.length === 0) {
+            return res.status(404).send('Invoice not found');
+        }
+
+        const { CustomerID, Total, PaidAmt } = invoiceResults[0];
+
+        db.query(selectOrderQuery, [invoiceID], (err, orders) => {
+            if (err) {
+                console.error('Error fetching order IDs:', err);
+                return res.status(500).send('Error fetching order IDs');
+            }
+
+            const updateInventoryPromises = orders.map(order => {
+                return new Promise((resolve, reject) => {
+                    const selectProductOrderQuery = 'SELECT ProductID, Quantity FROM productorder WHERE POrderID = ?';
+                    db.query(selectProductOrderQuery, [order.POrderID], (err, productOrderResults) => {
+                        if (err) {
+                            return reject('Error fetching product order details');
+                        }
+
+                        const { ProductID, Quantity } = productOrderResults[0];
+
+                        db.query(updateInventoryQuery, [Quantity, ProductID], (err, result) => {
+                            if (err) {
+                                return reject('Error updating inventory');
+                            }
+
+                            db.query(deleteOrdInventoryQuery, [ProductID, CustomerID], (err, result) => {
+                                if (err) {
+                                    return reject('Error deleting from ord inventory table');
+                                }
+
+                                db.query(deleteProductOrderQuery, [order.POrderID], (err, result) => {
+                                    if (err) {
+                                        return reject('Error deleting from product order table');
+                                    }
+                                    resolve();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+
+            Promise.all(updateInventoryPromises)
+                .then(() => {
+                    db.query(deleteOrderQuery, [invoiceID], (err, result) => {
+                        if (err) {
+                            console.error('Error deleting from order table:', err);
+                            return res.status(500).send('Error deleting from order table');
+                        }
+
+                        db.query(deleteInvoiceQuery, [invoiceID], (err, result) => {
+                            if (err) {
+                                console.error('Error deleting from invoice table:', err);
+                                return res.status(500).send('Error deleting from invoice table');
+                            }
+
+                            res.json({ success: true });
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    res.status(500).json({ success: false, error: err });
+                });
+        });
+    });
+});
+app.get('/orders', (req, res) => {
+    const query = `
+        SELECT i.InvoiceID, c.firstName, c.lastName, i.PaidAmt, i.Balance, i.DelStatus
+        FROM invoice i
+        JOIN customer c ON i.CustomerID = c.CustomerID
+        WHERE i.DelStatus = 'Undelivered' OR i.DelStatus = 'Out for Delivery'
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching orders:', err);
+            return res.status(500).send('Error fetching orders');
+        }
+        res.json(results);
+    });
+});
+
+app.post('/prepare-delivery', (req, res) => {
+    const { invoiceID } = req.body;
+    const updateQuery = 'UPDATE invoice SET DelStatus = ? WHERE InvoiceID = ?';
+    db.query(updateQuery, ['Out for Delivery', invoiceID], (err, result) => {
+        if (err) {
+            console.error('Error updating delivery status:', err);
+            return res.status(500).send('Error updating delivery status');
+        }
+        res.send('Delivery status updated');
+    });
+});
+app.get('/get-latest-balance', (req, res) => {
+    const userId = req.session.userId;
+    const query = `
+        SELECT 
+            Balance, InvoiceID 
+        FROM 
+            invoice 
+        WHERE 
+            CustomerID = ? 
+        ORDER BY 
+            RentDate DESC 
+        LIMIT 1`;
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error fetching balance');
+        } else {
+            if (results.length > 0) {
+                res.json({ balance: results[0].Balance, latestInvoiceId: results[0].InvoiceID });
+            } else {
+                res.json({ balance: 0, latestInvoiceId: null });
+            }
+        }
+    });
+});
+app.post('/send-message', (req, res) => {
+    const userId = req.session.userId; // Assume you have session management set up
+  
+    if (!userId) {
+      return res.status(401).send('User not logged in');
+    }
+  
+    const message = req.body.message;
+  
+    const query = 'SELECT firstName, lastName FROM customer WHERE customerID = ?';
+    db.query(query, [userId], (err, results) => {
+      if (err) {
+        console.error('Error fetching user details:', err);
+        return res.status(500).send('Error fetching user details');
+      }
+  
+      if (results.length === 0) {
+        return res.status(404).send('User not found');
+      }
+  
+      const userName = `${results[0].firstName} ${results[0].lastName}`;
+      sendChatMessageEmail(userName, userId, message)
+        .then(() => {
+          res.json({ message: `You: ${message}` });
+        })
+        .catch((error) => {
+          console.error('Failed to send email:', error);
+          res.status(500).send('Failed to send message');
+        });
+    });
+  });
+  
+  async function sendChatMessageEmail(userName, userId, message) {
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'relltrading434@gmail.com',
+        pass: 'evnzgaitynigfdcy', // Replace with your email password
+      },
+    });
+  
+    let mailOptions = {
+      from: 'relltrading434@gmail.com',
+      to: 'relltrading434@gmail.com', // Replace with your email address
+      subject: 'New Chat Message from Help Desk',
+      text: `User ${userName} (CustomerID: ${userId}) sent a message: ${message}`
+    };
+  
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      throw error;
+    }
+  }
+  

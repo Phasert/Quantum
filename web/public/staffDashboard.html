@@ -44,7 +44,6 @@
         <li class="nav-item"><a href="inventory.html"><i class="fa fa-clipboard" style="color: #ffffff;"></i> Inventory</a></li>
         <li class="nav-item"><a href="staffSettings.html"><i class="fas fa-cog" style="color: #ffffff;"></i> Settings</a></li>
         <li class="nav-item"><a href="/logout"><i class="fas fa-sign-out-alt" style="color: #ffffff;"></i> Log Out</a></li>
-        <li class="nav-item" style="margin-top: 155%;"><a href="helpdesk"><i class="fa fa-question" style="color: #ffffff;"></i> Help Desk</a></li>
     </ul>
     
 </div>
@@ -58,9 +57,9 @@
 
 
     <!-- Dashboard Widgets -->
-    <div class="dashboard-widget">
-        <h3>Customers' Orders</h3>
-        <table>
+    <h3>Customers' Orders</h3>
+    <table>
+        <thead>
             <tr>
                 <th>Invoice ID</th>
                 <th>Name</th>
@@ -68,49 +67,72 @@
                 <th>Balance</th>
                 <th>Delivery</th>
             </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><button>prepare delivery</button><button>cancel order</button></td>
-            </tr>
-        </table>
-       
-    </div>
-    <div class="card">
-    <div class="dashboard-widget">
-        <h3>Current Rentals</h3>
-        <table>
-            <tr>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Rent Date</th>
-                <th>Return Date</th>
-            </tr>
-        </table>
-   </div>
-   <div class="mini-widget">
-    <h3>Order Status</h3>
-    <table>
-        <tr>
-            <th>Order ID</th>
-            <th>Status</th>
-        </tr>
+        </thead>
+        <tbody id="orders-table">
+            <!-- Orders will be dynamically inserted here -->
+        </tbody>
     </table>
-   </div>
 </div>
-<div class="card">
-    <div class="dashboard-widget">
-        <h3>Client Status</h3>
-        <h4> Good Standing</h4>
-      
-   </div>
-   <div class="mini-widget">
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/orders')
+            .then(response => response.json())
+            .then(orders => {
+                const ordersTable = document.getElementById('orders-table');
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.InvoiceID}</td>
+                        <td>${order.firstName} ${order.lastName}</td>
+                        <td>${order.PaidAmt}</td>
+                        <td>${order.Balance}</td>
+                        <td>
+                            <button onclick="prepareDelivery(${order.InvoiceID})">prepare delivery</button>
+                            <button onclick="cancelOrder(${order.InvoiceID})">cancel order</button>
+                        </td>
+                    `;
+                    ordersTable.appendChild(row);
+                });
+            })
+            .catch(err => console.error('Error fetching orders:', err));
+    });
+
+    function prepareDelivery(invoiceID) {
+        fetch('/prepare-delivery', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ invoiceID })
+        })
+        .then(response => response.text())
+        .then(message => alert(message))
+        .catch(err => console.error('Error preparing delivery:', err));
+    }
+
+    function cancelOrder(invoiceID) {
+        fetch('/undo-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ invoiceID })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                location.reload();
+            } else {
+                alert('Error cancelling order');
+            }
+        })
+        .catch(err => console.error('Error cancelling order:', err));
+    }
+
+</script>
     
-   </div>
-</div>
-</div>
+   
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         fetchUserFirstNameAndUpdateGreeting();

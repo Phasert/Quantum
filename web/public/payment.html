@@ -92,15 +92,15 @@
         <div class="flex-container">
             <div class="container order-summary-container">
                 <form action="/save" method="post">
+                    <input type="hidden" name="invoiceId" id="invoiceId" value="">
                     <h2>Payment Information</h2>
-                        <div class="checkout-display">
-
+                    <div class="checkout-display">
                         <label for="nameOnCard">Name On Card:</label>
-                        <input type="text" id="card" name="card" required>
-
+                        <input type="text" id="nameOnCard" name="nameOnCard" required>
+        
                         <label for="card">Credit Card Number:</label>
                         <input type="text" id="card" name="card" required>
-
+        
                         <div class="name-container">
                             <div class="input-group">
                                 <label for="expiry">Expiry Date:</label>
@@ -108,21 +108,19 @@
                             </div>
                             <div class="input-group">
                                 <label for="cvv">CVV:</label>
-                                <input type="text" id="cvv" name="cvv"  placeholder="XXX"required>
+                                <input type="text" id="cvv" name="cvv" placeholder="XXX" required>
                             </div>
                             <div class="input-group">
                                 <label for="amt">Amount:</label>
-                                <input type="text" id="amt" name="amt"  placeholder="$:"required>
+                                <input type="text" id="amt" name="amt" placeholder="$:" required>
                             </div>
                         </div>
                         <label>
                             <input type="checkbox" id="saveInfoCheckbox" name="saveInfo" value="saveInfo">
                             Save card information for next time.
-                        </label>   
-                        
-                        </div>
-                        <button type="submit" >Pay</button>
-
+                        </label>
+                    </div>
+                    <button type="submit">Pay</button>
                 </form>
             </div>
             <div class="container checkout-container">
@@ -140,7 +138,7 @@
                         </div>
                         <button onclick="toggleEditBilling()">Edit</button>
                     </div>
-            
+        
                     <div id="billingEdit" class="receipt">
                         <form id="billingForm">
                             <div class="checkout-display">
@@ -166,140 +164,130 @@
                 <button type="button" onclick="goToCheckout()">Back</button>
                 <button type="button" onclick="goToIndex()">Cancel</button>
             </div>
-            
-            
-            
-            <script src="app.js"></script>
-            <script>
-               document.addEventListener('DOMContentLoaded', function() {
-    fetchUserData();
-
-    // Attach the saveChanges function to the form's submit event
-    document.getElementById('billingForm').addEventListener('submit', saveChanges);
-});
-
-function fetchUserData() {
-    fetch('/get-billing-info')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('No billing information found');
+        </div>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const invoiceId = urlParams.get('invoiceId');
+                if (invoiceId) {
+                    document.getElementById('invoiceId').value = invoiceId;
+                }
+                fetchUserData();
+            });
+        
+            function fetchUserData() {
+                fetch('/get-billing-info')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.IsBillingAddress) {
+                            document.getElementById('billingEmailSpan').innerText = data.Email;
+                            document.getElementById('billingNameSpan').innerText = `${data.FirstName} ${data.LastName}`;
+                            document.getElementById('billingCompanySpan').innerText = data.Company;
+                            document.getElementById('billingCountrySpan').innerText = data.Country;
+                            document.getElementById('billingStAddressSpan').innerText = data.StreetAddress;
+                            document.getElementById('billingOptAddressSpan').innerText = data.AptSuiteFloor;
+                            document.getElementById('billingCitySpan').innerText = data.City;
+        
+                            document.getElementById('billingReceipt').classList.remove('hidden');
+                            document.getElementById('billingEdit').classList.add('hidden');
+                        } else {
+                            document.getElementById('billingReceipt').classList.add('hidden');
+                            document.getElementById('billingEdit').classList.remove('hidden');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching user data:', error));
             }
-            return response.json();
-        })
-        .then(data => {
-            // Check if the retrieved data has IsBillingAddress set to true (or 1)
-            if (data.IsBillingAddress == 1) {
-                document.getElementById('billingEmailSpan').innerText = data.Email;
-                document.getElementById('billingNameSpan').innerText = `${data.FirstName} ${data.LastName}`;
-                document.getElementById('billingCompanySpan').innerText = data.Company;
-                document.getElementById('billingCountrySpan').innerText = data.Country;
-                document.getElementById('billingStAddressSpan').innerText = data.StreetAddress;
-                document.getElementById('billingOptAddressSpan').innerText = data.AptSuiteFloor;
-                document.getElementById('billingCitySpan').innerText = data.City;
-
-                document.getElementById('billingReceipt').classList.remove('hidden');
-                document.getElementById('billingEdit').classList.add('hidden');
-            } else {
-                document.getElementById('billingReceipt').classList.add('hidden');
-                document.getElementById('billingEdit').classList.remove('hidden');
+        
+            function toggleEditBilling() {
+                const receipt = document.getElementById("billingReceipt");
+                const edit = document.getElementById("billingEdit");
+        
+                receipt.classList.toggle("hidden");
+                edit.classList.toggle("hidden");
+        
+                if (!edit.classList.contains("hidden")) {
+                    document.getElementById("billingEmailInput").value = document.getElementById("billingEmailSpan").innerText;
+                    document.getElementById("billingNameInput").value = document.getElementById("billingNameSpan").innerText;
+                    document.getElementById("billingCompanyInput").value = document.getElementById("billingCompanySpan").innerText;
+                    document.getElementById("billingCountryInput").value = document.getElementById("billingCountrySpan").innerText;
+                    document.getElementById("billingStAddressInput").value = document.getElementById("billingStAddressSpan").innerText;
+                    document.getElementById("billingOptAddressInput").value = document.getElementById("billingOptAddressSpan").innerText;
+                    document.getElementById("billingCityInput").value = document.getElementById("billingCitySpan").innerText;
+                }
             }
-        })
-        .catch(error => {
-            console.error('Error fetching user data:', error);
-            document.getElementById('billingReceipt').classList.add('hidden');
-            document.getElementById('billingEdit').classList.remove('hidden');
-        });
-}
-
-function toggleEditBilling() {
-    var receipt = document.getElementById("billingReceipt");
-    var edit = document.getElementById("billingEdit");
-
-    receipt.classList.toggle("hidden");
-    edit.classList.toggle("hidden");
-
-    if (!edit.classList.contains("hidden")) {
-        document.getElementById("billingEmailInput").value = document.getElementById("billingEmailSpan").innerText;
-        document.getElementById("billingNameInput").value = document.getElementById("billingNameSpan").innerText;
-        document.getElementById("billingCompanyInput").value = document.getElementById("billingCompanySpan").innerText;
-        document.getElementById("billingCountryInput").value = document.getElementById("billingCountrySpan").innerText;
-        document.getElementById("billingStAddressInput").value = document.getElementById("billingStAddressSpan").innerText;
-        document.getElementById("billingOptAddressInput").value = document.getElementById("billingOptAddressSpan").innerText;
-        document.getElementById("billingCityInput").value = document.getElementById("billingCitySpan").innerText;
-    }
-}
-
-function saveChanges(event) {
-    event.preventDefault(); // Prevent the form from submitting the traditional way
-
-    var email = document.getElementById("billingEmailInput").value;
-    var name = document.getElementById("billingNameInput").value;
-    var company = document.getElementById("billingCompanyInput").value;
-    var country = document.getElementById("billingCountryInput").value;
-    var streetAddress = document.getElementById("billingStAddressInput").value;
-    var optAddress = document.getElementById("billingOptAddressInput").value;
-    var city = document.getElementById("billingCityInput").value;
-    var isBillingAddress = true; // or however you determine this value
-
-    var [firstName, lastName] = name.split(' ');
-
-    var billingInfo = {
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        company: company,
-        country: country,
-        streetAddress: streetAddress,
-        aptSuiteFloor: optAddress,
-        city: city,
-        isBillingAddress: isBillingAddress
-    };
-
-    fetch('/get-billing-info')
-        .then(response => {
-            if (!response.ok) {
-                // No existing billing info, insert a new one
-                return fetch('/submit-delivery-info', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(billingInfo)
-                });
-            } else {
-                // Existing billing info found, update it
-                return fetch('/update-delivery-info', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(billingInfo)
-                });
+        
+            function saveChanges(event) {
+                event.preventDefault();
+        
+                const email = document.getElementById("billingEmailInput").value;
+                const name = document.getElementById("billingNameInput").value;
+                const company = document.getElementById("billingCompanyInput").value;
+                const country = document.getElementById("billingCountryInput").value;
+                const streetAddress = document.getElementById("billingStAddressInput").value;
+                const optAddress = document.getElementById("billingOptAddressInput").value;
+                const city = document.getElementById("billingCityInput").value;
+                const isBillingAddress = true;
+        
+                const [firstName, lastName] = name.split(' ');
+        
+                const billingInfo = {
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    company: company,
+                    country: country,
+                    streetAddress: streetAddress,
+                    aptSuiteFloor: optAddress,
+                    city: city,
+                    isBillingAddress: isBillingAddress
+                };
+        
+                fetch('/get-billing-info')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            return fetch('/update-delivery-info', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(billingInfo)
+                            });
+                        } else {
+                            return fetch('/submit-delivery-info', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(billingInfo)
+                            });
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                        } else if (data.status === 'success') {
+                            alert('Information updated successfully');
+                            fetchUserData();
+                        } else {
+                            alert('Information saved successfully');
+                            fetchUserData();
+                        }
+                    })
+                    .catch(error => {
+                        alert('An error occurred. Please try again.');
+                        console.error('Fetch error:', error);
+                    });
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.redirect) {
-                window.location.href = data.redirect;
-            } else if (data.status === 'success') {
-                alert('Information updated successfully');
-                fetchUserData(); // Refresh user data to reflect changes
-            } else {
-                alert('Information saved successfully');
-                fetchUserData(); // Refresh user data to reflect changes
+        
+            function goToIndex() {
+                window.location.href = "index.html";
             }
-        })
-        .catch(error => {
-            alert('An error occurred. Please try again.');
-            console.error('Fetch error:', error);
-        });
-}
-
-function goToIndex() {
-    window.location.href = "index.html";
-}
-
-function goToCheckout() {
-    window.location.href = "checkout.html";
-}
-
-
-            </script>
+        
+            function goToCheckout() {
+                window.location.href = "checkout.html";
+            }
+        </script>
+            </div>
+            </body>
+            </html>
             
             

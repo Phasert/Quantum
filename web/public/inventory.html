@@ -63,7 +63,7 @@
                 <th>Cost Per Piece</th>
                 <th>Quantity</th>
                 <th>Description</th>
-                <th>Catergory</th>
+                <th>Category</th>
                 <th>Add Product</th>
             </tr>
             <tr>
@@ -80,11 +80,17 @@
                         <option value="stands">stands</option>
                     </select>
                 </td>
-                <td><button type="inven-submit" class="submit-button">Add</button></td>
+                <td><button type="submit" class="submit-button">Add</button></td>
             </tr>
         </table>
     </form>
     </div>
+
+    <!-- Search Bar -->
+    <div class="dashboard-widget">
+        <input type="text" id="search-bar" placeholder="Search by product name...">
+    </div>
+
     <!-- Dashboard Widgets -->
     <div class="dashboard-widget">
         <table id="inventory-table">
@@ -120,7 +126,22 @@
                     console.error('Error fetching inventory data:', error);
                 });
         });
+
+        document.getElementById('search-bar').addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#inventory-table tr:not(:first-child)');
+            rows.forEach(row => {
+                const productName = row.children[1].textContent.toLowerCase();
+                if (productName.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     </script>
+</div>
+
     <script src="app.js"></script>
     
 </body>
