@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'ilMeesha', // Change this to your MySQL password
+    password: 'Clement@71', // Change this to your MySQL password
     database: 'quantum'
 });
 
@@ -788,12 +788,12 @@ app.get('/inventory-data', (req, res) => {
             p.productID, 
             p.pName, 
             i.quantity, 
-            i.status, 
+            i.Stat, 
             p.category 
         FROM 
             product p 
         JOIN 
-            inventory i 
+            Inventory i 
         ON 
             p.productID = i.productID`;
 
