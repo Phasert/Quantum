@@ -172,45 +172,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function addToCart() {
-        var selectedOption = document.getElementById('options').value;
-        var selectedQuantity = parseInt(document.getElementById('quantity').value);
-        var rentDate = document.getElementById('rentDate').value;
-        var rentTime = document.getElementById('rentTime').value;
-        var returnDate = document.getElementById('returnDate').value;
-        var returnTime = document.getElementById('returnTime').value;
-        var comment = document.getElementById('comment').value;
 
-        var data = {
-            options: selectedOption,
-            quantity: selectedQuantity,
-            comment: comment,
-            rentDate: rentDate,
-            rentTime: rentTime,
-            returnDate: returnDate,
-            returnTime: returnTime
-        };
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/cart');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var addedToCartMessage = document.getElementById('addedToCartMessage');
-                addedToCartMessage.style.display = 'block';
-
-                setTimeout(function () {
-                    addedToCartMessage.style.display = 'none';
-                }, 2000);
-
-                console.log('Item added to cart');
-            } else {
-                console.error('Error adding item to cart:', xhr.statusText);
-            }
-        };
-        xhr.onerror = function () {
-            console.error('Request failed');
-        };
-        xhr.send(JSON.stringify(data));
-    }
 });
+function addToCart() {
+    var selectedOption = document.getElementById('options').value;
+    var selectedQuantity = parseInt(document.getElementById('quantity').value);
+    var rentDate = document.getElementById('rentDate').value;
+    var rentTime = document.getElementById('rentTime').value;
+    var returnDate = document.getElementById('returnDate').value;
+    var returnTime = document.getElementById('returnTime').value;
+    var comment = document.getElementById('comment').value;
+
+
+    var data = {
+        options: selectedOption,
+        quantity: selectedQuantity,
+        comment: comment,
+        rentDate: rentDate,
+        rentTime: rentTime,
+        returnDate: returnDate,
+        returnTime: returnTime
+    };
+
+    // Make an AJAX request to add the item to the cart
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/cart');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            // Item added successfully, display the message
+            var addedToCartMessage = document.getElementById('addedToCartMessage');
+            addedToCartMessage.style.display = 'block';
+
+            // Hide the message after 2 seconds (adjust as needed)
+            setTimeout(function () {
+                addedToCartMessage.style.display = 'none';
+            }, 2000);
+
+            // Item added successfully, do something if needed
+            console.log('Item added to cart');
+        } else {
+            // Error handling
+            console.error('Error adding item to cart:', xhr.statusText);
+        }
+    };
+    xhr.onerror = function () {
+        console.error('Request failed');
+    };
+    xhr.send(JSON.stringify(data));
+}
